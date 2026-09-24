@@ -1,0 +1,28 @@
+export interface JwtPayload {
+  userId: string;
+  phone: string;
+}
+
+export interface MatchedDonor {
+  id: string;
+  name: string;
+  phone: string;
+  fcmToken: string | null;
+  latitude: number;
+  longitude: number;
+  distance_km: number;
+}
+
+export class AppError extends Error {
+  public statusCode: number;
+  public code: string;
+  public details?: any;
+
+  constructor(statusCode: number, code: string, message: string, details?: any) {
+    super(message);
+    this.statusCode = statusCode;
+    this.code = code;
+    this.details = details;
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+}

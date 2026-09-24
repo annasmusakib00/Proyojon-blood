@@ -1,0 +1,178 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum BloodGroup {
+  A_POS
+  A_NEG
+  B_POS
+  B_NEG
+  O_POS
+  O_NEG
+  AB_POS
+  AB_NEG
+}
+
+enum RequestStatus {
+  PENDING
+  MATCHED
+  IN_PROGRESS
+  ARRIVED
+  COMPLETED
+  CANCELLED
+  EXPIRED
+}
+
+enum NotificationChannel {
+  PUSH
+  SMS
+}
+
+enum DeliveryStatus {
+  SENT
+  DELIVERED
+  FAILED
+}
+
+enum BadgeType {
+  HERO
+  ORGANIZER
+}
+
+enum AcceptanceType {
+  SELF
+  PROXY
+}
+
+// ─────────────────────────────────────────────
+// MODELS
+// ─────────────────────────────────────────────
+
+model User {
+  id              String      @id @default(uuid())
+  name            String
+  phone           String      @unique
+  bloodGroup      BloodGroup  @map("blood_group")
+  profilePhoto    String?     @map("profile_photo")
+
+  // Verification
+  isVerified      Boolean     @default(false) @map("is_verified")
+  otpHash         String?     @map("otp_hash")
+  otpExpiresAt    DateTime?   @map("otp_expires_at")
+
+  // Donor Status
+  isAvailable     Boolean     @default(false) @map("is_available")
+  isLocked        Boolean     @default(false) @map("is_locked")
+  lockStartDate   DateTime?   @map("lock_start_date")
+  lockEndDate     DateTime?   @map("lock_end_date")
+
+  // Location (last known)
+  latitude        Float?
+  longitude       Float?
+
+  // Push Notifications
+  fcmToken        String?     @map("fcm_token")
+
+  // Stats
+  donationCount   Int         @default(0) @map("donation_count")
+
+  // Timestamps
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+
+  // Relations
+  badges                UserBadge[]
+  requestsMade          BloodRequest[]     @relation("RequesterRequests")
+  requestsAccepted      BloodRequest[]     @relation("DonorRequests")
+  requestsOrganized     BloodRequest[]     @relation("OrganizerRequests")
+  notificationsReceived NotificationLog[]
+
+  @@map("users")
+}
+
+model BloodRequest {
+  id                String         @id @default(uuid())
+
+  // Request Details
+  bloodGroup        BloodGroup     @map("blood_group")
+  bagsNeeded        Int            @map("bags_needed")
+  hospitalName      String         @map("hospital_name")
+  hospitalLat       Float          @map("hospital_lat")
+  hospitalLng       Float          @map("hospital_lng")
+
+  // Conveyance
+  conveyanceAmount  Int            @map("conveyance_amount")
+  agreementAccepted Boolean        @default(false) @map("agreement_accepted")
+
+  // Status
+  status            RequestStatus  @default(PENDING)
+
+  // Matching
+  acceptanceType    AcceptanceType? @map("acceptance_type")
+
+  // Proxy Info (if applicable)
+  proxyName         String?        @map("proxy_name")
+  proxyPhone        String?        @map("proxy_phone")
+
+  // Timestamps
+  createdAt         DateTime       @default(now()) @map("created_at")
+  matchedAt         DateTime?      @map("matched_at")
+  completedAt       DateTime?      @map("completed_at")
+
+  // Foreign Keys
+  requesterId       String         @map("requester_id")
+  matchedDonorId    String?        @map("matched_donor_id")
+  organizerId       String?        @map("organizer_id")
+
+  // Relations
+  requester         User           @relation("RequesterRequests", fields: [requesterId], references: [id])
+  matchedDonor      User?          @relation("DonorRequests", fields: [matchedDonorId], references: [id])
+  organizer         User?          @relation("OrganizerRequests", fields: [organizerId], references: [id])
+  notifications     NotificationLog[]
+
+  @@index([bloodGroup, status])
+  @@index([hospitalLat, hospitalLng])
+  @@map("blood_requests")
+}
+
+model NotificationLog {
+  id              String              @id @default(uuid())
+  channel         NotificationChannel
+  deliveryStatus  DeliveryStatus      @default(SENT) @map("delivery_status")
+  sentAt          DateTime            @default(now()) @map("sent_at")
+
+  // Foreign Keys
+  requestId       String              @map("request_id")
+  donorId         String              @map("donor_id")
+
+  // Relations
+  request         BloodRequest        @relation(fields: [requestId], references: [id])
+  donor           User                @relation(fields: [donorId], references: [id])
+
+  @@index([requestId])
+  @@map("notification_logs")
+}
+
+model UserBadge {
+  id          String    @id @default(uuid())
+  badgeType   BadgeType @map("badge_type")
+  awardedAt   DateTime  @default(now()) @map("awarded_at")
+
+  // Foreign Key
+  userId      String    @map("user_id")
+
+  // Relations
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("user_badges")
+}
