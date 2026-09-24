@@ -64,6 +64,9 @@ model User {
   bloodGroup      BloodGroup  @map("blood_group")
   profilePhoto    String?     @map("profile_photo")
 
+  // Authentication
+  passwordHash    String?     @map("password_hash")
+  
   // Verification
   isVerified      Boolean     @default(false) @map("is_verified")
   otpHash         String?     @map("otp_hash")

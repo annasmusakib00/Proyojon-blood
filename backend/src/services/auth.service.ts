@@ -17,7 +17,8 @@ const prisma = new PrismaClient();
 export async function register(
   name: string,
   phone: string,
-  bloodGroup: string
+  bloodGroup: string,
+  password?: string
 ): Promise<{ message: string }> {
   // Check for duplicate phone
   const existing = await prisma.user.findUnique({ where: { phone } });
@@ -26,10 +27,13 @@ export async function register(
     throw new AppError(409, 'DUPLICATE_PHONE', 'This phone number is already registered');
   }
 
-  // Generate OTP
+  // Generate OTP and Password Hash
   const otp = generateOTP();
   const otpHash = await hashOTP(otp);
   const otpExpiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
+  
+  const bcryptjs = require('bcryptjs');
+  const passwordHash = password ? await bcryptjs.hash(password, 10) : null;
 
   if (existing && !existing.isVerified) {
     // Update existing unverified record with new OTP
@@ -40,6 +44,7 @@ export async function register(
         bloodGroup: bloodGroup as any,
         otpHash,
         otpExpiresAt,
+        passwordHash,
       },
     });
   } else {
@@ -52,6 +57,7 @@ export async function register(
         isVerified: false,
         otpHash,
         otpExpiresAt,
+        passwordHash,
       },
     });
   }
@@ -120,4 +126,39 @@ export async function verifyOtp(
   const token = signToken({ userId: updatedUser.id, phone: updatedUser.phone });
 
   return { token, user: updatedUser };
+}
+
+/**
+ * Login with phone and password.
+ */
+export async function login(
+  phone: string,
+  password?: string
+): Promise<{ token: string; user: any }> {
+  const user = await prisma.user.findUnique({ where: { phone } });
+
+  if (!user) {
+    throw new AppError(404, 'NOT_FOUND', 'User not found with this phone number');
+  }
+
+  if (!user.isVerified) {
+    throw new AppError(403, 'NOT_VERIFIED', 'Please verify your phone number first.');
+  }
+
+  if (!password || !user.passwordHash) {
+    throw new AppError(400, 'INVALID_CREDENTIALS', 'Invalid phone number or password');
+  }
+
+  const bcryptjs = require('bcryptjs');
+  const isValid = await bcryptjs.compare(password, user.passwordHash);
+  if (!isValid) {
+    throw new AppError(400, 'INVALID_CREDENTIALS', 'Invalid phone number or password');
+  }
+
+  const { id, name, bloodGroup, profilePhoto, isAvailable, isLocked, lockEndDate, donationCount, createdAt } = user;
+  const userData = { id, name, phone, bloodGroup, profilePhoto, isAvailable, isLocked, lockEndDate, donationCount, createdAt };
+
+  const token = signToken({ userId: user.id, phone: user.phone });
+
+  return { token, user: userData };
 }
