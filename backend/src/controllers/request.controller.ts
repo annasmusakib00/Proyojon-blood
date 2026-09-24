@@ -13,7 +13,7 @@ export async function createRequest(req: Request, res: Response, next: NextFunct
 
 export async function getRequest(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const result = await requestService.getRequestById(id);
     res.status(200).json({ success: true, data: result });
   } catch (error) {
@@ -23,7 +23,7 @@ export async function getRequest(req: Request, res: Response, next: NextFunction
 
 export async function acceptRequest(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const donorId = req.user!.userId;
     const result = await requestService.acceptRequest(id, donorId);
     res.status(200).json({ success: true, data: result, message: 'Request accepted' });
@@ -34,7 +34,7 @@ export async function acceptRequest(req: Request, res: Response, next: NextFunct
 
 export async function submitProxy(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const donorId = req.user!.userId;
     const { proxy_name, proxy_phone } = req.body;
     const result = await requestService.submitProxy(id, donorId, proxy_name, proxy_phone);
@@ -46,7 +46,7 @@ export async function submitProxy(req: Request, res: Response, next: NextFunctio
 
 export async function declineRequest(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const donorId = req.user!.userId;
     const result = await requestService.declineRequest(id, donorId);
     res.status(200).json({ success: true, data: result, message: 'Request declined' });
@@ -57,7 +57,7 @@ export async function declineRequest(req: Request, res: Response, next: NextFunc
 
 export async function updateStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const donorId = req.user!.userId;
     const { status } = req.body;
     const result = await requestService.updateJourneyStatus(id, donorId, status);
@@ -69,7 +69,7 @@ export async function updateStatus(req: Request, res: Response, next: NextFuncti
 
 export async function completeRequest(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const requesterId = req.user!.userId;
     const result = await requestService.completeRequest(id, requesterId);
     res.status(200).json({ success: true, data: result, message: 'Donation confirmed successfully' });

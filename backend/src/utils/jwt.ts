@@ -8,7 +8,7 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '30d';
  * Sign a JWT token with the given payload.
  */
 export function signToken(payload: { userId: string; phone: string }): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN as any });
 }
 
 /**

@@ -11,7 +11,7 @@ export const createRequestSchema = z.object({
   hospital_lng: z.number().min(-180).max(180),
   conveyance_amount: z.number().int().min(200).max(300),
   agreement_accepted: z.literal(true, {
-    errorMap: () => ({ message: 'You must accept the conveyance agreement' }),
+    message: 'You must accept the conveyance agreement'
   }),
 });
 

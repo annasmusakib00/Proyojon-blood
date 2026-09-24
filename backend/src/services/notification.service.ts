@@ -1,4 +1,4 @@
-import admin from 'firebase-admin';
+const admin = require('firebase-admin');
 
 // Initialize Firebase Admin SDK (only once)
 let firebaseInitialized = false;
@@ -30,7 +30,7 @@ export async function sendPushNotification(
   title: string,
   body: string,
   data: Record<string, string>
-): Promise<admin.messaging.BatchResponse | null> {
+): Promise<any | null> {
   // In development without Firebase credentials, just log
   if (process.env.NODE_ENV === 'development' && !process.env.FIREBASE_PROJECT_ID) {
     console.log('\n──────────── PUSH NOTIFICATION ──────────────');
@@ -44,7 +44,7 @@ export async function sendPushNotification(
 
   initFirebase();
 
-  const message: admin.messaging.MulticastMessage = {
+  const message: any = {
     tokens: fcmTokens,
     notification: { title, body },
     data,
