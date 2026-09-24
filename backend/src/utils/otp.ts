@@ -4,8 +4,8 @@ import bcryptjs from 'bcryptjs';
  * Generate a random 6-digit numeric OTP string.
  */
 export function generateOTP(): string {
-  const otp = Math.floor(100000 + Math.random() * 900000);
-  return otp.toString();
+  // Hardcoded for testing since SMS API is not yet purchased
+  return "123456";
 }
 
 /**
