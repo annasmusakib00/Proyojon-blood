@@ -12,6 +12,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
@@ -33,9 +34,9 @@ export default function DashboardScreen() {
   const SLIDE_WIDTH = width - 32; // 16 padding on each side
   
   const slideImages = [
-    { uri: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=800', text: 'আপনার এক ব্যাগ রক্ত বাঁচাতে পারে একটি মুমূর্ষু প্রাণ' },
-    { uri: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800', text: 'জরুরী মুহূর্তে রক্তদান করুন, মানবতার সেবায় এগিয়ে আসুন' },
-    { uri: 'https://images.unsplash.com/photo-1536856136534-bb679c52a9aa?q=80&w=800', text: 'রক্তের অভাবে যেন কোনো জীবন ঝরে না যায়' },
+    { uri: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=800', text: 'আপনার এক ব্যাগ রক্ত\nবাঁচাতে পারে একটি প্রাণ' },
+    { uri: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=800', text: 'জরুরী মুহূর্তে রক্তদান করুন,\nমানবতার সেবায় এগিয়ে আসুন' },
+    { uri: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800', text: 'রক্তের অভাবে যেন\nকোনো জীবন ঝরে না যায়' },
   ];
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -50,7 +51,7 @@ export default function DashboardScreen() {
       }
       scrollViewRef.current?.scrollTo({ x: nextSlide * SLIDE_WIDTH, animated: true });
       setCurrentSlide(nextSlide);
-    }, 1500); // 1.5 seconds slide
+    }, 5000); // 5 seconds slide
     
     return () => clearInterval(timer);
   }, [currentSlide]);
@@ -132,9 +133,17 @@ export default function DashboardScreen() {
                   style={styles.slideImage}
                   resizeMode="cover"
                 />
-                <View style={styles.slideOverlay}>
+                <LinearGradient
+                  colors={['transparent', 'rgba(0,0,0,0.7)', 'rgba(0,0,0,0.9)']}
+                  style={styles.slideOverlay}
+                >
                   <Text style={styles.slideText}>{slide.text}</Text>
-                </View>
+                  <View style={styles.slideIndicatorRow}>
+                    {slideImages.map((_, i) => (
+                      <View key={i} style={[styles.slideIndicator, currentSlide === i && styles.slideIndicatorActive]} />
+                    ))}
+                  </View>
+                </LinearGradient>
               </View>
             ))}
           </ScrollView>
@@ -271,19 +280,23 @@ const styles = StyleSheet.create({
   bloodBadge: { width: 44, height: 44, borderRadius: 22, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primary },
   bloodBadgeText: { color: Colors.primary, fontSize: 15, fontWeight: '800' },
   
-  sliderContainer: { marginBottom: 12, borderRadius: 12, overflow: 'hidden', height: 110 },
-  slider: { borderRadius: 12 },
-  slideWrapper: { position: 'relative', height: 110 },
-  slideImage: { width: '100%', height: '100%', borderRadius: 12 },
+  sliderContainer: { marginBottom: 12, borderRadius: 16, overflow: 'hidden', height: 160 },
+  slider: { borderRadius: 16 },
+  slideWrapper: { position: 'relative', height: 160 },
+  slideImage: { width: '100%', height: '100%', borderRadius: 16 },
   slideOverlay: {
     position: 'absolute',
     bottom: 0, left: 0, right: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 8,
-    borderBottomLeftRadius: 12,
-    borderBottomRightRadius: 12,
+    height: '100%',
+    justifyContent: 'flex-end',
+    padding: 16,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
-  slideText: { color: '#fff', fontSize: 13, fontWeight: '600', textAlign: 'center' },
+  slideText: { color: '#fff', fontSize: 18, fontWeight: '800', lineHeight: 26, textShadowColor: 'rgba(0,0,0,0.5)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
+  slideIndicatorRow: { flexDirection: 'row', gap: 6, marginTop: 12 },
+  slideIndicator: { width: 6, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.4)' },
+  slideIndicatorActive: { width: 20, backgroundColor: '#fff' },
 
   eligibilityCard: { padding: 10, borderRadius: 12, borderWidth: 1, marginBottom: 12, alignItems: 'center' },
   lockedContainer: { marginBottom: 12 },

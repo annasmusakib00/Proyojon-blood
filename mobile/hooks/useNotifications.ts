@@ -14,34 +14,32 @@ export function useNotifications() {
 
     const setup = async () => {
       try {
-        // Expo Go SDK 53 throws error if expo-notifications is used.
-        if (Constants.appOwnership === 'expo') {
-          console.warn('[Notifications] Push notifications are not supported in Expo Go. Falling back to polling.');
-          
-          // Fallback polling for Expo Go
-          const pollInterval = setInterval(async () => {
-            try {
-              const api = (await import('../services/api')).default;
-              const res = await api.get('/donor/pending-requests');
-              if (res.data?.success && res.data?.data?.length > 0) {
-                const reqData = res.data.data[0];
-                setIncomingAlert({
-                  requestId: reqData.id,
-                  bloodGroup: reqData.bloodGroup,
-                  bagsNeeded: reqData.bagsNeeded,
-                  hospitalName: reqData.hospitalName,
-                  conveyanceAmount: reqData.conveyanceAmount,
-                });
-              }
-            } catch (err) {
-              // Ignore network errors in background
+        // Expo push notifications require backend Firebase setup that is not fully completed yet.
+        // We will use polling everywhere for now so that testing in both Expo Go and built APK works perfectly.
+        const pollInterval = setInterval(async () => {
+          try {
+            const api = (await import('../services/api')).default;
+            const res = await api.get('/donor/pending-requests');
+            if (res.data?.success && res.data?.data?.length > 0) {
+              const reqData = res.data.data[0];
+              setIncomingAlert({
+                requestId: reqData.id,
+                bloodGroup: reqData.bloodGroup,
+                bagsNeeded: reqData.bagsNeeded,
+                hospitalName: reqData.hospitalName,
+                conveyanceAmount: reqData.conveyanceAmount,
+              });
             }
-          }, 10000); // Check every 10 seconds
-          
-          // Expose interval to be cleared, though it's global for the app lifetime
-          (global as any).__expoPolling = pollInterval;
-          return;
-        }
+          } catch (err) {
+            // Ignore network errors in background
+          }
+        }, 10000); // Check every 10 seconds
+        
+        // Expose interval to be cleared, though it's global for the app lifetime
+        (global as any).__expoPolling = pollInterval;
+
+        // Skip actual push notification setup for now since FCM keys are missing in backend
+        return;
 
         const Device = await import('expo-device');
         if (!Device.isDevice) {
