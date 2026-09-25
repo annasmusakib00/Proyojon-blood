@@ -158,7 +158,6 @@ export default function ProfileScreen() {
           title={t('profile.logout')}
           onPress={handleLogout}
           variant="danger"
-          style={styles.logoutBtn}
         />
       </View>
     </View>
@@ -189,5 +188,4 @@ const styles = StyleSheet.create({
   badgesRow: { flexDirection: 'row', justifyContent: 'center', gap: 12 },
   statValue: { color: Colors.text, fontSize: 22, fontWeight: '800' },
   footerContainer: { marginTop: 'auto', paddingBottom: 16 },
-  logoutBtn: { height: 48 },
 });
