@@ -70,3 +70,15 @@ export async function updateFcmToken(
 
   return { updated: true };
 }
+
+export async function updateProfilePhoto(
+  userId: string,
+  url: string
+): Promise<{ updated: boolean }> {
+  await prisma.user.update({
+    where: { id: userId },
+    data: { profilePhoto: url },
+  });
+
+  return { updated: true };
+}

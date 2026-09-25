@@ -9,20 +9,25 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
-  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { BLOOD_GROUPS } from '../../constants/bloodGroups';
 import { Button } from '../../components/ui/Button';
 import * as authService from '../../services/auth';
+import { t } from '../../utils/i18n';
+import { useLocaleStore } from '../../stores/localeStore';
 
 export default function RegisterScreen() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [selectedBloodGroup, setSelectedBloodGroup] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { locale } = useLocaleStore();
 
   const handleRegister = async () => {
     if (!name.trim() || name.trim().length < 2) {
@@ -33,6 +38,14 @@ export default function RegisterScreen() {
       Alert.alert('Error', 'Please enter a valid Bangladeshi phone number');
       return;
     }
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
     if (!selectedBloodGroup) {
       Alert.alert('Error', 'Please select your blood group');
       return;
@@ -40,7 +53,7 @@ export default function RegisterScreen() {
 
     setLoading(true);
     try {
-      await authService.register(name.trim(), phone, selectedBloodGroup);
+      await authService.register(name.trim(), phone, selectedBloodGroup, password);
       router.push({
         pathname: '/(auth)/verify-otp',
         params: { phone },
@@ -63,29 +76,24 @@ export default function RegisterScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.logo}>🩸</Text>
-          <Text style={styles.appName}>প্রয়োজন</Text>
-          <Text style={styles.tagline}>Save lives, one donation at a time</Text>
+          <Text style={styles.appName}>{t('register.title')}</Text>
+          <Text style={styles.tagline}>{t('register.subtitle')}</Text>
         </View>
 
-        {/* Name Input */}
         <View style={styles.field}>
-          <Text style={styles.label}>Full Name</Text>
           <TextInput
             style={styles.input}
             value={name}
             onChangeText={setName}
-            placeholder="Enter your name"
+            placeholder={t('register.namePlaceholder')}
             placeholderTextColor={Colors.textMuted}
             autoCapitalize="words"
           />
         </View>
 
-        {/* Phone Input */}
         <View style={styles.field}>
-          <Text style={styles.label}>Phone Number</Text>
           <View style={styles.phoneRow}>
             <View style={styles.countryCode}>
               <Text style={styles.countryCodeText}>+88</Text>
@@ -94,7 +102,7 @@ export default function RegisterScreen() {
               style={[styles.input, styles.phoneInput]}
               value={phone}
               onChangeText={setPhone}
-              placeholder="01XXXXXXXXX"
+              placeholder={t('register.phonePlaceholder')}
               placeholderTextColor={Colors.textMuted}
               keyboardType="phone-pad"
               maxLength={11}
@@ -102,9 +110,31 @@ export default function RegisterScreen() {
           </View>
         </View>
 
-        {/* Blood Group Selector */}
         <View style={styles.field}>
-          <Text style={styles.label}>Blood Group</Text>
+          <Text style={styles.label}>{t('register.passwordLabel')}</Text>
+          <TextInput
+            style={styles.input}
+            value={password}
+            onChangeText={setPassword}
+            placeholder={t('register.passwordPlaceholder')}
+            placeholderTextColor={Colors.textMuted}
+            secureTextEntry
+          />
+        </View>
+
+        <View style={styles.field}>
+          <Text style={styles.label}>{t('register.confirmPasswordLabel')}</Text>
+          <TextInput
+            style={styles.input}
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder={t('register.confirmPasswordPlaceholder')}
+            placeholderTextColor={Colors.textMuted}
+            secureTextEntry
+          />
+        </View>
+
+        <View style={styles.field}>
           <View style={styles.bloodGroupGrid}>
             {BLOOD_GROUPS.map((group) => (
               <TouchableOpacity
@@ -119,8 +149,7 @@ export default function RegisterScreen() {
                 <Text
                   style={[
                     styles.bloodGroupLabel,
-                    selectedBloodGroup === group.value &&
-                      styles.bloodGroupLabelSelected,
+                    selectedBloodGroup === group.value && styles.bloodGroupLabelSelected,
                   ]}
                 >
                   {group.label}
@@ -130,22 +159,20 @@ export default function RegisterScreen() {
           </View>
         </View>
 
-        {/* Register Button */}
         <Button
-          title="Register & Get OTP"
+          title={t('register.button')}
           onPress={handleRegister}
           loading={loading}
           style={{ marginTop: 16 }}
         />
 
-        {/* Login Link */}
         <TouchableOpacity
           onPress={() => router.push('/(auth)/login')}
           style={styles.loginLink}
         >
           <Text style={styles.loginText}>
-            Already have an account?{' '}
-            <Text style={styles.loginTextHighlight}>Log in</Text>
+            {t('register.haveAccount')}{' '}
+            <Text style={styles.loginTextHighlight}>{t('register.loginLink')}</Text>
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -173,22 +200,17 @@ const styles = StyleSheet.create({
   },
   appName: {
     color: Colors.primary,
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: '900',
   },
   tagline: {
     color: Colors.textSecondary,
     fontSize: 14,
     marginTop: 4,
+    textAlign: 'center',
   },
   field: {
-    marginBottom: 20,
-  },
-  label: {
-    color: Colors.text,
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
+    marginBottom: 16,
   },
   input: {
     backgroundColor: Colors.surface,
@@ -224,6 +246,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
+    marginTop: 10,
   },
   bloodGroupCard: {
     width: '22%',

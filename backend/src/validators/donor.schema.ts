@@ -12,3 +12,7 @@ export const locationSchema = z.object({
 export const fcmTokenSchema = z.object({
   fcm_token: z.string().min(1, 'FCM token is required'),
 });
+
+export const profilePhotoSchema = z.object({
+  url: z.string().url('Must be a valid URL'),
+});

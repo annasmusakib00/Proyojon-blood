@@ -17,12 +17,15 @@ import { Badge } from '../../components/ui/Badge';
 import { LockCountdown } from '../../components/LockCountdown';
 import { Button } from '../../components/ui/Button';
 import { useAuthStore } from '../../stores/authStore';
+import { useLocaleStore } from '../../stores/localeStore';
+import { t } from '../../utils/i18n';
 import * as donorService from '../../services/donor';
 import * as requestsService from '../../services/requests';
 
 export default function DashboardScreen() {
   const router = useRouter();
   const { user, setUser } = useAuthStore();
+  const { locale } = useLocaleStore(); // Subscribe for locale changes
   const [refreshing, setRefreshing] = useState(false);
   const [recentRequests, setRecentRequests] = useState<any[]>([]);
   const [toggleLoading, setToggleLoading] = useState(false);
@@ -101,7 +104,7 @@ export default function DashboardScreen() {
     >
       <View style={styles.header}>
         <View>
-          <Text style={styles.greeting}>Hello,</Text>
+          <Text style={styles.greeting}>{t('dashboard.greeting', { name: '' }).replace(' , ', '').replace(',', '')}</Text>
           <Text style={styles.userName}>{user?.name || 'Donor'} 👋</Text>
         </View>
         <View style={styles.bloodBadge}>
@@ -125,7 +128,7 @@ export default function DashboardScreen() {
                   />
                 )}
                 <Text style={styles.availabilityLabel}>
-                  {user?.isAvailable ? 'Available to Donate' : 'Not Available'}
+                  {user?.isAvailable ? t('dashboard.available') : t('dashboard.unavailable')}
                 </Text>
               </View>
               <Text style={styles.availabilityHint}>
@@ -146,7 +149,7 @@ export default function DashboardScreen() {
       <View style={styles.statsRow}>
         <Card style={styles.statCard}>
           <Text style={styles.statValue}>{user?.donationCount || 0}</Text>
-          <Text style={styles.statLabel}>Donations</Text>
+          <Text style={styles.statLabel}>{t('dashboard.donations')}</Text>
         </Card>
         <Card style={styles.statCard}>
           <Badge type="HERO" size="small" />
@@ -191,8 +194,8 @@ export default function DashboardScreen() {
                           req.status === 'COMPLETED'
                             ? Colors.success + '22'
                             : req.status === 'PENDING'
-                            ? Colors.warning + '22'
-                            : Colors.info + '22',
+                              ? Colors.warning + '22'
+                              : Colors.info + '22',
                       },
                     ]}
                   >
@@ -204,8 +207,8 @@ export default function DashboardScreen() {
                             req.status === 'COMPLETED'
                               ? Colors.success
                               : req.status === 'PENDING'
-                              ? Colors.warning
-                              : Colors.info,
+                                ? Colors.warning
+                                : Colors.info,
                         },
                       ]}
                     >
@@ -220,7 +223,7 @@ export default function DashboardScreen() {
       </View>
 
       <Button
-        title="🩸 Request Blood"
+        title={`🩸 ${t('dashboard.requestBlood')}`}
         onPress={() => router.push('/(tabs)/request')}
         style={{ marginTop: 16 }}
       />

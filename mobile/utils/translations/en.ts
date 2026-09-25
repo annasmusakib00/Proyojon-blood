@@ -1,0 +1,37 @@
+export const en = {
+  login: {
+    title: 'Welcome Back',
+    subtitle: 'Sign in to continue your life-saving journey.',
+    phonePlaceholder: 'Enter your phone number',
+    passwordPlaceholder: 'Enter your password',
+    button: 'Login',
+    noAccount: "Don't have an account?",
+    registerLink: 'Register',
+  },
+  register: {
+    title: 'Join the Cause',
+    subtitle: 'Register to become a blood donor and save lives.',
+    namePlaceholder: 'Full Name',
+    phonePlaceholder: 'Phone Number',
+    passwordPlaceholder: 'Password',
+    confirmPasswordPlaceholder: 'Confirm Password',
+    button: 'Register',
+    haveAccount: 'Already have an account?',
+    loginLink: 'Login',
+  },
+  dashboard: {
+    greeting: 'Hello, {{name}}',
+    bloodGroup: 'Blood Group',
+    status: 'Your Status',
+    donations: 'Donations',
+    available: 'Available for donation',
+    unavailable: 'Currently unavailable',
+    requestBlood: 'Request Blood',
+  },
+  profile: {
+    title: 'Profile',
+    language: 'Change Language',
+    logout: 'Logout',
+    uploadPhoto: 'Upload Photo',
+  },
+};

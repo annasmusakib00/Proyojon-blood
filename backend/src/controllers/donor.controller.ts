@@ -33,3 +33,14 @@ export async function updateFcmToken(req: Request, res: Response, next: NextFunc
     next(error);
   }
 }
+
+export async function updateProfilePhoto(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const { url } = req.body;
+    const result = await donorService.updateProfilePhoto(userId, url);
+    res.status(200).json({ success: true, data: result, message: 'Profile photo updated' });
+  } catch (error) {
+    next(error);
+  }
+}

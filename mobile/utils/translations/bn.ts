@@ -1,0 +1,37 @@
+export const bn = {
+  login: {
+    title: 'স্বাগতম',
+    subtitle: 'আপনার জীবন রক্ষাকারী যাত্রা চালিয়ে যেতে লগিন করুন।',
+    phonePlaceholder: 'আপনার ফোন নম্বর দিন',
+    passwordPlaceholder: 'আপনার পাসওয়ার্ড দিন',
+    button: 'লগিন',
+    noAccount: 'অ্যাকাউন্ট নেই?',
+    registerLink: 'রেজিস্ট্রেশন করুন',
+  },
+  register: {
+    title: 'যোগদান করুন',
+    subtitle: 'জীবন বাঁচাতে রক্তদাতা হিসেবে রেজিস্ট্রেশন করুন।',
+    namePlaceholder: 'পুরো নাম',
+    phonePlaceholder: 'ফোন নম্বর',
+    passwordPlaceholder: 'পাসওয়ার্ড',
+    confirmPasswordPlaceholder: 'পাসওয়ার্ড নিশ্চিত করুন',
+    button: 'রেজিস্ট্রেশন',
+    haveAccount: 'আগে থেকেই অ্যাকাউন্ট আছে?',
+    loginLink: 'লগিন করুন',
+  },
+  dashboard: {
+    greeting: 'হ্যালো, {{name}}',
+    bloodGroup: 'রক্তের গ্রুপ',
+    status: 'আপনার স্ট্যাটাস',
+    donations: 'রক্তদান করেছেন',
+    available: 'রক্তদানে প্রস্তুত',
+    unavailable: 'রক্তদানে প্রস্তুত নন',
+    requestBlood: 'রক্তের আবেদন করুন',
+  },
+  profile: {
+    title: 'প্রোফাইল',
+    language: 'ভাষা পরিবর্তন করুন',
+    logout: 'লগআউট',
+    uploadPhoto: 'ছবি আপলোড করুন',
+  },
+};

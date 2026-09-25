@@ -16,6 +16,7 @@ import { BLOOD_GROUPS } from '../../constants/bloodGroups';
 import { Button } from '../../components/ui/Button';
 import { ConveyanceAgreement } from '../../components/ConveyanceAgreement';
 import * as requestsService from '../../services/requests';
+import * as Location from 'expo-location';
 
 const CONVEYANCE_OPTIONS = [200, 250, 300];
 
@@ -29,6 +30,18 @@ export default function RequestScreen() {
   const [conveyanceAmount, setConveyanceAmount] = useState(200);
   const [showAgreement, setShowAgreement] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  React.useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        return;
+      }
+      let location = await Location.getCurrentPositionAsync({});
+      setHospitalLat(location.coords.latitude);
+      setHospitalLng(location.coords.longitude);
+    })();
+  }, []);
 
   const handlePreSubmit = () => {
     if (!bloodGroup) {

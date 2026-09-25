@@ -13,28 +13,37 @@ import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Button } from '../../components/ui/Button';
 import * as authService from '../../services/auth';
+import { useAuthStore } from '../../stores/authStore';
+import { t } from '../../utils/i18n';
+import { useLocaleStore } from '../../stores/localeStore';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const { login: setAuth } = useAuthStore();
+  const { locale } = useLocaleStore(); // subscribe to locale changes
 
   const handleLogin = async () => {
     if (!/^01[3-9]\d{8}$/.test(phone)) {
       Alert.alert('Error', 'Please enter a valid Bangladeshi phone number');
       return;
     }
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
+      return;
+    }
 
     setLoading(true);
     try {
-      await authService.register('', phone, '');
-      router.push({
-        pathname: '/(auth)/verify-otp',
-        params: { phone },
-      });
+      // Assuming you added a login function in authService
+      const result = await authService.login(phone, password);
+      setAuth(result.token, result.user);
+      router.replace('/(tabs)/dashboard');
     } catch (error: any) {
       const message =
-        error.response?.data?.error?.message || 'Failed to send OTP. Please try again.';
+        error.response?.data?.error?.message || 'Login failed. Please check your credentials.';
       Alert.alert('Error', message);
     } finally {
       setLoading(false);
@@ -48,10 +57,8 @@ export default function LoginScreen() {
     >
       <View style={styles.content}>
         <Text style={styles.logo}>🩸</Text>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>
-          Enter your phone number to receive an OTP
-        </Text>
+        <Text style={styles.title}>{t('login.title')}</Text>
+        <Text style={styles.subtitle}>{t('login.subtitle')}</Text>
 
         <View style={styles.phoneRow}>
           <View style={styles.countryCode}>
@@ -61,15 +68,24 @@ export default function LoginScreen() {
             style={[styles.input, styles.phoneInput]}
             value={phone}
             onChangeText={setPhone}
-            placeholder="01XXXXXXXXX"
+            placeholder={t('login.phonePlaceholder')}
             placeholderTextColor={Colors.textMuted}
             keyboardType="phone-pad"
             maxLength={11}
           />
         </View>
 
+        <TextInput
+          style={[styles.input, { width: '100%', marginTop: 16 }]}
+          value={password}
+          onChangeText={setPassword}
+          placeholder={t('login.passwordPlaceholder')}
+          placeholderTextColor={Colors.textMuted}
+          secureTextEntry
+        />
+
         <Button
-          title="Send OTP"
+          title={t('login.button')}
           onPress={handleLogin}
           loading={loading}
           style={{ marginTop: 24 }}
@@ -80,8 +96,8 @@ export default function LoginScreen() {
           style={styles.registerLink}
         >
           <Text style={styles.registerText}>
-            Don't have an account?{' '}
-            <Text style={styles.registerHighlight}>Register</Text>
+            {t('login.noAccount')}{' '}
+            <Text style={styles.registerHighlight}>{t('login.registerLink')}</Text>
           </Text>
         </TouchableOpacity>
       </View>
@@ -114,6 +130,7 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontSize: 15,
     marginBottom: 32,
+    textAlign: 'center',
   },
   phoneRow: {
     flexDirection: 'row',

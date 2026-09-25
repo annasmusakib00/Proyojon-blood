@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "mobile",
+    "name": "প্রয়োজন",
     "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -35,7 +35,8 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true
