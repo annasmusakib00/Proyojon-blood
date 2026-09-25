@@ -6,6 +6,7 @@ import {
   ScrollView,
   Alert,
   Image,
+  Linking,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
@@ -149,21 +150,39 @@ export default function RequestTrackingScreen() {
                 {request.notifications && request.notifications.length > 0 && (
                   <Card style={{ marginTop: 20 }}>
                     <Text style={styles.infoTitle}>Notified Donors ({request.notifications.length})</Text>
-                    {request.notifications.map((notif: any, i: number) => (
-                      <View key={i} style={styles.notifiedDonorRow}>
-                        {notif.donor.profilePhoto ? (
-                          <Image source={{ uri: notif.donor.profilePhoto }} style={styles.notifiedAvatar} />
-                        ) : (
-                          <View style={styles.notifiedAvatarPlaceholder}>
-                            <Text style={styles.notifiedAvatarText}>{notif.donor.name.charAt(0)}</Text>
+                    {request.notifications.map((notif: any, i: number) => {
+                      const donorBG = (notif.donor.bloodGroup || '').replace('_POS', '+').replace('_NEG', '−');
+                      return (
+                        <View key={i} style={styles.notifiedDonorCard}>
+                          <View style={styles.notifiedDonorRow}>
+                            {notif.donor.profilePhoto ? (
+                              <Image source={{ uri: notif.donor.profilePhoto }} style={styles.notifiedAvatar} />
+                            ) : (
+                              <View style={styles.notifiedAvatarPlaceholder}>
+                                <Text style={styles.notifiedAvatarText}>{notif.donor.name.charAt(0)}</Text>
+                              </View>
+                            )}
+                            <View style={{ flex: 1 }}>
+                              <Text style={styles.notifiedName}>{notif.donor.name}</Text>
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 2 }}>
+                                <Text style={{ color: Colors.primary, fontSize: 12, fontWeight: '700' }}>{donorBG}</Text>
+                                <Text style={{ color: Colors.textMuted, fontSize: 11 }}>•</Text>
+                                <Text style={{ color: Colors.textSecondary, fontSize: 11 }}>{notif.donor.donationCount || 0} donations</Text>
+                              </View>
+                            </View>
+                            <View style={styles.notifiedBadge}>
+                              <Text style={styles.notifiedBadgeText}>Waiting...</Text>
+                            </View>
                           </View>
-                        )}
-                        <Text style={styles.notifiedName}>{notif.donor.name}</Text>
-                        <View style={styles.notifiedBadge}>
-                          <Text style={styles.notifiedBadgeText}>Waiting...</Text>
+                          <TouchableOpacity
+                            style={styles.callButton}
+                            onPress={() => Linking.openURL(`tel:${notif.donor.phone}`)}
+                          >
+                            <Text style={styles.callButtonText}>📞 {notif.donor.phone}</Text>
+                          </TouchableOpacity>
                         </View>
-                      </View>
-                    ))}
+                      );
+                    })}
                   </Card>
                 )}
               </>
@@ -329,11 +348,14 @@ const styles = StyleSheet.create({
   infoRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
   infoLabel: { color: Colors.textSecondary, fontSize: 14 },
   infoValue: { color: Colors.text, fontSize: 14, fontWeight: '600' },
-  notifiedDonorRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
-  notifiedAvatar: { width: 36, height: 36, borderRadius: 18, marginRight: 12 },
-  notifiedAvatarPlaceholder: { width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
-  notifiedAvatarText: { color: Colors.primary, fontSize: 16, fontWeight: '700' },
-  notifiedName: { flex: 1, color: Colors.text, fontSize: 15, fontWeight: '600' },
+  notifiedDonorCard: { marginBottom: 12, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
+  notifiedDonorRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 6 },
+  notifiedAvatar: { width: 40, height: 40, borderRadius: 20, marginRight: 12 },
+  notifiedAvatarPlaceholder: { width: 40, height: 40, borderRadius: 20, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  notifiedAvatarText: { color: Colors.primary, fontSize: 18, fontWeight: '700' },
+  notifiedName: { color: Colors.text, fontSize: 15, fontWeight: '600' },
   notifiedBadge: { backgroundColor: Colors.warning + '22', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   notifiedBadgeText: { color: Colors.warning, fontSize: 11, fontWeight: '700' },
+  callButton: { marginTop: 6, marginLeft: 52, backgroundColor: '#E8F5E9', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, alignSelf: 'flex-start' },
+  callButtonText: { color: '#2E7D32', fontSize: 13, fontWeight: '600' },
 });

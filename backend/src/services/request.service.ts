@@ -422,7 +422,12 @@ export async function getRequestById(requestId: string): Promise<any> {
             select: {
               id: true,
               name: true,
+              phone: true,
+              bloodGroup: true,
               profilePhoto: true,
+              donationCount: true,
+              latitude: true,
+              longitude: true,
             }
           }
         }
