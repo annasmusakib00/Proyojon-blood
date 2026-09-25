@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  Image,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
@@ -142,7 +143,30 @@ export default function RequestTrackingScreen() {
         {isRequester && (
           <>
             {request.status === 'PENDING' && (
-              <RadarAnimation message="Searching for donors nearby..." />
+              <>
+                <RadarAnimation message="Searching for donors nearby..." />
+                
+                {request.notifications && request.notifications.length > 0 && (
+                  <Card style={{ marginTop: 20 }}>
+                    <Text style={styles.infoTitle}>Notified Donors ({request.notifications.length})</Text>
+                    {request.notifications.map((notif: any, i: number) => (
+                      <View key={i} style={styles.notifiedDonorRow}>
+                        {notif.donor.profilePhoto ? (
+                          <Image source={{ uri: notif.donor.profilePhoto }} style={styles.notifiedAvatar} />
+                        ) : (
+                          <View style={styles.notifiedAvatarPlaceholder}>
+                            <Text style={styles.notifiedAvatarText}>{notif.donor.name.charAt(0)}</Text>
+                          </View>
+                        )}
+                        <Text style={styles.notifiedName}>{notif.donor.name}</Text>
+                        <View style={styles.notifiedBadge}>
+                          <Text style={styles.notifiedBadgeText}>Waiting...</Text>
+                        </View>
+                      </View>
+                    ))}
+                  </Card>
+                )}
+              </>
             )}
 
             {request.status === 'MATCHED' && (
@@ -305,4 +329,11 @@ const styles = StyleSheet.create({
   infoRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
   infoLabel: { color: Colors.textSecondary, fontSize: 14 },
   infoValue: { color: Colors.text, fontSize: 14, fontWeight: '600' },
+  notifiedDonorRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: Colors.borderLight },
+  notifiedAvatar: { width: 36, height: 36, borderRadius: 18, marginRight: 12 },
+  notifiedAvatarPlaceholder: { width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', marginRight: 12 },
+  notifiedAvatarText: { color: Colors.primary, fontSize: 16, fontWeight: '700' },
+  notifiedName: { flex: 1, color: Colors.text, fontSize: 15, fontWeight: '600' },
+  notifiedBadge: { backgroundColor: Colors.warning + '22', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
+  notifiedBadgeText: { color: Colors.warning, fontSize: 11, fontWeight: '700' },
 });

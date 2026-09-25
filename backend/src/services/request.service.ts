@@ -416,6 +416,17 @@ export async function getRequestById(requestId: string): Promise<any> {
           phone: true,
         },
       },
+      notifications: {
+        select: {
+          donor: {
+            select: {
+              id: true,
+              name: true,
+              profilePhoto: true,
+            }
+          }
+        }
+      }
     },
   });
 
