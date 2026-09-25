@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   Alert,
   TouchableOpacity,
   Image,
@@ -49,51 +48,50 @@ export default function ProfileScreen() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
-      base64: true,
     });
 
-    if (!result.canceled && result.assets[0].base64) {
-      uploadProfilePhoto(result.assets[0].base64);
+    if (!result.canceled && result.assets[0].uri) {
+      uploadProfilePhoto(result.assets[0].uri);
     }
   };
 
-  const uploadProfilePhoto = async (base64Img: string) => {
+  const uploadProfilePhoto = async (uri: string) => {
     setUploading(true);
     try {
-      // Upload to ImgBB (using a free API key for demonstration)
-      const IMGBB_API_KEY = '5a688b1fcb4e3c35bbaee51e9b72d2fb'; // Public anonymous key
+      const IMGBB_API_KEY = '5a688b1fcb4e3c35bbaee51e9b72d2fb';
+      
+      const formData = new FormData();
+      formData.append('image', {
+        uri,
+        name: 'profile.jpg',
+        type: 'image/jpeg',
+      } as any);
+      
       const imgbbRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `image=${encodeURIComponent(base64Img)}`,
+        body: formData,
       });
       const imgbbData = await imgbbRes.json();
       
       if (imgbbData.success) {
         const photoUrl = imgbbData.data.url;
-        // Save to backend
         await api.patch('/donor/profile-photo', { url: photoUrl });
         if (token && user) {
           setUser({ ...user, profilePhoto: photoUrl });
         }
         Alert.alert('Success', 'Profile photo updated successfully!');
       } else {
-        throw new Error('Upload failed');
+        throw new Error(imgbbData.error?.message || 'Upload failed on server');
       }
     } catch (err: any) {
-      Alert.alert('Error', err.message || 'Failed to upload photo. Please try again.');
+      Alert.alert('Upload Error', err.message || 'Failed to upload photo.');
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-    >
+    <View style={styles.container}>
       <View style={styles.headerRow}>
         <Text style={styles.screenTitle}>{t('profile.title')}</Text>
         <TouchableOpacity style={styles.langBtn} onPress={toggleLocale}>
@@ -125,80 +123,71 @@ export default function ProfileScreen() {
 
         {user?.isLocked ? (
           <View style={[styles.eligibilityBadge, { backgroundColor: '#FFEBEE', borderColor: '#F44336' }]}>
-            <Text style={[styles.eligibilityText, { color: '#F44336' }]}>Locked (Donated Recently)</Text>
+            <Text style={[styles.eligibilityText, { color: '#F44336' }]}>Locked</Text>
           </View>
         ) : (
           <View style={[styles.eligibilityBadge, { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' }]}>
-            <Text style={[styles.eligibilityText, { color: '#4CAF50' }]}>Eligible to Donate</Text>
+            <Text style={[styles.eligibilityText, { color: '#4CAF50' }]}>Eligible</Text>
           </View>
         )}
       </View>
 
-      <Card style={styles.badgesCard}>
-        <Text style={styles.sectionTitle}>Badges Earned</Text>
-        <View style={styles.badgesRow}>
-          <Badge type="HERO" size="large" />
-          <Badge type="ORGANIZER" size="large" />
-        </View>
-      </Card>
+      <View style={styles.sectionRow}>
+        <Card style={styles.halfCard}>
+          <Text style={styles.sectionTitle}>Badges</Text>
+          <View style={styles.badgesRow}>
+            <Badge type="HERO" size="small" />
+            <Badge type="ORGANIZER" size="small" />
+          </View>
+        </Card>
 
-      <Card style={styles.statsCard}>
-        <Text style={styles.sectionTitle}>Donation Stats</Text>
-        <View style={styles.statsRow}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>{user?.donationCount || 0}</Text>
-            <Text style={styles.statLabel}>Total Donations</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>
-              {(user?.donationCount || 0) * 450}ml
-            </Text>
-            <Text style={styles.statLabel}>Blood Donated</Text>
-          </View>
-        </View>
-      </Card>
+        <Card style={styles.halfCard}>
+          <Text style={styles.sectionTitle}>Donations</Text>
+          <Text style={styles.statValue}>{user?.donationCount || 0}</Text>
+        </Card>
+      </View>
 
       {user?.isLocked && user?.lockEndDate && (
-        <LockCountdown lockEndDate={user.lockEndDate} />
+        <View style={{ marginBottom: 12 }}>
+          <LockCountdown lockEndDate={user.lockEndDate} />
+        </View>
       )}
 
-      <Button
-        title={t('profile.logout')}
-        onPress={handleLogout}
-        variant="danger"
-        style={{ marginTop: 24 }}
-      />
-    </ScrollView>
+      <View style={styles.footerContainer}>
+        <Button
+          title={t('profile.logout')}
+          onPress={handleLogout}
+          variant="danger"
+          style={styles.logoutBtn}
+        />
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  content: { padding: 20, paddingTop: 60, paddingBottom: 40 },
-  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  screenTitle: { fontSize: 24, fontWeight: '800', color: Colors.text },
+  container: { flex: 1, backgroundColor: Colors.background, padding: 16, paddingTop: 50 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  screenTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
   langBtn: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: Colors.primaryGhost, borderRadius: 12, borderWidth: 1, borderColor: Colors.primary },
-  langBtnText: { color: Colors.primary, fontWeight: '700' },
-  profileHeader: { alignItems: 'center', marginBottom: 28 },
-  avatar: { width: 90, height: 90, borderRadius: 45, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 3, borderColor: Colors.primary, marginBottom: 12 },
-  avatarImage: { width: 90, height: 90, borderRadius: 45, borderWidth: 3, borderColor: Colors.primary, marginBottom: 12 },
-  avatarText: { color: Colors.primary, fontSize: 36, fontWeight: '800' },
-  uploadBadge: { position: 'absolute', bottom: 12, right: 0, backgroundColor: '#fff', borderRadius: 12, padding: 4, elevation: 2 },
-  uploadBadgeText: { fontSize: 14 },
-  userName: { color: Colors.text, fontSize: 22, fontWeight: '800', marginBottom: 4 },
-  userPhone: { color: Colors.textSecondary, fontSize: 14, marginBottom: 8 },
-  bloodBadge: { backgroundColor: Colors.primaryGhost, paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20, borderWidth: 1, borderColor: Colors.primary, marginBottom: 12 },
-  bloodBadgeText: { color: Colors.primary, fontSize: 16, fontWeight: '800' },
-  eligibilityBadge: { paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20, borderWidth: 1 },
-  eligibilityText: { fontSize: 14, fontWeight: '700' },
-  badgesCard: { marginBottom: 16 },
-  sectionTitle: { color: Colors.text, fontSize: 16, fontWeight: '700', marginBottom: 12 },
-  badgesRow: { flexDirection: 'row', justifyContent: 'center', gap: 24 },
-  statsCard: { marginBottom: 16 },
-  statsRow: { flexDirection: 'row', alignItems: 'center' },
-  statItem: { flex: 1, alignItems: 'center' },
-  statValue: { color: Colors.text, fontSize: 24, fontWeight: '800' },
-  statLabel: { color: Colors.textSecondary, fontSize: 12, marginTop: 4 },
-  statDivider: { width: 1, height: 40, backgroundColor: Colors.border },
+  langBtnText: { color: Colors.primary, fontWeight: '700', fontSize: 13 },
+  profileHeader: { alignItems: 'center', marginBottom: 16 },
+  avatar: { width: 76, height: 76, borderRadius: 38, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primary, marginBottom: 8 },
+  avatarImage: { width: 76, height: 76, borderRadius: 38, borderWidth: 2, borderColor: Colors.primary, marginBottom: 8 },
+  avatarText: { color: Colors.primary, fontSize: 32, fontWeight: '800' },
+  uploadBadge: { position: 'absolute', bottom: 8, right: 0, backgroundColor: '#fff', borderRadius: 12, padding: 4, elevation: 2 },
+  uploadBadgeText: { fontSize: 12 },
+  userName: { color: Colors.text, fontSize: 20, fontWeight: '800', marginBottom: 2 },
+  userPhone: { color: Colors.textSecondary, fontSize: 13, marginBottom: 6 },
+  bloodBadge: { backgroundColor: Colors.primaryGhost, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 16, borderWidth: 1, borderColor: Colors.primary, marginBottom: 8 },
+  bloodBadgeText: { color: Colors.primary, fontSize: 14, fontWeight: '800' },
+  eligibilityBadge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 16, borderWidth: 1 },
+  eligibilityText: { fontSize: 12, fontWeight: '700' },
+  sectionRow: { flexDirection: 'row', gap: 12, marginBottom: 12 },
+  halfCard: { flex: 1, alignItems: 'center', paddingVertical: 12 },
+  sectionTitle: { color: Colors.text, fontSize: 14, fontWeight: '700', marginBottom: 8 },
+  badgesRow: { flexDirection: 'row', justifyContent: 'center', gap: 12 },
+  statValue: { color: Colors.text, fontSize: 22, fontWeight: '800' },
+  footerContainer: { marginTop: 'auto', paddingBottom: 16 },
+  logoutBtn: { height: 48 },
 });

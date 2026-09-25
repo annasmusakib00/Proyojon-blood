@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   Alert,
   KeyboardAvoidingView,
@@ -83,10 +82,10 @@ export default function RequestScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView contentContainerStyle={styles.content}>
+      <View style={styles.content}>
         <Text style={styles.title}>Request Blood</Text>
         <Text style={styles.subtitle}>
-          Fill in the details to broadcast an emergency request
+          Emergency broadcast
         </Text>
 
         <View style={styles.field}>
@@ -114,24 +113,26 @@ export default function RequestScreen() {
           </View>
         </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Number of Bags</Text>
-          <View style={styles.stepperRow}>
-            <TouchableOpacity
-              style={styles.stepperBtn}
-              onPress={() => setBagsNeeded((prev) => Math.max(1, prev - 1))}
-            >
-              <Text style={styles.stepperBtnText}>−</Text>
-            </TouchableOpacity>
-            <View style={styles.stepperValue}>
-              <Text style={styles.stepperValueText}>{bagsNeeded}</Text>
+        <View style={styles.fieldRow}>
+          <View style={[styles.field, { flex: 1 }]}>
+            <Text style={styles.label}>Number of Bags</Text>
+            <View style={styles.stepperRow}>
+              <TouchableOpacity
+                style={styles.stepperBtn}
+                onPress={() => setBagsNeeded((prev) => Math.max(1, prev - 1))}
+              >
+                <Text style={styles.stepperBtnText}>−</Text>
+              </TouchableOpacity>
+              <View style={styles.stepperValue}>
+                <Text style={styles.stepperValueText}>{bagsNeeded}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.stepperBtn}
+                onPress={() => setBagsNeeded((prev) => Math.min(10, prev + 1))}
+              >
+                <Text style={styles.stepperBtnText}>+</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              style={styles.stepperBtn}
-              onPress={() => setBagsNeeded((prev) => Math.min(10, prev + 1))}
-            >
-              <Text style={styles.stepperBtnText}>+</Text>
-            </TouchableOpacity>
           </View>
         </View>
 
@@ -141,7 +142,7 @@ export default function RequestScreen() {
             style={styles.input}
             value={hospitalName}
             onChangeText={setHospitalName}
-            placeholder="e.g. Dhaka Medical College Hospital"
+            placeholder="e.g. DMCH"
             placeholderTextColor={Colors.textMuted}
           />
         </View>
@@ -171,13 +172,18 @@ export default function RequestScreen() {
           </View>
         </View>
 
-        <Button
-          title="Submit Blood Request"
-          onPress={handlePreSubmit}
-          loading={loading}
-          style={{ marginTop: 8 }}
-        />
-      </ScrollView>
+        <View style={styles.footerContainer}>
+          <TouchableOpacity
+            style={styles.submitButton}
+            onPress={handlePreSubmit}
+            disabled={loading}
+          >
+            <Text style={styles.submitButtonText}>
+              {loading ? 'Submitting...' : 'Submit Blood Request'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
 
       <ConveyanceAgreement
         visible={showAgreement}
@@ -191,25 +197,30 @@ export default function RequestScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  content: { padding: 20, paddingTop: 60, paddingBottom: 32 },
-  title: { color: Colors.text, fontSize: 26, fontWeight: '800', marginBottom: 4 },
-  subtitle: { color: Colors.textSecondary, fontSize: 14, marginBottom: 28 },
-  field: { marginBottom: 24 },
-  label: { color: Colors.text, fontSize: 14, fontWeight: '600', marginBottom: 10 },
-  bloodGroupGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
-  bloodGroupCard: { width: '22%', aspectRatio: 1.2, backgroundColor: Colors.surface, borderRadius: 12, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: Colors.border },
+  content: { flex: 1, padding: 16, paddingTop: 50 },
+  title: { color: Colors.text, fontSize: 22, fontWeight: '800', marginBottom: 2 },
+  subtitle: { color: Colors.textSecondary, fontSize: 13, marginBottom: 16 },
+  field: { marginBottom: 12 },
+  fieldRow: { flexDirection: 'row', gap: 12 },
+  label: { color: Colors.text, fontSize: 13, fontWeight: '600', marginBottom: 6 },
+  bloodGroupGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  bloodGroupCard: { width: '23%', aspectRatio: 1.4, backgroundColor: Colors.surface, borderRadius: 10, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: Colors.border },
   bloodGroupSelected: { backgroundColor: Colors.primaryGhost, borderColor: Colors.primary },
-  bloodGroupLabel: { color: Colors.textSecondary, fontSize: 18, fontWeight: '700' },
+  bloodGroupLabel: { color: Colors.textSecondary, fontSize: 16, fontWeight: '700' },
   bloodGroupLabelSelected: { color: Colors.primary },
-  stepperRow: { flexDirection: 'row', alignItems: 'center', gap: 16 },
-  stepperBtn: { width: 44, height: 44, borderRadius: 22, backgroundColor: Colors.surface, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: Colors.border },
-  stepperBtnText: { color: Colors.text, fontSize: 22, fontWeight: '600' },
-  stepperValue: { backgroundColor: Colors.surface, paddingHorizontal: 24, paddingVertical: 10, borderRadius: 12, minWidth: 60, alignItems: 'center', borderWidth: 1, borderColor: Colors.border },
-  stepperValueText: { color: Colors.text, fontSize: 24, fontWeight: '800' },
-  input: { backgroundColor: Colors.surface, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 14, color: Colors.text, fontSize: 16, borderWidth: 1, borderColor: Colors.border },
-  conveyanceRow: { flexDirection: 'row', gap: 12 },
-  conveyanceCard: { flex: 1, backgroundColor: Colors.surface, borderRadius: 12, paddingVertical: 14, alignItems: 'center', borderWidth: 1, borderColor: Colors.border },
+  stepperRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  stepperBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: Colors.surface, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: Colors.border },
+  stepperBtnText: { color: Colors.text, fontSize: 18, fontWeight: '600' },
+  stepperValue: { backgroundColor: Colors.surface, paddingHorizontal: 16, paddingVertical: 6, borderRadius: 10, minWidth: 50, alignItems: 'center', borderWidth: 1, borderColor: Colors.border },
+  stepperValueText: { color: Colors.text, fontSize: 20, fontWeight: '800' },
+  input: { backgroundColor: Colors.surface, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, color: Colors.text, fontSize: 14, borderWidth: 1, borderColor: Colors.border },
+  conveyanceRow: { flexDirection: 'row', gap: 8 },
+  conveyanceCard: { flex: 1, backgroundColor: Colors.surface, borderRadius: 10, paddingVertical: 10, alignItems: 'center', borderWidth: 1, borderColor: Colors.border },
   conveyanceSelected: { backgroundColor: Colors.primaryGhost, borderColor: Colors.primary },
-  conveyanceText: { color: Colors.textSecondary, fontSize: 18, fontWeight: '700' },
+  conveyanceText: { color: Colors.textSecondary, fontSize: 15, fontWeight: '700' },
   conveyanceTextSelected: { color: Colors.primary },
+  
+  footerContainer: { marginTop: 'auto', paddingBottom: 16 },
+  submitButton: { backgroundColor: Colors.primary, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center', elevation: 3 },
+  submitButtonText: { color: '#FFF', fontSize: 16, fontWeight: '800' }
 });
