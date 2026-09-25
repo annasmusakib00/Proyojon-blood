@@ -23,6 +23,18 @@ export default function ProfileScreen() {
   const { locale, toggleLocale } = useLocaleStore();
   const [uploading, setUploading] = useState(false);
 
+  React.useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get('/donor/me');
+        if (res.data?.success && res.data.data) {
+          setUser(res.data.data);
+        }
+      } catch (err) {}
+    };
+    fetchProfile();
+  }, []);
+
   const bloodGroupDisplay = (user?.bloodGroup || '')
     .replace('_POS', '+')
     .replace('_NEG', '−');
@@ -136,8 +148,15 @@ export default function ProfileScreen() {
         <Card style={styles.halfCard}>
           <Text style={styles.sectionTitle}>Badges</Text>
           <View style={styles.badgesRow}>
-            <Badge type="HERO" size="small" />
-            <Badge type="ORGANIZER" size="small" />
+            {user?.badges?.some((b: any) => b.badgeType === 'HERO') && (
+              <Badge type="HERO" size="small" />
+            )}
+            {user?.badges?.some((b: any) => b.badgeType === 'ORGANIZER') && (
+              <Badge type="ORGANIZER" size="small" />
+            )}
+            {(!user?.badges || user.badges.length === 0) && (
+              <Text style={{ color: Colors.textMuted, fontSize: 12 }}>No Badges yet</Text>
+            )}
           </View>
         </Card>
 

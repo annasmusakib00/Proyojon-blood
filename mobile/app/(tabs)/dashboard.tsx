@@ -79,6 +79,13 @@ export default function DashboardScreen() {
       const result = await requestsService.getHistory('requester');
       // Limit to 1 for fitting into the screen
       setRecentRequests(result.data?.slice(0, 1) || []);
+
+      // Also fetch profile to get up-to-date badges
+      const api = (await import('../../services/api')).default;
+      const profileRes = await api.get('/donor/me');
+      if (profileRes.data?.success && profileRes.data.data) {
+        useAuthStore.getState().setUser(profileRes.data.data);
+      }
     } catch (err) {}
   };
 
@@ -156,14 +163,26 @@ export default function DashboardScreen() {
             <Text style={styles.statValue}>{user?.donationCount || 0}</Text>
             <Text style={styles.statLabel}>{t('dashboard.donations')}</Text>
           </Card>
-          <Card style={styles.statCard}>
-            <Badge type="HERO" size="small" />
-            <Text style={styles.statLabel}>Hero</Text>
-          </Card>
-          <Card style={styles.statCard}>
-            <Badge type="ORGANIZER" size="small" />
-            <Text style={styles.statLabel}>Organizer</Text>
-          </Card>
+          {user?.badges?.some((b: any) => b.badgeType === 'HERO') && (
+            <Card style={styles.statCard}>
+              <Badge type="HERO" size="small" />
+              <Text style={styles.statLabel}>Hero</Text>
+            </Card>
+          )}
+          {user?.badges?.some((b: any) => b.badgeType === 'ORGANIZER') && (
+            <Card style={styles.statCard}>
+              <Badge type="ORGANIZER" size="small" />
+              <Text style={styles.statLabel}>Organizer</Text>
+            </Card>
+          )}
+          {(!user?.badges || user.badges.length === 0) && (
+            <Card style={styles.statCard}>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#f0f0f0', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 20 }}>🔒</Text>
+              </View>
+              <Text style={styles.statLabel}>More coming</Text>
+            </Card>
+          )}
         </View>
 
         <View style={styles.section}>
