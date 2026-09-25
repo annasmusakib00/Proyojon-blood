@@ -4,7 +4,6 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
@@ -16,10 +15,10 @@ import { BLOOD_GROUPS } from '../../constants/bloodGroups';
 import { Button } from '../../components/ui/Button';
 import * as authService from '../../services/auth';
 import { t } from '../../utils/i18n';
-import { useLocaleStore } from '../../stores/localeStore';
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
@@ -27,25 +26,35 @@ export default function RegisterScreen() {
   const [selectedBloodGroup, setSelectedBloodGroup] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { locale } = useLocaleStore();
+  const handleNext = () => {
+    if (step === 1) {
+      if (!name.trim() || name.trim().length < 2) {
+        Alert.alert('Error', 'Please enter your full name (at least 2 characters)');
+        return;
+      }
+      if (!/^01[3-9]\d{8}$/.test(phone)) {
+        Alert.alert('Error', 'Please enter a valid Bangladeshi phone number');
+        return;
+      }
+      setStep(2);
+    } else if (step === 2) {
+      if (password.length < 6) {
+        Alert.alert('Error', 'Password must be at least 6 characters');
+        return;
+      }
+      if (password !== confirmPassword) {
+        Alert.alert('Error', 'Passwords do not match');
+        return;
+      }
+      setStep(3);
+    }
+  };
+
+  const handleBack = () => {
+    setStep(step - 1);
+  };
 
   const handleRegister = async () => {
-    if (!name.trim() || name.trim().length < 2) {
-      Alert.alert('Error', 'Please enter your full name (at least 2 characters)');
-      return;
-    }
-    if (!/^01[3-9]\d{8}$/.test(phone)) {
-      Alert.alert('Error', 'Please enter a valid Bangladeshi phone number');
-      return;
-    }
-    if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
-      return;
-    }
-    if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
-      return;
-    }
     if (!selectedBloodGroup) {
       Alert.alert('Error', 'Please select your blood group');
       return;
@@ -72,99 +81,131 @@ export default function RegisterScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.logo}>🩸</Text>
+          <View style={styles.logoContainer}>
+            <Text style={styles.logo}>🩸</Text>
+          </View>
           <Text style={styles.appName}>{t('register.title')}</Text>
           <Text style={styles.tagline}>{t('register.subtitle')}</Text>
         </View>
 
-        <View style={styles.field}>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            placeholder={t('register.namePlaceholder')}
-            placeholderTextColor={Colors.textMuted}
-            autoCapitalize="words"
-          />
+        <View style={styles.stepIndicator}>
+          <View style={[styles.stepDot, step >= 1 && styles.stepDotActive]} />
+          <View style={[styles.stepLine, step >= 2 && styles.stepLineActive]} />
+          <View style={[styles.stepDot, step >= 2 && styles.stepDotActive]} />
+          <View style={[styles.stepLine, step >= 3 && styles.stepLineActive]} />
+          <View style={[styles.stepDot, step >= 3 && styles.stepDotActive]} />
         </View>
 
-        <View style={styles.field}>
-          <View style={styles.phoneRow}>
-            <View style={styles.countryCode}>
-              <Text style={styles.countryCodeText}>+88</Text>
+        {step === 1 && (
+          <View style={styles.formContainer}>
+            <View style={styles.field}>
+              <Text style={styles.label}>{t('register.nameLabel') || 'পুরো নাম'}</Text>
+              <TextInput
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder={t('register.namePlaceholder')}
+                placeholderTextColor={Colors.textMuted}
+                autoCapitalize="words"
+              />
             </View>
-            <TextInput
-              style={[styles.input, styles.phoneInput]}
-              value={phone}
-              onChangeText={setPhone}
-              placeholder={t('register.phonePlaceholder')}
-              placeholderTextColor={Colors.textMuted}
-              keyboardType="phone-pad"
-              maxLength={11}
+
+            <View style={styles.field}>
+              <Text style={styles.label}>{t('register.phoneLabel') || 'ফোন নম্বর'}</Text>
+              <View style={styles.phoneRow}>
+                <View style={styles.countryCode}>
+                  <Text style={styles.countryCodeText}>+88</Text>
+                </View>
+                <TextInput
+                  style={[styles.input, styles.phoneInput]}
+                  value={phone}
+                  onChangeText={setPhone}
+                  placeholder={t('register.phonePlaceholder')}
+                  placeholderTextColor={Colors.textMuted}
+                  keyboardType="phone-pad"
+                  maxLength={11}
+                />
+              </View>
+            </View>
+          </View>
+        )}
+
+        {step === 2 && (
+          <View style={styles.formContainer}>
+            <View style={styles.field}>
+              <Text style={styles.label}>{t('register.passwordLabel') || 'পাসওয়ার্ড'}</Text>
+              <TextInput
+                style={styles.input}
+                value={password}
+                onChangeText={setPassword}
+                placeholder={t('register.passwordPlaceholder')}
+                placeholderTextColor={Colors.textMuted}
+                secureTextEntry
+              />
+            </View>
+
+            <View style={styles.field}>
+              <Text style={styles.label}>{t('register.confirmPasswordLabel') || 'পাসওয়ার্ড নিশ্চিত করুন'}</Text>
+              <TextInput
+                style={styles.input}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder={t('register.confirmPasswordPlaceholder')}
+                placeholderTextColor={Colors.textMuted}
+                secureTextEntry
+              />
+            </View>
+          </View>
+        )}
+
+        {step === 3 && (
+          <View style={styles.formContainer}>
+            <View style={styles.field}>
+              <Text style={styles.label}>{t('register.bloodGroupLabel') || 'রক্তের গ্রুপ'}</Text>
+              <View style={styles.bloodGroupGrid}>
+                {BLOOD_GROUPS.map((group) => (
+                  <TouchableOpacity
+                    key={group.value}
+                    style={[
+                      styles.bloodGroupCard,
+                      selectedBloodGroup === group.value && styles.bloodGroupSelected,
+                    ]}
+                    onPress={() => setSelectedBloodGroup(group.value)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.bloodGroupLabel,
+                        selectedBloodGroup === group.value && styles.bloodGroupLabelSelected,
+                      ]}
+                    >
+                      {group.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          </View>
+        )}
+
+        <View style={styles.buttonRow}>
+          {step > 1 && (
+            <Button
+              title="Back"
+              variant="outline"
+              onPress={handleBack}
+              style={{ flex: 1, marginRight: 8 }}
             />
-          </View>
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>{t('register.passwordLabel')}</Text>
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            placeholder={t('register.passwordPlaceholder')}
-            placeholderTextColor={Colors.textMuted}
-            secureTextEntry
+          )}
+          <Button
+            title={step === 3 ? t('register.button') : "Next"}
+            onPress={step === 3 ? handleRegister : handleNext}
+            loading={loading}
+            style={{ flex: 2 }}
           />
         </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>{t('register.confirmPasswordLabel')}</Text>
-          <TextInput
-            style={styles.input}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            placeholder={t('register.confirmPasswordPlaceholder')}
-            placeholderTextColor={Colors.textMuted}
-            secureTextEntry
-          />
-        </View>
-
-        <View style={styles.field}>
-          <View style={styles.bloodGroupGrid}>
-            {BLOOD_GROUPS.map((group) => (
-              <TouchableOpacity
-                key={group.value}
-                style={[
-                  styles.bloodGroupCard,
-                  selectedBloodGroup === group.value && styles.bloodGroupSelected,
-                ]}
-                onPress={() => setSelectedBloodGroup(group.value)}
-                activeOpacity={0.7}
-              >
-                <Text
-                  style={[
-                    styles.bloodGroupLabel,
-                    selectedBloodGroup === group.value && styles.bloodGroupLabelSelected,
-                  ]}
-                >
-                  {group.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        <Button
-          title={t('register.button')}
-          onPress={handleRegister}
-          loading={loading}
-          style={{ marginTop: 16 }}
-        />
 
         <TouchableOpacity
           onPress={() => router.push('/(auth)/login')}
@@ -175,7 +216,7 @@ export default function RegisterScreen() {
             <Text style={styles.loginTextHighlight}>{t('register.loginLink')}</Text>
           </Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
     </KeyboardAvoidingView>
   );
 }
@@ -185,32 +226,83 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  scrollContent: {
+  content: {
+    flex: 1,
     padding: 24,
-    paddingTop: 60,
-    paddingBottom: 40,
+    justifyContent: 'center',
   },
   header: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 32,
+  },
+  logoContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#FFEAEA',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+    elevation: 3,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
   },
   logo: {
-    fontSize: 56,
-    marginBottom: 12,
+    fontSize: 40,
   },
   appName: {
     color: Colors.primary,
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: '900',
+    marginBottom: 8,
   },
   tagline: {
     color: Colors.textSecondary,
     fontSize: 14,
-    marginTop: 4,
     textAlign: 'center',
+    paddingHorizontal: 20,
+    lineHeight: 20,
+  },
+  stepIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 32,
+  },
+  stepDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: Colors.border,
+  },
+  stepDotActive: {
+    backgroundColor: Colors.primary,
+    transform: [{ scale: 1.2 }],
+  },
+  stepLine: {
+    width: 40,
+    height: 3,
+    backgroundColor: Colors.border,
+    marginHorizontal: 4,
+  },
+  stepLineActive: {
+    backgroundColor: Colors.primary,
+  },
+  formContainer: {
+    height: 220,
+    justifyContent: 'center',
   },
   field: {
     marginBottom: 16,
+  },
+  label: {
+    color: Colors.text,
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 8,
+    marginLeft: 4,
   },
   input: {
     backgroundColor: Colors.surface,
@@ -246,7 +338,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    marginTop: 10,
   },
   bloodGroupCard: {
     width: '22%',
@@ -270,8 +361,12 @@ const styles = StyleSheet.create({
   bloodGroupLabelSelected: {
     color: '#FFFFFF',
   },
+  buttonRow: {
+    flexDirection: 'row',
+    marginTop: 8,
+  },
   loginLink: {
-    marginTop: 20,
+    marginTop: 24,
     alignItems: 'center',
   },
   loginText: {
