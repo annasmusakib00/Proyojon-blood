@@ -30,8 +30,8 @@ export function useNotifications() {
                 conveyanceAmount: reqData.conveyanceAmount,
               });
             }
-          } catch (err) {
-            // Ignore network errors in background
+          } catch (err: any) {
+            console.warn('[Polling] Error fetching pending requests:', err?.response?.status || err?.message || err);
           }
         }, 10000); // Check every 10 seconds
         

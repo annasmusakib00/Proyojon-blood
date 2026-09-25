@@ -74,7 +74,8 @@ export async function createRequest(
   const donors = await findDonorsWithinRadius(
     data.hospital_lat,
     data.hospital_lng,
-    data.blood_group
+    data.blood_group,
+    requesterId
   );
 
   // Broadcast to all matched donors (Push + SMS in parallel)

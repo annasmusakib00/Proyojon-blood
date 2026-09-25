@@ -14,7 +14,8 @@ const prisma = new PrismaClient();
 export async function findDonorsWithinRadius(
   hospitalLat: number,
   hospitalLng: number,
-  bloodGroup: string
+  bloodGroup: string,
+  requesterId: string
 ): Promise<MatchedDonor[]> {
   const donors = await prisma.$queryRaw<MatchedDonor[]>`
     SELECT 
@@ -33,6 +34,8 @@ export async function findDonorsWithinRadius(
       ) AS distance_km
     FROM users
     WHERE blood_group = ${bloodGroup}
+      AND id != ${requesterId}
+      AND is_available = true
       AND is_locked = false
       AND is_verified = true
       AND latitude IS NOT NULL

@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   Linking,
+  TouchableOpacity,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
