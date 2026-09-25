@@ -13,5 +13,6 @@ router.patch('/availability', validate(availabilitySchema), donorController.togg
 router.patch('/location', validate(locationSchema), donorController.updateLocation);
 router.patch('/fcm-token', validate(fcmTokenSchema), donorController.updateFcmToken);
 router.patch('/profile-photo', validate(profilePhotoSchema), donorController.updateProfilePhoto);
+router.get('/pending-requests', donorController.getPendingRequests);
 
 export default router;

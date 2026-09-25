@@ -82,3 +82,19 @@ export async function updateProfilePhoto(
 
   return { updated: true };
 }
+
+export async function getPendingRequests(userId: string) {
+  // Find all notification logs for this donor where the associated request is still PENDING
+  const logs = await prisma.notificationLog.findMany({
+    where: {
+      donorId: userId,
+      request: {
+        status: 'PENDING',
+      },
+    },
+    include: {
+      request: true,
+    },
+  });
+  return logs.map((log) => log.request);
+}

@@ -44,3 +44,13 @@ export async function updateProfilePhoto(req: Request, res: Response, next: Next
     next(error);
   }
 }
+
+export async function getPendingRequests(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const result = await donorService.getPendingRequests(userId);
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+}
