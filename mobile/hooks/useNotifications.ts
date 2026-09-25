@@ -16,7 +16,30 @@ export function useNotifications() {
       try {
         // Expo Go SDK 53 throws error if expo-notifications is used.
         if (Constants.appOwnership === 'expo') {
-          console.warn('[Notifications] Push notifications are not supported in Expo Go.');
+          console.warn('[Notifications] Push notifications are not supported in Expo Go. Falling back to polling.');
+          
+          // Fallback polling for Expo Go
+          const pollInterval = setInterval(async () => {
+            try {
+              const api = (await import('../services/api')).default;
+              const res = await api.get('/donor/pending-requests');
+              if (res.data?.success && res.data?.data?.length > 0) {
+                const reqData = res.data.data[0];
+                setIncomingAlert({
+                  requestId: reqData.id,
+                  bloodGroup: reqData.bloodGroup,
+                  bagsNeeded: reqData.bagsNeeded,
+                  hospitalName: reqData.hospitalName,
+                  conveyanceAmount: reqData.conveyanceAmount,
+                });
+              }
+            } catch (err) {
+              // Ignore network errors in background
+            }
+          }, 10000); // Check every 10 seconds
+          
+          // Expose interval to be cleared, though it's global for the app lifetime
+          (global as any).__expoPolling = pollInterval;
           return;
         }
 
