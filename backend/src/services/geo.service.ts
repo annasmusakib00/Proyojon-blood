@@ -35,7 +35,6 @@ export async function findDonorsWithinRadius(
     FROM users
     WHERE blood_group = ${bloodGroup}
       AND id != ${requesterId}
-      AND is_available = true
       AND is_locked = false
       AND is_verified = true
       AND latitude IS NOT NULL
