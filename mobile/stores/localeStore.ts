@@ -12,7 +12,7 @@ interface LocaleState {
 export const useLocaleStore = create<LocaleState>()(
   persist(
     (set, get) => ({
-      locale: i18n.locale,
+      locale: 'bn',
       setLocale: (locale: string) => {
         i18n.locale = locale;
         set({ locale });

@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Alert,
   Animated,
+  Image,
+  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
@@ -28,12 +30,20 @@ export default function DashboardScreen() {
   const { locale } = useLocaleStore(); // Subscribe for locale changes
   const [refreshing, setRefreshing] = useState(false);
   const [recentRequests, setRecentRequests] = useState<any[]>([]);
-  const [toggleLoading, setToggleLoading] = useState(false);
+
+  const { width } = Dimensions.get('window');
+  const SLIDE_WIDTH = width - 40;
+  
+  const slideImages = [
+    'https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=800&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1536856136534-bb679c52a9aa?q=80&w=800&auto=format&fit=crop',
+  ];
 
   const pulseAnim = React.useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    if (user?.isAvailable) {
+    if (!user?.isLocked) {
       Animated.loop(
         Animated.sequence([
           Animated.timing(pulseAnim, {
@@ -49,7 +59,7 @@ export default function DashboardScreen() {
         ])
       ).start();
     }
-  }, [user?.isAvailable, pulseAnim]);
+  }, [user?.isLocked, pulseAnim]);
 
   const loadRecentActivity = async () => {
     try {
@@ -70,21 +80,7 @@ export default function DashboardScreen() {
     loadRecentActivity();
   }, []);
 
-  const handleToggleAvailability = async (newValue: boolean) => {
-    setToggleLoading(true);
-    try {
-      const result = await donorService.toggleAvailability(newValue);
-      if (user) {
-        setUser({ ...user, isAvailable: result.data.is_available });
-      }
-    } catch (error: any) {
-      const message =
-        error.response?.data?.error?.message || 'Failed to update availability';
-      Alert.alert('Error', message);
-    } finally {
-      setToggleLoading(false);
-    }
-  };
+  // Manual toggle removed because eligibility is now automatic
 
   const bloodGroupDisplay = (user?.bloodGroup || '')
     .replace('_POS', '+')
@@ -112,38 +108,40 @@ export default function DashboardScreen() {
         </View>
       </View>
 
-      {user?.isLocked ? (
-        <LockCountdown lockEndDate={user.lockEndDate!} />
-      ) : (
-        <Card style={styles.availabilityCard}>
-          <View style={styles.availabilityRow}>
-            <View style={styles.availabilityInfo}>
-              <View style={styles.statusRow}>
-                {user?.isAvailable && (
-                  <Animated.View
-                    style={[
-                      styles.statusDot,
-                      { transform: [{ scale: pulseAnim }] },
-                    ]}
-                  />
-                )}
-                <Text style={styles.availabilityLabel}>
-                  {user?.isAvailable ? t('dashboard.available') : t('dashboard.unavailable')}
-                </Text>
-              </View>
-              <Text style={styles.availabilityHint}>
-                {user?.isAvailable
-                  ? 'You will receive emergency blood requests'
-                  : 'Toggle on to receive nearby blood requests'}
-              </Text>
-            </View>
-            <Toggle
-              value={user?.isAvailable || false}
-              onToggle={handleToggleAvailability}
-              disabled={toggleLoading}
+      <View style={styles.sliderContainer}>
+        <ScrollView
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          style={styles.slider}
+        >
+          {slideImages.map((img, index) => (
+            <Image
+              key={index}
+              source={{ uri: img }}
+              style={[styles.slideImage, { width: SLIDE_WIDTH }]}
+              resizeMode="cover"
             />
+          ))}
+        </ScrollView>
+      </View>
+
+      {user?.isLocked ? (
+        <View style={styles.lockedContainer}>
+          <LockCountdown lockEndDate={user.lockEndDate!} />
+        </View>
+      ) : (
+        <View style={[styles.eligibilityCard, { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' }]}>
+          <View style={styles.statusRow}>
+            <Animated.View style={[styles.statusDot, { transform: [{ scale: pulseAnim }], backgroundColor: '#4CAF50' }]} />
+            <Text style={[styles.availabilityLabel, { color: '#4CAF50' }]}>
+              {t('dashboard.available')}
+            </Text>
           </View>
-        </Card>
+          <Text style={[styles.availabilityHint, { color: '#2E7D32' }]}>
+            আপনি এখন রক্তদানের জন্য প্রস্তুত
+          </Text>
+        </View>
       )}
 
       <View style={styles.statsRow}>
@@ -240,12 +238,15 @@ const styles = StyleSheet.create({
   bloodBadge: { width: 50, height: 50, borderRadius: 25, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primary },
   bloodBadgeText: { color: Colors.primary, fontSize: 16, fontWeight: '800' },
   availabilityCard: { marginBottom: 20 },
-  availabilityRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  availabilityInfo: { flex: 1, marginRight: 16 },
+  eligibilityCard: { padding: 16, borderRadius: 16, borderWidth: 1, marginBottom: 20, alignItems: 'center' },
+  lockedContainer: { marginBottom: 20 },
+  sliderContainer: { marginBottom: 20, borderRadius: 16, overflow: 'hidden' },
+  slider: { borderRadius: 16 },
+  slideImage: { height: 160, borderRadius: 16 },
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
-  statusDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.available },
-  availabilityLabel: { color: Colors.text, fontSize: 16, fontWeight: '700' },
-  availabilityHint: { color: Colors.textMuted, fontSize: 12, marginTop: 2 },
+  statusDot: { width: 12, height: 12, borderRadius: 6 },
+  availabilityLabel: { fontSize: 18, fontWeight: '800' },
+  availabilityHint: { fontSize: 13, marginTop: 4, fontWeight: '500' },
   statsRow: { flexDirection: 'row', gap: 10, marginBottom: 24 },
   statCard: { flex: 1, alignItems: 'center', paddingVertical: 16 },
   statValue: { color: Colors.text, fontSize: 28, fontWeight: '800' },
