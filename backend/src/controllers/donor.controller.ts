@@ -54,3 +54,13 @@ export async function getPendingRequests(req: Request, res: Response, next: Next
     next(error);
   }
 }
+
+export async function getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const result = await donorService.getProfile(userId);
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+}

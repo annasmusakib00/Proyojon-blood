@@ -98,3 +98,17 @@ export async function getPendingRequests(userId: string) {
   });
   return logs.map((log) => log.request);
 }
+
+export async function getProfile(userId: string) {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: { badges: true }
+  });
+  
+  if (!user) {
+    throw new AppError(404, 'NOT_FOUND', 'User not found');
+  }
+  
+  const { passwordHash, otpHash, ...userWithoutSecrets } = user;
+  return userWithoutSecrets;
+}
