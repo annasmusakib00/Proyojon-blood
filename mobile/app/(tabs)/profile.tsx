@@ -62,12 +62,12 @@ export default function ProfileScreen() {
     try {
       // Upload to ImgBB (using a free API key for demonstration)
       const IMGBB_API_KEY = '5a688b1fcb4e3c35bbaee51e9b72d2fb'; // Public anonymous key
-      const formData = new FormData();
-      formData.append('image', base64Img);
-      
       const imgbbRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
         method: 'POST',
-        body: formData,
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `image=${encodeURIComponent(base64Img)}`,
       });
       const imgbbData = await imgbbRes.json();
       
@@ -82,8 +82,8 @@ export default function ProfileScreen() {
       } else {
         throw new Error('Upload failed');
       }
-    } catch (err) {
-      Alert.alert('Error', 'Failed to upload photo. Please try again.');
+    } catch (err: any) {
+      Alert.alert('Error', err.message || 'Failed to upload photo. Please try again.');
     } finally {
       setUploading(false);
     }

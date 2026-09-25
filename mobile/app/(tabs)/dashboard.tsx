@@ -228,11 +228,15 @@ export default function DashboardScreen() {
         </View>
 
         <View style={styles.footerContainer}>
-          <Button
-            title={`🩸 ${t('dashboard.requestBlood')}`}
+          <TouchableOpacity
+            style={styles.requestButton}
             onPress={() => router.push('/(tabs)/request')}
-            style={styles.actionButton}
-          />
+            activeOpacity={0.8}
+          >
+            <Text style={styles.requestButtonText}>
+              🩸 {t('dashboard.requestBlood')}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -287,5 +291,22 @@ const styles = StyleSheet.create({
   statusText: { fontSize: 9, fontWeight: '700' },
 
   footerContainer: { marginTop: 'auto', paddingTop: 8, paddingBottom: 16 },
-  actionButton: { height: 48 },
+  requestButton: {
+    backgroundColor: '#E53935',
+    height: 54,
+    borderRadius: 27,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#E53935',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  requestButtonText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: 0.5,
+  },
 });
