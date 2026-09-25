@@ -31,7 +31,7 @@ export const bn = {
     donations: 'রক্তদান করেছেন',
     available: 'রক্তদানে প্রস্তুত',
     unavailable: 'রক্তদানে প্রস্তুত নন',
-    requestBlood: 'রক্তের আবেদন করুন',
+    requestBlood: 'ডোনার খুঁজুন',
   },
   profile: {
     title: 'প্রোফাইল',

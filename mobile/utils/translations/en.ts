@@ -31,7 +31,7 @@ export const en = {
     donations: 'Donations',
     available: 'Available for donation',
     unavailable: 'Currently unavailable',
-    requestBlood: 'Request Blood',
+    requestBlood: 'Find Donor',
   },
   profile: {
     title: 'Profile',

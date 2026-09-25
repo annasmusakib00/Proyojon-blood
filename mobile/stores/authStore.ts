@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface User {
   id: string;
@@ -19,9 +20,9 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
 
-  login: (token: string, user: User) => void;
+  login: (token: string, user: User) => Promise<void>;
   logout: () => Promise<void>;
-  setUser: (user: User) => void;
+  setUser: (user: User) => Promise<void>;
   loadToken: () => Promise<void>;
   setLoading: (loading: boolean) => void;
 }
@@ -32,16 +33,20 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
   isLoading: true,
 
-  login: (token, user) => {
+  login: async (token, user) => {
+    await SecureStore.setItemAsync('auth_token', token);
+    await AsyncStorage.setItem('auth_user', JSON.stringify(user));
     set({ token, user, isAuthenticated: true, isLoading: false });
   },
 
   logout: async () => {
     await SecureStore.deleteItemAsync('auth_token');
+    await AsyncStorage.removeItem('auth_user');
     set({ token: null, user: null, isAuthenticated: false, isLoading: false });
   },
 
-  setUser: (user) => {
+  setUser: async (user) => {
+    await AsyncStorage.setItem('auth_user', JSON.stringify(user));
     set({ user });
   },
 
@@ -49,7 +54,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const token = await SecureStore.getItemAsync('auth_token');
       if (token) {
-        set({ token, isAuthenticated: true, isLoading: false });
+        const userStr = await AsyncStorage.getItem('auth_user');
+        const user = userStr ? JSON.parse(userStr) : null;
+        set({ token, user, isAuthenticated: true, isLoading: false });
       } else {
         set({ isLoading: false });
       }
