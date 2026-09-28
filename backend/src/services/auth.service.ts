@@ -18,7 +18,8 @@ export async function register(
   name: string,
   phone: string,
   bloodGroup: string,
-  password?: string
+  password?: string,
+  locationText?: string
 ): Promise<{ message: string }> {
   // Check for duplicate phone
   const existing = await prisma.user.findUnique({ where: { phone } });
@@ -45,6 +46,7 @@ export async function register(
         otpHash,
         otpExpiresAt,
         passwordHash,
+        locationText,
       },
     });
   } else {
@@ -58,6 +60,7 @@ export async function register(
         otpHash,
         otpExpiresAt,
         passwordHash,
+        locationText,
       },
     });
   }
@@ -119,6 +122,7 @@ export async function verifyOtp(
       isLocked: true,
       lockEndDate: true,
       donationCount: true,
+      locationText: true,
       createdAt: true,
     },
   });
@@ -162,8 +166,8 @@ export async function login(
     data: { lastSeenAt: new Date() },
   });
 
-  const { id, name, bloodGroup, profilePhoto, isAvailable, isLocked, lockEndDate, donationCount, createdAt } = user;
-  const userData = { id, name, phone, bloodGroup, profilePhoto, isAvailable, isLocked, lockEndDate, donationCount, createdAt };
+  const { id, name, bloodGroup, profilePhoto, isAvailable, isLocked, lockEndDate, donationCount, locationText, createdAt } = user;
+  const userData = { id, name, phone, bloodGroup, profilePhoto, isAvailable, isLocked, lockEndDate, donationCount, locationText, createdAt };
 
   const token = signToken({ userId: user.id, phone: user.phone });
 

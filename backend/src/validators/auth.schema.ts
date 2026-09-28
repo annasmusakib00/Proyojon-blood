@@ -8,6 +8,7 @@ export const registerSchema = z.object({
     'O_POS', 'O_NEG', 'AB_POS', 'AB_NEG',
   ]),
   password: z.string().min(6, 'Password must be at least 6 characters'),
+  location_text: z.string().min(2, 'Location is required'),
 });
 
 export const verifyOtpSchema = z.object({

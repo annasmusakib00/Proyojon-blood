@@ -6,12 +6,13 @@ const TOKEN_KEY = 'auth_token';
 /**
  * Register a new user. Sends OTP to the provided phone.
  */
-export async function register(name: string, phone: string, bloodGroup: string, password?: string) {
+export async function register(name: string, phone: string, bloodGroup: string, password?: string, locationText?: string) {
   const response = await api.post('/auth/register', {
     name,
     phone,
     blood_group: bloodGroup,
     password,
+    location_text: locationText,
   });
   return response.data;
 }

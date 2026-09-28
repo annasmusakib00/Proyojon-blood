@@ -8,10 +8,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   Alert,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { BLOOD_GROUPS } from '../../constants/bloodGroups';
+import { BD_DIVISIONS } from '../../constants/locations';
 import { Button } from '../../components/ui/Button';
 import * as authService from '../../services/auth';
 import { t } from '../../utils/i18n';
@@ -24,7 +26,11 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [selectedBloodGroup, setSelectedBloodGroup] = useState('');
+  const [selectedDivision, setSelectedDivision] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const currentDivision = BD_DIVISIONS.find((d) => d.value === selectedDivision);
 
   const handleNext = () => {
     if (step === 1) {
@@ -47,6 +53,12 @@ export default function RegisterScreen() {
         return;
       }
       setStep(3);
+    } else if (step === 3) {
+      if (!selectedBloodGroup) {
+        Alert.alert('Error', 'Please select your blood group');
+        return;
+      }
+      setStep(4);
     }
   };
 
@@ -55,14 +67,15 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = async () => {
-    if (!selectedBloodGroup) {
-      Alert.alert('Error', 'Please select your blood group');
+    if (!selectedDivision || !selectedDistrict) {
+      Alert.alert('Error', 'Please select your current division and district');
       return;
     }
 
     setLoading(true);
     try {
-      await authService.register(name.trim(), phone, selectedBloodGroup, password);
+      const locationText = `${selectedDistrict}, ${selectedDivision}`;
+      await authService.register(name.trim(), phone, selectedBloodGroup, password, locationText);
       router.push({
         pathname: '/(auth)/verify-otp',
         params: { phone },
@@ -94,6 +107,8 @@ export default function RegisterScreen() {
           <View style={[styles.stepDot, step >= 2 && styles.stepDotActive]} />
           <View style={[styles.stepLine, step >= 3 && styles.stepLineActive]} />
           <View style={[styles.stepDot, step >= 3 && styles.stepDotActive]} />
+          <View style={[styles.stepLine, step >= 4 && styles.stepLineActive]} />
+          <View style={[styles.stepDot, step >= 4 && styles.stepDotActive]} />
         </View>
 
         {step === 1 && (
@@ -192,6 +207,49 @@ export default function RegisterScreen() {
           </View>
         )}
 
+        {step === 4 && (
+          <View style={styles.formContainer}>
+            <View style={styles.field}>
+              <Text style={styles.label}>বর্তমান বিভাগ</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+                {BD_DIVISIONS.map((div) => (
+                  <TouchableOpacity
+                    key={div.value}
+                    style={[styles.filterChip, selectedDivision === div.value && styles.filterChipActive]}
+                    onPress={() => {
+                      setSelectedDivision(div.value);
+                      setSelectedDistrict('');
+                    }}
+                  >
+                    <Text style={[styles.filterChipText, selectedDivision === div.value && styles.filterChipTextActive]}>
+                      {div.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+
+            {currentDivision && (
+              <View style={styles.field}>
+                <Text style={styles.label}>বর্তমান জেলা</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+                  {currentDivision.districts.map((dist) => (
+                    <TouchableOpacity
+                      key={dist.value}
+                      style={[styles.filterChip, selectedDistrict === dist.value && styles.filterChipActive]}
+                      onPress={() => setSelectedDistrict(dist.value)}
+                    >
+                      <Text style={[styles.filterChipText, selectedDistrict === dist.value && styles.filterChipTextActive]}>
+                        {dist.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+          </View>
+        )}
+
         <View style={styles.buttonRow}>
           {step > 1 && (
             <Button
@@ -202,8 +260,8 @@ export default function RegisterScreen() {
             />
           )}
           <Button
-            title={step === 3 ? t('register.button') : "Next"}
-            onPress={step === 3 ? handleRegister : handleNext}
+            title={step === 4 ? t('register.button') : "Next"}
+            onPress={step === 4 ? handleRegister : handleNext}
             loading={loading}
             style={{ flex: 2 }}
           />
@@ -367,4 +425,13 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     fontWeight: '600',
   },
+  filterScroll: { marginBottom: 6 },
+  filterChip: {
+    paddingHorizontal: 14, paddingVertical: 10, borderRadius: 20,
+    backgroundColor: Colors.surfaceLight, marginRight: 8,
+    borderWidth: 1, borderColor: Colors.border,
+  },
+  filterChipActive: { backgroundColor: Colors.primaryGhost, borderColor: Colors.primary },
+  filterChipText: { color: Colors.textSecondary, fontSize: 13, fontWeight: '600' },
+  filterChipTextActive: { color: Colors.primary, fontWeight: '700' },
 });
