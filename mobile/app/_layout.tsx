@@ -115,7 +115,7 @@ function RootLayoutNav() {
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.background }}>
-      <StatusBar style="dark" />
+      <StatusBar style="light" />
       <Stack
         screenOptions={{
           headerShown: false,
@@ -132,6 +132,10 @@ function RootLayoutNav() {
         <Stack.Screen
           name="request/complete"
           options={{ headerShown: false, presentation: 'modal' }}
+        />
+        <Stack.Screen
+          name="donor/[id]"
+          options={{ headerShown: false, animation: 'slide_from_right' }}
         />
       </Stack>
 

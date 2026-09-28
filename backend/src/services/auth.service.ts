@@ -107,6 +107,7 @@ export async function verifyOtp(
       isVerified: true,
       otpHash: null,
       otpExpiresAt: null,
+      lastSeenAt: new Date(),
     },
     select: {
       id: true,
@@ -154,6 +155,12 @@ export async function login(
   if (!isValid) {
     throw new AppError(400, 'INVALID_CREDENTIALS', 'Invalid phone number or password');
   }
+
+  // Update last seen timestamp
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { lastSeenAt: new Date() },
+  });
 
   const { id, name, bloodGroup, profilePhoto, isAvailable, isLocked, lockEndDate, donationCount, createdAt } = user;
   const userData = { id, name, phone, bloodGroup, profilePhoto, isAvailable, isLocked, lockEndDate, donationCount, createdAt };

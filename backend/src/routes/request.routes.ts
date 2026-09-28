@@ -22,5 +22,7 @@ router.post('/:id/proxy', validate(proxySchema), requestController.submitProxy);
 router.post('/:id/decline', requestController.declineRequest);
 router.patch('/:id/status', validate(updateStatusSchema), requestController.updateStatus);
 router.post('/:id/complete', requestController.completeRequest);
+router.post('/:id/cancel', requestController.cancelRequest);
+router.post('/:id/notify-donor', requestController.sendIndividualRequest);
 
 export default router;

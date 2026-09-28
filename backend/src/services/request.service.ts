@@ -55,7 +55,6 @@ export async function createRequest(
     throw new AppError(403, 'AGREEMENT_REQUIRED', 'You must accept the conveyance agreement');
   }
 
-  // Create blood request
   const request = await prisma.bloodRequest.create({
     data: {
       requesterId,
@@ -68,6 +67,7 @@ export async function createRequest(
       agreementAccepted: true,
       status: 'PENDING',
     },
+    include: { requester: true },
   });
 
   // Find matching donors within radius
@@ -87,8 +87,8 @@ export async function createRequest(
       notifications.push(
         sendPushNotification(
           [donor.fcmToken],
-          `🚨 Urgent: ${data.blood_group} Blood Needed!`,
-          `${data.bags_needed} bags at ${data.hospital_name}. Conveyance: ${data.conveyance_amount} BDT.`,
+          `🚨 জরুরী রক্তের প্রয়োজন: ${data.blood_group}`,
+          `${data.hospital_name} এ ${data.bags_needed} ব্যাগ রক্ত লাগবে। যাতায়াত ভাতা: ${data.conveyance_amount} BDT. যোগাযোগ: ${request.requester.phone}`,
           { requestId: request.id, type: 'emergency_request' }
         ).then((result) => logNotification(request.id, donor.id, 'PUSH', !!result))
       );
@@ -102,9 +102,8 @@ export async function createRequest(
           bags: data.bags_needed,
           bloodGroup: data.blood_group,
           hospitalName: data.hospital_name,
-          location: `${data.hospital_lat}, ${data.hospital_lng}`,
           conveyanceAmount: data.conveyance_amount,
-          appLink: `https://proyojon.app/r/${request.id}`,
+          phone: request.requester.phone,
         })
       ).then((success) => logNotification(request.id, donor.id, 'SMS', success))
     );
@@ -118,6 +117,87 @@ export async function createRequest(
   );
 
   return { request_id: request.id, donors_notified: donors.length };
+}
+
+// ─────────────────────────────────────────────
+// SEND INDIVIDUAL REQUEST TO SPECIFIC DONOR
+// (Only SMS + in-app notification to ONE donor)
+// ─────────────────────────────────────────────
+export async function sendIndividualDonorRequest(
+  requestId: string,
+  donorId: string,
+  requesterId: string
+): Promise<{ sent: boolean }> {
+  const request = await prisma.bloodRequest.findUnique({
+    where: { id: requestId },
+    include: { requester: true },
+  });
+
+  if (!request) {
+    throw new AppError(404, 'NOT_FOUND', 'Blood request not found');
+  }
+
+  if (request.requesterId !== requesterId) {
+    throw new AppError(403, 'UNAUTHORIZED', 'Only the requester can send individual notifications');
+  }
+
+  if (request.status !== 'PENDING') {
+    throw new AppError(409, 'INVALID_STATUS', 'Request is no longer pending');
+  }
+
+  const donor = await prisma.user.findUnique({ where: { id: donorId } });
+  if (!donor) {
+    throw new AppError(404, 'NOT_FOUND', 'Donor not found');
+  }
+
+  if (!donor.isVerified || donor.isLocked || !donor.isAvailable) {
+    throw new AppError(400, 'DONOR_UNAVAILABLE', 'This donor is currently unavailable');
+  }
+
+  const bloodGroupDisplay = (request.bloodGroup || '')
+    .replace('_POS', '+')
+    .replace('_NEG', '−');
+
+  const requesterInfo = request.requester;
+  const notifications: Promise<void>[] = [];
+
+  // Channel 1: SMS with requester's full info + phone number
+  const smsBody = `জরুরী রক্তের অনুরোধ!\n${requesterInfo.name} আপনাকে রক্তদানের অনুরোধ পাঠিয়েছেন।\nরক্তের গ্রুপ: ${bloodGroupDisplay}\nপরিমাণ: ${request.bagsNeeded} ব্যাগ\nহাসপাতাল: ${request.hospitalName}\nযাতায়াত ভাতা: ${request.conveyanceAmount} BDT\nযোগাযোগ: ${requesterInfo.phone}\nProjectojon অ্যাপ খুলুন বিস্তারিত দেখতে।`;
+
+  notifications.push(
+    sendSMS(donor.phone, smsBody)
+      .then((success) => logNotification(requestId, donorId, 'SMS', success))
+  );
+
+  // Channel 2: Push notification (in-app, data-only — works with just internet)
+  if (donor.fcmToken) {
+    notifications.push(
+      sendPushNotification(
+        [donor.fcmToken],
+        `🩸 ${requesterInfo.name} আপনাকে রক্তদানের অনুরোধ পাঠিয়েছেন`,
+        `${bloodGroupDisplay} রক্ত প্রয়োজন ${request.hospitalName} এ। ${request.bagsNeeded} ব্যাগ। ভাতা: ৳${request.conveyanceAmount}। যোগাযোগ: ${requesterInfo.phone}`,
+        {
+          requestId: request.id,
+          type: 'individual_request',
+          requesterName: requesterInfo.name,
+          requesterPhone: requesterInfo.phone,
+          requesterBloodGroup: requesterInfo.bloodGroup,
+          hospitalName: request.hospitalName,
+          bagsNeeded: String(request.bagsNeeded),
+          conveyanceAmount: String(request.conveyanceAmount),
+          bloodGroup: request.bloodGroup,
+        }
+      ).then((result) => logNotification(requestId, donorId, 'PUSH', !!result))
+    );
+  }
+
+  await Promise.allSettled(notifications);
+
+  console.log(
+    `[Request] ${requestId} — Individual notification sent to donor ${donorId}`
+  );
+
+  return { sent: true };
 }
 
 // ─────────────────────────────────────────────
@@ -483,4 +563,35 @@ export async function getHistory(
   });
 
   return requests;
+}
+
+// ─────────────────────────────────────────────
+// CANCEL REQUEST (Requester deletes their own pending request)
+// ─────────────────────────────────────────────
+export async function cancelRequest(
+  requestId: string,
+  requesterId: string
+): Promise<{ status: string }> {
+  const request = await prisma.bloodRequest.findUnique({
+    where: { id: requestId },
+  });
+
+  if (!request) {
+    throw new AppError(404, 'NOT_FOUND', 'Blood request not found');
+  }
+
+  if (request.requesterId !== requesterId) {
+    throw new AppError(403, 'UNAUTHORIZED', 'Only the requester can cancel this request');
+  }
+
+  if (request.status !== 'PENDING') {
+    throw new AppError(409, 'INVALID_STATUS', 'Only pending requests can be cancelled');
+  }
+
+  await prisma.bloodRequest.update({
+    where: { id: requestId },
+    data: { status: 'CANCELLED' },
+  });
+
+  return { status: 'CANCELLED' };
 }

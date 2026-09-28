@@ -6,11 +6,16 @@ import { availabilitySchema, locationSchema, fcmTokenSchema, profilePhotoSchema 
 
 const router = Router();
 
-// All donor routes require authentication
+// Public routes (no auth required)
+router.get('/all', donorController.getAllDonors);
+router.get('/profile/:id', donorController.getDonorPublicProfile);
+
+// All routes below require authentication
 router.use(authMiddleware);
 
 router.patch('/availability', validate(availabilitySchema), donorController.toggleAvailability);
 router.patch('/location', validate(locationSchema), donorController.updateLocation);
+router.patch('/location-text', donorController.updateLocationText);
 router.patch('/fcm-token', validate(fcmTokenSchema), donorController.updateFcmToken);
 router.patch('/profile-photo', validate(profilePhotoSchema), donorController.updateProfilePhoto);
 router.get('/pending-requests', donorController.getPendingRequests);

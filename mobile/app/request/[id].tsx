@@ -18,6 +18,8 @@ import { JourneyTracker } from '../../components/JourneyTracker';
 import { CelebrationOverlay } from '../../components/CelebrationOverlay';
 import { useAuthStore } from '../../stores/authStore';
 import * as requestsService from '../../services/requests';
+import * as donorServiceApi from '../../services/donor';
+import { t } from '../../utils/i18n';
 
 export default function RequestTrackingScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -28,7 +30,9 @@ export default function RequestTrackingScreen() {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
-  const pollRef = useRef<ReturnType<typeof setInterval>>();
+  const [sentDonorIds, setSentDonorIds] = useState<Set<string>>(new Set());
+  const [sendingDonorId, setSendingDonorId] = useState<string | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   const fetchRequest = async () => {
     try {
@@ -115,6 +119,31 @@ export default function RequestTrackingScreen() {
     );
   };
 
+  const handleSendIndividualRequest = async (donorId: string) => {
+    Alert.alert(
+      'অনুরোধ পাঠান',
+      'এই ডোনারকে SMS ও নোটিফিকেশন পাঠাতে চান?',
+      [
+        { text: 'বাতিল', style: 'cancel' },
+        {
+          text: 'হ্যাঁ, পাঠান',
+          onPress: async () => {
+            setSendingDonorId(donorId);
+            try {
+              await donorServiceApi.sendIndividualRequest(id!, donorId);
+              setSentDonorIds((prev) => new Set([...prev, donorId]));
+              Alert.alert('✅ সফল', 'ডোনারকে SMS ও নোটিফিকেশন পাঠানো হয়েছে।');
+            } catch (err: any) {
+              Alert.alert('ত্রুটি', err.response?.data?.error?.message || 'অনুরোধ পাঠানো সম্ভব হয়নি।');
+            } finally {
+              setSendingDonorId(null);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -146,11 +175,11 @@ export default function RequestTrackingScreen() {
           <>
             {request.status === 'PENDING' && (
               <>
-                <RadarAnimation message="Searching for donors nearby..." />
+                <RadarAnimation message={t('tracking.searching')} />
                 
                 {request.notifications && request.notifications.length > 0 && (
                   <Card style={{ marginTop: 20 }}>
-                    <Text style={styles.infoTitle}>Notified Donors ({request.notifications.length})</Text>
+                    <Text style={styles.infoTitle}>{t('tracking.notifiedDonors')} ({request.notifications.length})</Text>
                     {request.notifications.map((notif: any, i: number) => {
                       const donorBG = (notif.donor.bloodGroup || '').replace('_POS', '+').replace('_NEG', '−');
                       return (
@@ -172,15 +201,32 @@ export default function RequestTrackingScreen() {
                               </View>
                             </View>
                             <View style={styles.notifiedBadge}>
-                              <Text style={styles.notifiedBadgeText}>Waiting...</Text>
+                              <Text style={styles.notifiedBadgeText}>{t('tracking.waiting')}</Text>
                             </View>
                           </View>
-                          <TouchableOpacity
-                            style={styles.callButton}
-                            onPress={() => Linking.openURL(`tel:${notif.donor.phone}`)}
-                          >
-                            <Text style={styles.callButtonText}>📞 {notif.donor.phone}</Text>
-                          </TouchableOpacity>
+                          <View style={styles.notifiedActions}>
+                            <TouchableOpacity
+                              style={styles.callButton}
+                              onPress={() => Linking.openURL(`tel:${notif.donor.phone}`)}
+                            >
+                              <Text style={styles.callButtonText}>📞 {notif.donor.phone}</Text>
+                            </TouchableOpacity>
+                            {sentDonorIds.has(notif.donor.id) ? (
+                              <View style={styles.sentBadge}>
+                                <Text style={styles.sentBadgeText}>✓ পাঠানো হয়েছে</Text>
+                              </View>
+                            ) : (
+                              <TouchableOpacity
+                                style={styles.sendRequestBtn}
+                                onPress={() => handleSendIndividualRequest(notif.donor.id)}
+                                disabled={sendingDonorId === notif.donor.id}
+                              >
+                                <Text style={styles.sendRequestBtnText}>
+                                  {sendingDonorId === notif.donor.id ? '⏳ পাঠানো হচ্ছে...' : '📩 অনুরোধ পাঠান'}
+                                </Text>
+                              </TouchableOpacity>
+                            )}
+                          </View>
                         </View>
                       );
                     })}
@@ -192,7 +238,7 @@ export default function RequestTrackingScreen() {
             {request.status === 'MATCHED' && (
               <Card style={styles.matchCard}>
                 <Text style={styles.matchIcon}>✅</Text>
-                <Text style={styles.matchTitle}>Donor Found!</Text>
+                <Text style={styles.matchTitle}>{t('tracking.donorFound')}</Text>
                 {request.acceptanceType === 'SELF' && request.matchedDonor && (
                   <View style={styles.donorInfo}>
                     <Text style={styles.donorName}>{request.matchedDonor.name}</Text>
@@ -211,9 +257,9 @@ export default function RequestTrackingScreen() {
             {request.status === 'IN_PROGRESS' && (
               <Card style={styles.matchCard}>
                 <Text style={styles.matchIcon}>🚗</Text>
-                <Text style={styles.matchTitle}>Donor is on the way!</Text>
+                <Text style={styles.matchTitle}>{t('tracking.donorOnWay')}</Text>
                 <Text style={styles.matchSubtitle}>
-                  The donor has started their journey to the hospital.
+                  {t('tracking.donorOnWayDetail')}
                 </Text>
               </Card>
             )}
@@ -221,12 +267,12 @@ export default function RequestTrackingScreen() {
             {request.status === 'ARRIVED' && (
               <Card style={styles.matchCard}>
                 <Text style={styles.matchIcon}>🏥</Text>
-                <Text style={styles.matchTitle}>Donor has arrived!</Text>
+                <Text style={styles.matchTitle}>{t('tracking.donorArrived')}</Text>
                 <Text style={styles.matchSubtitle}>
-                  The donor has reached the hospital.
+                  {t('tracking.donorArrivedDetail')}
                 </Text>
                 <Button
-                  title="✅ Donation Successful"
+                  title={`✅ ${t('tracking.confirmDonation')}`}
                   onPress={handleComplete}
                   loading={actionLoading}
                   style={{ marginTop: 20 }}
@@ -237,9 +283,9 @@ export default function RequestTrackingScreen() {
             {request.status === 'COMPLETED' && (
               <Card style={styles.matchCard}>
                 <Text style={styles.matchIcon}>🎉</Text>
-                <Text style={styles.matchTitle}>Donation Complete!</Text>
+                <Text style={styles.matchTitle}>{t('tracking.donationComplete')}</Text>
                 <Text style={styles.matchSubtitle}>
-                  Thank you for using Proyojon. A life has been saved.
+                  {t('tracking.donationCompleteDetail')}
                 </Text>
               </Card>
             )}
@@ -247,12 +293,12 @@ export default function RequestTrackingScreen() {
             {request.status === 'EXPIRED' && (
               <Card style={styles.matchCard}>
                 <Text style={styles.matchIcon}>⏰</Text>
-                <Text style={styles.matchTitle}>Request Expired</Text>
+                <Text style={styles.matchTitle}>{t('tracking.requestExpired')}</Text>
                 <Text style={styles.matchSubtitle}>
-                  No donors were found within the time limit. Please try again.
+                  {t('tracking.requestExpiredDetail')}
                 </Text>
                 <Button
-                  title="Create New Request"
+                  title={t('tracking.newRequest')}
                   onPress={() => router.push('/(tabs)/request')}
                   style={{ marginTop: 16 }}
                 />
@@ -287,25 +333,25 @@ export default function RequestTrackingScreen() {
         )}
 
         <Card style={{ marginTop: 20 }}>
-          <Text style={styles.infoTitle}>Request Details</Text>
+          <Text style={styles.infoTitle}>{t('tracking.requestDetails')}</Text>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Blood Group</Text>
+            <Text style={styles.infoLabel}>{t('tracking.bloodGroup')}</Text>
             <Text style={styles.infoValue}>{bloodGroupDisplay}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Bags Needed</Text>
+            <Text style={styles.infoLabel}>{t('tracking.bagsNeeded')}</Text>
             <Text style={styles.infoValue}>{request.bagsNeeded}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Hospital</Text>
+            <Text style={styles.infoLabel}>{t('tracking.hospital')}</Text>
             <Text style={styles.infoValue}>{request.hospitalName}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Conveyance</Text>
+            <Text style={styles.infoLabel}>{t('tracking.conveyance')}</Text>
             <Text style={styles.infoValue}>৳{request.conveyanceAmount}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Status</Text>
+            <Text style={styles.infoLabel}>{t('tracking.status')}</Text>
             <Text style={[styles.infoValue, { color: Colors.primary }]}>
               {request.status}
             </Text>
@@ -357,6 +403,17 @@ const styles = StyleSheet.create({
   notifiedName: { color: Colors.text, fontSize: 15, fontWeight: '600' },
   notifiedBadge: { backgroundColor: Colors.warning + '22', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   notifiedBadgeText: { color: Colors.warning, fontSize: 11, fontWeight: '700' },
-  callButton: { marginTop: 6, marginLeft: 52, backgroundColor: '#E8F5E9', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8, alignSelf: 'flex-start' },
+  callButton: { backgroundColor: '#E8F5E9', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 8 },
   callButtonText: { color: '#2E7D32', fontSize: 13, fontWeight: '600' },
+  notifiedActions: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 6, marginLeft: 52, flexWrap: 'wrap' },
+  sendRequestBtn: {
+    backgroundColor: Colors.primaryGhost, paddingHorizontal: 12, paddingVertical: 6,
+    borderRadius: 8, borderWidth: 1, borderColor: Colors.primary,
+  },
+  sendRequestBtnText: { color: Colors.primary, fontSize: 12, fontWeight: '700' },
+  sentBadge: {
+    backgroundColor: 'rgba(16, 185, 129, 0.12)', paddingHorizontal: 10, paddingVertical: 5,
+    borderRadius: 8, borderWidth: 1, borderColor: Colors.success,
+  },
+  sentBadgeText: { color: Colors.success, fontSize: 12, fontWeight: '700' },
 });

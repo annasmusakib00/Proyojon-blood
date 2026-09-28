@@ -92,3 +92,26 @@ export async function getHistory(req: Request, res: Response, next: NextFunction
     next(error);
   }
 }
+
+export async function cancelRequest(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const id = req.params.id as string;
+    const requesterId = req.user!.userId;
+    const result = await requestService.cancelRequest(id, requesterId);
+    res.status(200).json({ success: true, data: result, message: 'Request cancelled' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function sendIndividualRequest(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const requestId = req.params.id as string;
+    const requesterId = req.user!.userId;
+    const { donor_id } = req.body;
+    const result = await requestService.sendIndividualDonorRequest(requestId, donor_id, requesterId);
+    res.status(200).json({ success: true, data: result, message: 'Individual notification sent to donor' });
+  } catch (error) {
+    next(error);
+  }
+}

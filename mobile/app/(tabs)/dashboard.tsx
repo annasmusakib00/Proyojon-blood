@@ -3,13 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  RefreshControl,
   TouchableOpacity,
-  Alert,
   Animated,
   Image,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,7 +15,6 @@ import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
 import { LockCountdown } from '../../components/LockCountdown';
-import { Button } from '../../components/ui/Button';
 import { useAuthStore } from '../../stores/authStore';
 import { useLocaleStore } from '../../stores/localeStore';
 import { t } from '../../utils/i18n';
@@ -26,17 +23,16 @@ import * as requestsService from '../../services/requests';
 export default function DashboardScreen() {
   const router = useRouter();
   const { user } = useAuthStore();
-  const { locale } = useLocaleStore(); 
-  const [refreshing, setRefreshing] = useState(false);
+  const { locale } = useLocaleStore();
   const [recentRequests, setRecentRequests] = useState<any[]>([]);
 
   const { width } = Dimensions.get('window');
-  const SLIDE_WIDTH = width - 32; // 16 padding on each side
-  
+  const SLIDE_WIDTH = width - 32;
+
   const slideImages = [
     { uri: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=800', text: 'আপনার এক ব্যাগ রক্ত\nবাঁচাতে পারে একটি প্রাণ' },
-    { uri: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=800', text: 'জরুরী মুহূর্তে রক্তদান করুন,\nমানবতার সেবায় এগিয়ে আসুন' },
-    { uri: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800', text: 'রক্তের অভাবে যেন\nকোনো জীবন ঝরে না যায়' },
+    { uri: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=800', text: 'জরুরী মুহূর্তে রক্তদান করুন,\nমানবতার সেবায় এগিয়ে আসুন' },
+    { uri: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800', text: 'রক্তের অভাবে যেন\nকোনো জীবন ঝরে না যায়' },
   ];
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -51,8 +47,8 @@ export default function DashboardScreen() {
       }
       scrollViewRef.current?.scrollTo({ x: nextSlide * SLIDE_WIDTH, animated: true });
       setCurrentSlide(nextSlide);
-    }, 5000); // 5 seconds slide
-    
+    }, 5000);
+
     return () => clearInterval(timer);
   }, [currentSlide]);
 
@@ -78,22 +74,14 @@ export default function DashboardScreen() {
   const loadRecentActivity = async () => {
     try {
       const result = await requestsService.getHistory('requester');
-      // Limit to 1 for fitting into the screen
       setRecentRequests(result.data?.slice(0, 1) || []);
 
-      // Also fetch profile to get up-to-date badges
       const api = (await import('../../services/api')).default;
       const profileRes = await api.get('/donor/me');
       if (profileRes.data?.success && profileRes.data.data) {
         useAuthStore.getState().setUser(profileRes.data.data);
       }
     } catch (err) {}
-  };
-
-  const onRefresh = async () => {
-    setRefreshing(true);
-    await loadRecentActivity();
-    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -106,11 +94,11 @@ export default function DashboardScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView style={styles.contentScroll} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>{t('dashboard.greeting', { name: '' }).replace(' , ', '').replace(',', '')}</Text>
-            <Text style={styles.userName}>{user?.name || 'Donor'} 👋</Text>
+            <Text style={styles.userName}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
           </View>
           <View style={styles.bloodBadge}>
             <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
@@ -154,15 +142,15 @@ export default function DashboardScreen() {
             <LockCountdown lockEndDate={user.lockEndDate!} />
           </View>
         ) : (
-          <View style={[styles.eligibilityCard, { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' }]}>
+          <View style={styles.eligibilityCard}>
             <View style={styles.statusRow}>
-              <Animated.View style={[styles.statusDot, { transform: [{ scale: pulseAnim }], backgroundColor: '#4CAF50' }]} />
-              <Text style={[styles.availabilityLabel, { color: '#4CAF50' }]}>
+              <Animated.View style={[styles.statusDot, { transform: [{ scale: pulseAnim }] }]} />
+              <Text style={styles.availabilityLabel}>
                 {t('dashboard.available')}
               </Text>
             </View>
-            <Text style={[styles.availabilityHint, { color: '#2E7D32' }]}>
-              আপনি এখন রক্তদানের জন্য প্রস্তুত
+            <Text style={styles.availabilityHint}>
+              {t('dashboard.readyMessage')}
             </Text>
           </View>
         )}
@@ -175,30 +163,30 @@ export default function DashboardScreen() {
           {user?.badges?.some((b: any) => b.badgeType === 'HERO') && (
             <Card style={styles.statCard}>
               <Badge type="HERO" size="small" />
-              <Text style={styles.statLabel}>Hero</Text>
+              <Text style={styles.statLabel}>হিরো</Text>
             </Card>
           )}
           {user?.badges?.some((b: any) => b.badgeType === 'ORGANIZER') && (
             <Card style={styles.statCard}>
               <Badge type="ORGANIZER" size="small" />
-              <Text style={styles.statLabel}>Organizer</Text>
+              <Text style={styles.statLabel}>সংগঠক</Text>
             </Card>
           )}
           {(!user?.badges || user.badges.length === 0) && (
             <Card style={styles.statCard}>
-              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: '#f0f0f0', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontSize: 20 }}>🔒</Text>
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: Colors.surfaceLight, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 20 }}>🏅</Text>
               </View>
-              <Text style={styles.statLabel}>More coming</Text>
+              <Text style={styles.statLabel}>শীঘ্রই আসছে</Text>
             </Card>
           )}
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Recent Activity</Text>
+          <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
           {recentRequests.length === 0 ? (
             <Card style={styles.emptyCard}>
-              <Text style={styles.emptyText}>No recent activity</Text>
+              <Text style={styles.emptyText}>{t('dashboard.noActivity')}</Text>
             </Card>
           ) : (
             recentRequests.map((req: any) => (
@@ -216,7 +204,11 @@ export default function DashboardScreen() {
                         {req.hospitalName}
                       </Text>
                       <Text style={styles.activityDate}>
-                        {new Date(req.createdAt).toLocaleDateString()}
+                        {new Date(req.createdAt).toLocaleDateString('bn-BD', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
                       </Text>
                     </View>
                     <View
@@ -261,49 +253,59 @@ export default function DashboardScreen() {
             onPress={() => router.push('/(tabs)/request')}
             activeOpacity={0.8}
           >
-            <Text style={styles.requestButtonText}>
-              🩸 {t('dashboard.requestBlood')}
-            </Text>
+            <View style={styles.requestButtonInner}>
+              <View style={styles.bloodDropIcon}>
+                <Text style={styles.bloodDropEmoji}>🩸</Text>
+              </View>
+              <Text style={styles.requestButtonText}>
+                {t('dashboard.requestBlood')}
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  content: { flex: 1, padding: 16, paddingTop: 50 },
+  contentScroll: { flex: 1 },
+  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 30 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   greeting: { color: Colors.textSecondary, fontSize: 13 },
   userName: { color: Colors.text, fontSize: 22, fontWeight: '800' },
-  bloodBadge: { width: 44, height: 44, borderRadius: 22, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primary },
+  bloodBadge: {
+    width: 46, height: 46, borderRadius: 23, backgroundColor: Colors.primaryGhost,
+    alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primary,
+  },
   bloodBadgeText: { color: Colors.primary, fontSize: 15, fontWeight: '800' },
-  
+
   sliderContainer: { marginBottom: 12, borderRadius: 16, overflow: 'hidden', height: 160 },
   slider: { borderRadius: 16 },
   slideWrapper: { position: 'relative', height: 160 },
   slideImage: { width: '100%', height: '100%', borderRadius: 16 },
   slideOverlay: {
-    position: 'absolute',
-    bottom: 0, left: 0, right: 0,
-    height: '100%',
-    justifyContent: 'flex-end',
-    padding: 16,
-    borderBottomLeftRadius: 16,
-    borderBottomRightRadius: 16,
+    position: 'absolute', bottom: 0, left: 0, right: 0, height: '100%',
+    justifyContent: 'flex-end', padding: 16, borderBottomLeftRadius: 16, borderBottomRightRadius: 16,
   },
-  slideText: { color: '#fff', fontSize: 18, fontWeight: '800', lineHeight: 26, textShadowColor: 'rgba(0,0,0,0.5)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4 },
+  slideText: {
+    color: '#fff', fontSize: 18, fontWeight: '800', lineHeight: 26,
+    textShadowColor: 'rgba(0,0,0,0.5)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: 4,
+  },
   slideIndicatorRow: { flexDirection: 'row', gap: 6, marginTop: 12 },
   slideIndicator: { width: 6, height: 6, borderRadius: 3, backgroundColor: 'rgba(255,255,255,0.4)' },
   slideIndicatorActive: { width: 20, backgroundColor: '#fff' },
 
-  eligibilityCard: { padding: 10, borderRadius: 12, borderWidth: 1, marginBottom: 12, alignItems: 'center' },
+  eligibilityCard: {
+    padding: 12, borderRadius: 14, borderWidth: 1, marginBottom: 12, alignItems: 'center',
+    backgroundColor: 'rgba(16, 185, 129, 0.08)', borderColor: Colors.success,
+  },
   lockedContainer: { marginBottom: 12 },
-  statusRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
-  statusDot: { width: 10, height: 10, borderRadius: 5 },
-  availabilityLabel: { fontSize: 16, fontWeight: '800' },
-  availabilityHint: { fontSize: 12, marginTop: 2, fontWeight: '500' },
+  statusRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 2 },
+  statusDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.success },
+  availabilityLabel: { fontSize: 16, fontWeight: '800', color: Colors.success },
+  availabilityHint: { fontSize: 12, marginTop: 2, fontWeight: '500', color: Colors.success },
 
   statsRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   statCard: { flex: 1, alignItems: 'center', paddingVertical: 10 },
@@ -324,19 +326,35 @@ const styles = StyleSheet.create({
 
   footerContainer: { marginTop: 'auto', paddingTop: 8, paddingBottom: 16 },
   requestButton: {
-    backgroundColor: '#E53935',
-    height: 54,
-    borderRadius: 27,
+    backgroundColor: Colors.surface,
+    height: 58,
+    borderRadius: 29,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 2,
+    borderColor: Colors.primary,
     elevation: 4,
-    shadowColor: '#E53935',
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
   },
+  requestButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  bloodDropIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: Colors.primaryGhost,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  bloodDropEmoji: { fontSize: 18 },
   requestButtonText: {
-    color: '#FFFFFF',
+    color: Colors.primary,
     fontSize: 20,
     fontWeight: '900',
     letterSpacing: 0.5,

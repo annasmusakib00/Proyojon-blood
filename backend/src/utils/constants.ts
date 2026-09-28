@@ -1,5 +1,6 @@
 export const LOCK_DURATION_DAYS = parseInt(process.env.LOCK_DURATION_DAYS || '120');
 export const SEARCH_RADIUS_KM = parseInt(process.env.SEARCH_RADIUS_KM || '5');
+export const DONOR_FRESHNESS_DAYS = parseInt(process.env.DONOR_FRESHNESS_DAYS || '7');
 export const OTP_EXPIRY_MINUTES = parseInt(process.env.OTP_EXPIRY_MINUTES || '5');
 export const OTP_MAX_ATTEMPTS = parseInt(process.env.OTP_MAX_ATTEMPTS || '5');
 export const BLOOD_GROUPS = [

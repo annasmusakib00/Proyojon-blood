@@ -85,7 +85,7 @@ export function CelebrationOverlay({ visible, donorName, onDismiss }: Celebratio
 }
 
 const styles = StyleSheet.create({
-  container: { ...StyleSheet.absoluteFillObject, zIndex: 1000 },
+  container: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 },
   overlay: { flex: 1, backgroundColor: 'rgba(255, 255, 255, 0.95)', alignItems: 'center', justifyContent: 'center' },
   particle: { position: 'absolute', width: 12, height: 12, borderRadius: 2, top: '60%', left: '50%' },
   content: { alignItems: 'center', paddingHorizontal: 40 },

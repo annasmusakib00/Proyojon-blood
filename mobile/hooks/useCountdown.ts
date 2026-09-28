@@ -33,7 +33,7 @@ export function useCountdown(targetDate: string | Date | null): CountdownResult 
   }, [targetDate]);
 
   const [remaining, setRemaining] = useState<CountdownResult>(calculateRemaining);
-  const intervalRef = useRef<ReturnType<typeof setInterval>>();
+  const intervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   useEffect(() => {
     setRemaining(calculateRemaining());

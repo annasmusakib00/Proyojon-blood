@@ -12,6 +12,7 @@ interface User {
   isLocked: boolean;
   lockEndDate?: string | null;
   donationCount: number;
+  badges?: Array<{ id: string; badgeType: string; awardedAt: string }>;
 }
 
 interface AuthState {

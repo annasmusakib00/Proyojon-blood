@@ -64,3 +64,44 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
     next(error);
   }
 }
+
+export async function getAllDonors(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { blood_group, location, page, limit } = req.query;
+    const result = await donorService.getAllDonors({
+      blood_group: blood_group as string | undefined,
+      location: location as string | undefined,
+      page: page ? parseInt(page as string) : undefined,
+      limit: limit ? parseInt(limit as string) : undefined,
+    });
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getDonorPublicProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const donorId = req.params.id as string;
+    const result = await donorService.getDonorPublicProfile(donorId);
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function updateLocationText(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const { location_text } = req.body;
+    const { PrismaClient } = require('@prisma/client');
+    const prisma = new PrismaClient();
+    await prisma.user.update({
+      where: { id: userId },
+      data: { locationText: location_text },
+    });
+    res.status(200).json({ success: true, data: { updated: true }, message: 'Location text updated' });
+  } catch (error) {
+    next(error);
+  }
+}

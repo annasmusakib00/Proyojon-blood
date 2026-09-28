@@ -6,6 +6,7 @@ import {
   Alert,
   TouchableOpacity,
   Image,
+  ScrollView,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { Colors } from '../../constants/colors';
@@ -44,7 +45,7 @@ export default function ProfileScreen() {
     : '';
 
   const handleLogout = () => {
-    Alert.alert(t('profile.title'), 'Are you sure you want to log out?', [
+    Alert.alert(t('profile.title'), t('profile.logoutConfirm'), [
       { text: 'Cancel', style: 'cancel' },
       {
         text: t('profile.logout'),
@@ -104,7 +105,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.headerRow}>
         <Text style={styles.screenTitle}>{t('profile.title')}</Text>
         <TouchableOpacity style={styles.langBtn} onPress={toggleLocale}>
@@ -135,19 +136,19 @@ export default function ProfileScreen() {
         </View>
 
         {user?.isLocked ? (
-          <View style={[styles.eligibilityBadge, { backgroundColor: '#FFEBEE', borderColor: '#F44336' }]}>
-            <Text style={[styles.eligibilityText, { color: '#F44336' }]}>Locked</Text>
+          <View style={[styles.eligibilityBadge, { backgroundColor: 'rgba(245, 158, 11, 0.12)', borderColor: Colors.warning }]}>
+            <Text style={[styles.eligibilityText, { color: Colors.warning }]}>{t('profile.locked')}</Text>
           </View>
         ) : (
-          <View style={[styles.eligibilityBadge, { backgroundColor: '#E8F5E9', borderColor: '#4CAF50' }]}>
-            <Text style={[styles.eligibilityText, { color: '#4CAF50' }]}>Eligible</Text>
+          <View style={[styles.eligibilityBadge, { backgroundColor: 'rgba(16, 185, 129, 0.10)', borderColor: Colors.success }]}>
+            <Text style={[styles.eligibilityText, { color: Colors.success }]}>{t('profile.eligible')}</Text>
           </View>
         )}
       </View>
 
       <View style={styles.sectionRow}>
         <Card style={styles.halfCard}>
-          <Text style={styles.sectionTitle}>Badges</Text>
+          <Text style={styles.sectionTitle}>{t('profile.badges')}</Text>
           <View style={styles.badgesRow}>
             {user?.badges?.some((b: any) => b.badgeType === 'HERO') && (
               <Badge type="HERO" size="small" />
@@ -156,13 +157,13 @@ export default function ProfileScreen() {
               <Badge type="ORGANIZER" size="small" />
             )}
             {(!user?.badges || user.badges.length === 0) && (
-              <Text style={{ color: Colors.textMuted, fontSize: 12 }}>No Badges yet</Text>
+              <Text style={{ color: Colors.textMuted, fontSize: 12 }}>{t('profile.noBadges')}</Text>
             )}
           </View>
         </Card>
 
         <Card style={styles.halfCard}>
-          <Text style={styles.sectionTitle}>Donations</Text>
+          <Text style={styles.sectionTitle}>{t('profile.donations')}</Text>
           <Text style={styles.statValue}>{user?.donationCount || 0}</Text>
         </Card>
       </View>
@@ -180,12 +181,13 @@ export default function ProfileScreen() {
           variant="danger"
         />
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background, padding: 16, paddingTop: 50 },
+  container: { flex: 1, backgroundColor: Colors.background },
+  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 30 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   screenTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
   langBtn: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: Colors.primaryGhost, borderRadius: 12, borderWidth: 1, borderColor: Colors.primary },

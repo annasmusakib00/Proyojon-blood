@@ -1,9 +1,11 @@
 import React from 'react';
 import { Tabs } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { Colors } from '../../constants/colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -12,14 +14,14 @@ export default function TabLayout() {
           backgroundColor: Colors.surface,
           borderTopColor: Colors.border,
           borderTopWidth: 1,
-          height: 60,
-          paddingBottom: 8,
+          height: 62 + insets.bottom,
+          paddingBottom: 6 + insets.bottom,
           paddingTop: 4,
         },
-        tabBarActiveTintColor: Colors.primary,
+        tabBarActiveTintColor: Colors.accent,
         tabBarInactiveTintColor: Colors.textMuted,
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 9,
           fontWeight: '600',
         },
       }}
@@ -27,31 +29,69 @@ export default function TabLayout() {
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>🏠</Text>,
+          title: 'হোম',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 18, color }}>🏠</Text>,
         }}
       />
       <Tabs.Screen
         name="request"
         options={{
-          title: 'Request',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>🩸</Text>,
+          title: 'আবেদন',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 18, color }}>🩸</Text>,
+        }}
+      />
+      <Tabs.Screen
+        name="donors"
+        options={{
+          title: 'সক্রিয় ডোনার',
+          tabBarIcon: ({ color, focused }) => (
+            <View style={[styles.centerTab, focused && styles.centerTabActive]}>
+              <Text style={{ fontSize: 20, color: focused ? '#fff' : color }}>❤️‍🩹</Text>
+            </View>
+          ),
+          tabBarLabelStyle: {
+            fontSize: 9,
+            fontWeight: '700',
+          },
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
-          title: 'History',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>📋</Text>,
+          title: 'ইতিহাস',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 18, color }}>📋</Text>,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <Text style={{ fontSize: 22, color }}>👤</Text>,
+          title: 'প্রোফাইল',
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 18, color }}>👤</Text>,
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  centerTab: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: Colors.surfaceLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 2,
+    borderWidth: 2,
+    borderColor: Colors.border,
+  },
+  centerTabActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primaryDark,
+    elevation: 4,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+  },
+});

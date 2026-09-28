@@ -13,7 +13,7 @@ import { Colors } from '../../constants/colors';
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
   disabled?: boolean;
   loading?: boolean;
   style?: ViewStyle;
@@ -60,6 +60,7 @@ export function Button({
       style={[
         styles.secondaryButton,
         variant === 'danger' && styles.dangerButton,
+        variant === 'outline' && styles.outlineButton,
         isDisabled && styles.disabledSecondary,
         style,
       ]}
@@ -74,6 +75,7 @@ export function Button({
           style={[
             styles.secondaryText,
             variant === 'danger' && styles.dangerText,
+            variant === 'outline' && styles.outlineText,
             textStyle,
           ]}
         >
@@ -134,5 +136,12 @@ const styles = StyleSheet.create({
   },
   dangerText: {
     color: Colors.error,
+  },
+  outlineButton: {
+    borderColor: Colors.border,
+    backgroundColor: 'transparent',
+  },
+  outlineText: {
+    color: Colors.textSecondary,
   },
 });

@@ -70,6 +70,14 @@ export async function completeRequest(id: string) {
 }
 
 /**
+ * Cancel a pending blood request.
+ */
+export async function cancelRequest(id: string) {
+  const response = await api.post(`/requests/${id}/cancel`);
+  return response.data;
+}
+
+/**
  * Get request history for the user.
  */
 export async function getHistory(role: 'requester' | 'donor') {

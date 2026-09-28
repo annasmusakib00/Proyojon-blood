@@ -83,10 +83,8 @@ export default function RegisterScreen() {
     >
       <View style={styles.content}>
         <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <Text style={styles.logo}>🩸</Text>
-          </View>
-          <Text style={styles.appName}>{t('register.title')}</Text>
+          <Text style={styles.logo}>🩸</Text>
+          <Text style={styles.appName} numberOfLines={1} adjustsFontSizeToFit>{t('register.title')}</Text>
           <Text style={styles.tagline}>{t('register.subtitle')}</Text>
         </View>
 
@@ -143,6 +141,8 @@ export default function RegisterScreen() {
                 placeholder={t('register.passwordPlaceholder')}
                 placeholderTextColor={Colors.textMuted}
                 secureTextEntry
+                textContentType="newPassword"
+                autoComplete="password-new"
               />
             </View>
 
@@ -155,6 +155,8 @@ export default function RegisterScreen() {
                 placeholder={t('register.confirmPasswordPlaceholder')}
                 placeholderTextColor={Colors.textMuted}
                 secureTextEntry
+                textContentType="newPassword"
+                autoComplete="password-new"
               />
             </View>
           </View>
@@ -235,28 +237,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
   },
-  logoContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: '#FFEAEA',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 16,
-    elevation: 3,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-  },
   logo: {
-    fontSize: 40,
+    fontSize: 56,
+    marginBottom: 16,
   },
   appName: {
-    color: Colors.primary,
-    fontSize: 32,
+    color: Colors.text,
+    fontSize: 26,
     fontWeight: '900',
     marginBottom: 8,
+    textAlign: 'center',
   },
   tagline: {
     color: Colors.textSecondary,

@@ -6,11 +6,10 @@ export function emergencyAlertSMS(params: {
   bags: number;
   bloodGroup: string;
   hospitalName: string;
-  location: string;
   conveyanceAmount: number;
-  appLink: string;
+  phone: string;
 }): string {
-  return `Urgent: ${params.bags} bags of ${params.bloodGroup} blood required at ${params.hospitalName}, ${params.location}. Conveyance Allowance: ${params.conveyanceAmount} BDT. Open the 'Proyojon' app to accept and get the patient's contact. Link: ${params.appLink}`;
+  return `জরুরী রক্তের প্রয়োজন: ${params.hospitalName} এ ${params.bags} ব্যাগ ${params.bloodGroup} রক্ত লাগবে। যাতায়াত ভাতা: ${params.conveyanceAmount} BDT। যোগাযোগ করুন: ${params.phone}`;
 }
 
 export function proxyOnboardingSMS(appStoreLink: string): string {

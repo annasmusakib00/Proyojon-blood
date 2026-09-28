@@ -81,9 +81,13 @@ model User {
   // Location (last known)
   latitude        Float?
   longitude       Float?
+  locationText    String?     @map("location_text")  // Human-readable location (e.g., "ঢাকা, মিরপুর")
 
   // Push Notifications
   fcmToken        String?     @map("fcm_token")
+
+  // Activity tracking — updated on every app open / location update
+  lastSeenAt      DateTime?   @map("last_seen_at")
 
   // Stats
   donationCount   Int         @default(0) @map("donation_count")

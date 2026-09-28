@@ -36,7 +36,7 @@ export function useNotifications() {
         }, 10000); // Check every 10 seconds
         
         // Expose interval to be cleared, though it's global for the app lifetime
-        (global as any).__expoPolling = pollInterval;
+        (globalThis as any).__expoPolling = pollInterval;
 
         // Skip actual push notification setup for now since FCM keys are missing in backend
         return;
@@ -55,6 +55,8 @@ export function useNotifications() {
             shouldShowAlert: true,
             shouldPlaySound: true,
             shouldSetBadge: true,
+            shouldShowBanner: true,
+            shouldShowList: true,
           }),
         });
 
