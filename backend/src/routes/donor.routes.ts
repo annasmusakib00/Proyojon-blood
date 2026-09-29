@@ -20,5 +20,6 @@ router.patch('/fcm-token', validate(fcmTokenSchema), donorController.updateFcmTo
 router.patch('/profile-photo', validate(profilePhotoSchema), donorController.updateProfilePhoto);
 router.get('/pending-requests', donorController.getPendingRequests);
 router.get('/me', donorController.getProfile);
+router.patch('/profile', donorController.updateProfile);
 
 export default router;

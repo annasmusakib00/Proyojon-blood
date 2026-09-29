@@ -5,10 +5,10 @@
  */
 export const Colors = {
   // Primary (Blood Red — used only for critical actions & accents)
-  primary: '#C62828',
-  primaryDark: '#8E0000',
-  primaryLight: '#EF9A9A',
-  primaryGhost: 'rgba(198, 40, 40, 0.10)',
+  primary: '#EF4444',
+  primaryDark: '#B91C1C',
+  primaryLight: '#F87171',
+  primaryGhost: 'rgba(239, 68, 68, 0.10)',
 
   // Backgrounds (Deep medical blue-grey tones)
   background: '#0F1B2D',
@@ -21,7 +21,7 @@ export const Colors = {
   textMuted: '#64748B',
 
   // Status
-  success: '#10B981',
+  success: '#4ADE80',
   warning: '#F59E0B',
   error: '#EF4444',
   info: '#38BDF8',
@@ -33,7 +33,7 @@ export const Colors = {
   overlayLight: 'rgba(0,0,0,0.4)',
 
   // Special
-  available: '#10B981',
+  available: '#4ADE80',
   unavailable: '#64748B',
   locked: '#F59E0B',
 

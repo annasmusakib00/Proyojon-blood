@@ -8,6 +8,8 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
@@ -20,6 +22,7 @@ import { t } from '../../utils/i18n';
 import api from '../../services/api';
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const { user, logout, setUser, token } = useAuthStore();
   const { locale, toggleLocale } = useLocaleStore();
   const [uploading, setUploading] = useState(false);
@@ -108,8 +111,9 @@ export default function ProfileScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <View style={styles.headerRow}>
         <Text style={styles.screenTitle}>{t('profile.title')}</Text>
-        <TouchableOpacity style={styles.langBtn} onPress={toggleLocale}>
-          <Text style={styles.langBtnText}>{locale === 'en' ? 'বাংলা' : 'English'}</Text>
+        <TouchableOpacity style={styles.langToggle} onPress={toggleLocale}>
+          <Feather name="globe" size={18} color={Colors.textSecondary} />
+          <Text style={styles.langToggleText}>{locale === 'en' ? 'EN' : 'BN'}</Text>
         </TouchableOpacity>
       </View>
 
@@ -129,26 +133,33 @@ export default function ProfileScreen() {
           </View>
         </TouchableOpacity>
 
-        <Text style={styles.userName}>{user?.name}</Text>
-        <Text style={styles.userPhone}>{maskedPhone}</Text>
-        <View style={styles.bloodBadge}>
-          <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
+        <View style={styles.userNameRow}>
+          <Text style={styles.userName}>{user?.name}</Text>
+          <TouchableOpacity style={styles.editBtn}>
+            <Feather name="edit-2" size={16} color={Colors.textSecondary} />
+          </TouchableOpacity>
         </View>
-
-        {user?.isLocked ? (
-          <View style={[styles.eligibilityBadge, { backgroundColor: 'rgba(245, 158, 11, 0.12)', borderColor: Colors.warning }]}>
-            <Text style={[styles.eligibilityText, { color: Colors.warning }]}>{t('profile.locked')}</Text>
+        <Text style={styles.userPhone}>{maskedPhone}</Text>
+        
+        <View style={styles.inlineBadges}>
+          <View style={styles.bloodBadge}>
+            <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
           </View>
-        ) : (
-          <View style={[styles.eligibilityBadge, { backgroundColor: 'rgba(16, 185, 129, 0.10)', borderColor: Colors.success }]}>
-            <Text style={[styles.eligibilityText, { color: Colors.success }]}>{t('profile.eligible')}</Text>
-          </View>
-        )}
+          {user?.isLocked ? (
+            <View style={[styles.eligibilityBadge, { backgroundColor: 'rgba(245, 158, 11, 0.12)', borderColor: Colors.warning }]}>
+              <Text style={[styles.eligibilityText, { color: Colors.warning }]}>{t('profile.locked')}</Text>
+            </View>
+          ) : (
+            <View style={[styles.eligibilityBadge, { backgroundColor: 'rgba(16, 185, 129, 0.10)', borderColor: Colors.success }]}>
+              <Text style={[styles.eligibilityText, { color: Colors.success }]}>{t('profile.eligible')}</Text>
+            </View>
+          )}
+        </View>
       </View>
 
       <View style={styles.sectionRow}>
         <Card style={styles.halfCard}>
-          <Text style={styles.sectionTitle}>{t('profile.badges')}</Text>
+          <Text style={styles.sectionTitle}>🏅 {t('profile.badges')}</Text>
           <View style={styles.badgesRow}>
             {user?.badges?.some((b: any) => b.badgeType === 'HERO') && (
               <Badge type="HERO" size="small" />
@@ -163,7 +174,7 @@ export default function ProfileScreen() {
         </Card>
 
         <Card style={styles.halfCard}>
-          <Text style={styles.sectionTitle}>{t('profile.donations')}</Text>
+          <Text style={styles.sectionTitle}>🩸 {t('profile.donations')}</Text>
           <Text style={styles.statValue}>{user?.donationCount || 0}</Text>
         </Card>
       </View>
@@ -174,12 +185,31 @@ export default function ProfileScreen() {
         </View>
       )}
 
-      <View style={styles.footerContainer}>
-        <Button
-          title={t('profile.logout')}
-          onPress={handleLogout}
-          variant="danger"
-        />
+      <View style={styles.menuList}>
+        <TouchableOpacity style={styles.menuItem}>
+          <Feather name="bell" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
+          <Text style={styles.menuItemText}>Notification Settings</Text>
+          <Feather name="chevron-right" size={20} color={Colors.border} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem}>
+          <Feather name="map-pin" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
+          <Text style={styles.menuItemText}>Location / Address</Text>
+          <Feather name="chevron-right" size={20} color={Colors.border} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/(tabs)/history')}>
+          <Feather name="clock" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
+          <Text style={styles.menuItemText}>Donation History</Text>
+          <Feather name="chevron-right" size={20} color={Colors.border} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem}>
+          <Feather name="help-circle" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
+          <Text style={styles.menuItemText}>Help & Support</Text>
+          <Feather name="chevron-right" size={20} color={Colors.border} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+          <Feather name="log-out" size={20} color={Colors.error} style={styles.menuIcon} />
+          <Text style={[styles.menuItemText, { color: Colors.error }]}>{t('profile.logout')}</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
@@ -190,24 +220,30 @@ const styles = StyleSheet.create({
   contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 30 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   screenTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
-  langBtn: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: Colors.primaryGhost, borderRadius: 12, borderWidth: 1, borderColor: Colors.primary },
-  langBtnText: { color: Colors.primary, fontWeight: '700', fontSize: 13 },
+  langToggle: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 6, backgroundColor: Colors.surface, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', gap: 6 },
+  langToggleText: { color: Colors.textSecondary, fontWeight: '700', fontSize: 13 },
   profileHeader: { alignItems: 'center', marginBottom: 16 },
-  avatar: { width: 76, height: 76, borderRadius: 38, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primary, marginBottom: 8 },
-  avatarImage: { width: 76, height: 76, borderRadius: 38, borderWidth: 2, borderColor: Colors.primary, marginBottom: 8 },
+  avatar: { width: 76, height: 76, borderRadius: 38, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: 'rgba(239, 68, 68, 0.4)', marginBottom: 8 },
+  avatarImage: { width: 76, height: 76, borderRadius: 38, borderWidth: 2, borderColor: 'rgba(239, 68, 68, 0.4)', marginBottom: 8 },
   avatarText: { color: Colors.primary, fontSize: 32, fontWeight: '800' },
   uploadBadge: { position: 'absolute', bottom: 8, right: 0, backgroundColor: '#fff', borderRadius: 12, padding: 4, elevation: 2 },
   uploadBadgeText: { fontSize: 12 },
-  userName: { color: Colors.text, fontSize: 20, fontWeight: '800', marginBottom: 2 },
-  userPhone: { color: Colors.textSecondary, fontSize: 13, marginBottom: 6 },
-  bloodBadge: { backgroundColor: Colors.primaryGhost, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 16, borderWidth: 1, borderColor: Colors.primary, marginBottom: 8 },
+  userNameRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 2 },
+  userName: { color: Colors.text, fontSize: 20, fontWeight: '800' },
+  editBtn: { marginLeft: 8, padding: 4 },
+  userPhone: { color: Colors.textSecondary, fontSize: 13, marginBottom: 8 },
+  inlineBadges: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 },
+  bloodBadge: { backgroundColor: Colors.primaryGhost, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 16, borderWidth: 1, borderColor: Colors.primary },
   bloodBadgeText: { color: Colors.primary, fontSize: 14, fontWeight: '800' },
   eligibilityBadge: { paddingHorizontal: 12, paddingVertical: 4, borderRadius: 16, borderWidth: 1 },
   eligibilityText: { fontSize: 12, fontWeight: '700' },
-  sectionRow: { flexDirection: 'row', gap: 12, marginBottom: 12 },
+  sectionRow: { flexDirection: 'row', gap: 12, marginBottom: 20 },
   halfCard: { flex: 1, alignItems: 'center', paddingVertical: 12 },
   sectionTitle: { color: Colors.text, fontSize: 14, fontWeight: '700', marginBottom: 8 },
   badgesRow: { flexDirection: 'row', justifyContent: 'center', gap: 12 },
   statValue: { color: Colors.text, fontSize: 22, fontWeight: '800' },
-  footerContainer: { marginTop: 'auto', paddingBottom: 16 },
+  menuList: { marginTop: 4, paddingBottom: 20 },
+  menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+  menuIcon: { marginRight: 14 },
+  menuItemText: { color: Colors.text, fontSize: 15, fontWeight: '600', flex: 1 },
 });

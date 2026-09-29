@@ -105,3 +105,31 @@ export async function updateLocationText(req: Request, res: Response, next: Next
     next(error);
   }
 }
+
+export async function updateProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const userId = req.user!.userId;
+    const { name, phone, bloodGroup, locationText, notificationsEnabled } = req.body;
+    
+    const { PrismaClient } = require('@prisma/client');
+    const prisma = new PrismaClient();
+    
+    const updateData: any = {};
+    if (name !== undefined) updateData.name = name;
+    if (phone !== undefined) updateData.phone = phone;
+    if (bloodGroup !== undefined) updateData.bloodGroup = bloodGroup;
+    if (locationText !== undefined) updateData.locationText = locationText;
+    if (notificationsEnabled !== undefined) updateData.notificationsEnabled = notificationsEnabled;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData,
+    });
+    
+    const { passwordHash, otpHash, ...userWithoutSecrets } = updatedUser;
+
+    res.status(200).json({ success: true, data: userWithoutSecrets, message: 'Profile updated' });
+  } catch (error) {
+    next(error);
+  }
+}

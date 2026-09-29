@@ -16,24 +16,15 @@ export function Card({ children, style }: CardProps) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 16,
-    padding: 16,
-    // 3D Bevel effect
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.12)',
-    borderLeftWidth: 1,
-    borderLeftColor: 'rgba(255,255,255,0.06)',
-    borderRightWidth: 1,
-    borderRightColor: 'rgba(0,0,0,0.3)',
-    borderBottomWidth: 3,
-    borderBottomColor: 'rgba(0,0,0,0.45)',
+    padding: 20,
     
-    // Deep soft shadow
+    // Subtle drop shadow
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
 });

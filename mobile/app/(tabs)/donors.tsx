@@ -9,7 +9,9 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  TextInput,
 } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
@@ -88,7 +90,8 @@ export default function DonorsScreen() {
     setSelectedDistrict('');
   };
 
-  const hasActiveFilters = selectedBloodGroup || selectedDivision || selectedDistrict;
+  const activeFilterCount = [selectedBloodGroup, selectedDivision, selectedDistrict].filter(Boolean).length;
+  const hasActiveFilters = activeFilterCount > 0;
 
   const currentDivision = BD_DIVISIONS.find((d) => d.value === selectedDivision);
 
@@ -146,18 +149,56 @@ export default function DonorsScreen() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.title}>সক্রিয় ডোনার</Text>
-          <Text style={styles.subtitle}>সারা বাংলাদেশ • {total} জন ডোনার</Text>
+        <Text style={styles.title}>সক্রিয় ডোনার</Text>
+        
+        <View style={styles.searchBarContainer}>
+          <Feather name="search" size={18} color={Colors.textSecondary} style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by name or location..."
+            placeholderTextColor={Colors.textMuted}
+          />
+          <TouchableOpacity 
+            style={styles.filterIconButton}
+            onPress={() => setShowFilters(!showFilters)}
+          >
+            <Feather name="sliders" size={18} color={showFilters ? Colors.primary : Colors.textSecondary} />
+            {hasActiveFilters && (
+              <View style={styles.filterBadge}>
+                <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={[styles.filterToggle, showFilters && styles.filterToggleActive]}
-          onPress={() => setShowFilters(!showFilters)}
-        >
-          <Text style={[styles.filterToggleText, showFilters && styles.filterToggleTextActive]}>
-            {showFilters ? '✕' : '⚙️'} ফিল্টার
-          </Text>
-        </TouchableOpacity>
+
+        <Text style={styles.subtitle}>সারা বাংলাদেশ • {total} জন ডোনার</Text>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickFilterRow}>
+          <TouchableOpacity 
+            style={[styles.quickFilterChip, selectedBloodGroup === 'A_POS' && styles.quickFilterChipActive]}
+            onPress={() => setSelectedBloodGroup(selectedBloodGroup === 'A_POS' ? '' : 'A_POS')}
+          >
+            <Text style={[styles.quickFilterText, selectedBloodGroup === 'A_POS' && styles.quickFilterTextActive]}>A+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.quickFilterChip, selectedBloodGroup === 'O_POS' && styles.quickFilterChipActive]}
+            onPress={() => setSelectedBloodGroup(selectedBloodGroup === 'O_POS' ? '' : 'O_POS')}
+          >
+            <Text style={[styles.quickFilterText, selectedBloodGroup === 'O_POS' && styles.quickFilterTextActive]}>O+</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.quickFilterChip, selectedDivision === 'Dhaka' && styles.quickFilterChipActive]}
+            onPress={() => setSelectedDivision(selectedDivision === 'Dhaka' ? '' : 'Dhaka')}
+          >
+            <Text style={[styles.quickFilterText, selectedDivision === 'Dhaka' && styles.quickFilterTextActive]}>Dhaka</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.quickFilterChip, selectedDivision === 'Chattogram' && styles.quickFilterChipActive]}
+            onPress={() => setSelectedDivision(selectedDivision === 'Chattogram' ? '' : 'Chattogram')}
+          >
+            <Text style={[styles.quickFilterText, selectedDivision === 'Chattogram' && styles.quickFilterTextActive]}>Chattogram</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
 
       {/* Filter Panel */}
@@ -315,20 +356,33 @@ export default function DonorsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background, paddingTop: 54 },
-  header: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    paddingHorizontal: 20, marginBottom: 10,
-  },
+  header: { paddingHorizontal: 20, marginBottom: 12 },
   title: { color: Colors.text, fontSize: 22, fontWeight: '800' },
-  subtitle: { color: Colors.textSecondary, fontSize: 12, marginTop: 2 },
+  subtitle: { color: Colors.textSecondary, fontSize: 13, marginTop: 4, fontWeight: '600' },
 
-  filterToggle: {
-    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 12,
-    backgroundColor: Colors.surface, borderWidth: 1, borderColor: Colors.border,
+  searchBarContainer: {
+    flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.surface,
+    borderRadius: 12, marginTop: 16, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
   },
-  filterToggleActive: { backgroundColor: Colors.primaryGhost, borderColor: Colors.primary },
-  filterToggleText: { color: Colors.textSecondary, fontSize: 13, fontWeight: '600' },
-  filterToggleTextActive: { color: Colors.primary },
+  searchIcon: { paddingLeft: 12 },
+  searchInput: { flex: 1, paddingVertical: 12, paddingHorizontal: 10, color: Colors.text, fontSize: 14 },
+  filterIconButton: {
+    padding: 10, backgroundColor: Colors.surfaceLight, borderRadius: 10, marginRight: 4, position: 'relative',
+  },
+  filterBadge: {
+    position: 'absolute', top: 4, right: 4, width: 14, height: 14, borderRadius: 7,
+    backgroundColor: Colors.error, alignItems: 'center', justifyContent: 'center',
+  },
+  filterBadgeText: { color: '#FFF', fontSize: 9, fontWeight: 'bold' },
+
+  quickFilterRow: { marginTop: 14, marginBottom: 4 },
+  quickFilterChip: {
+    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: Colors.surface,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginRight: 8,
+  },
+  quickFilterChipActive: { backgroundColor: Colors.primaryGhost, borderColor: Colors.primary },
+  quickFilterText: { color: Colors.textSecondary, fontSize: 12, fontWeight: '600' },
+  quickFilterTextActive: { color: Colors.primary, fontWeight: '700' },
 
   filterPanel: {
     marginHorizontal: 16, backgroundColor: Colors.surface,

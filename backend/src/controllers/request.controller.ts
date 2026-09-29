@@ -86,8 +86,10 @@ export async function getHistory(req: Request, res: Response, next: NextFunction
       res.status(400).json({ success: false, error: { code: 'VALIDATION_ERROR', message: 'Role must be "requester" or "donor"' } });
       return;
     }
-    const result = await requestService.getHistory(userId, role);
-    res.status(200).json({ success: true, data: result });
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 15;
+    const result = await requestService.getHistory(userId, role, page, limit);
+    res.status(200).json({ success: true, ...result });
   } catch (error) {
     next(error);
   }

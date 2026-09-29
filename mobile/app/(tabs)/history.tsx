@@ -7,10 +7,13 @@ import {
   TouchableOpacity,
   RefreshControl,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
+import { Button } from '../../components/ui/Button';
 import * as requestsService from '../../services/requests';
 import { t } from '../../utils/i18n';
 
@@ -23,28 +26,49 @@ export default function HistoryScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchData = useCallback(async () => {
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const fetchData = useCallback(async (pageNum = 1, append = false) => {
     try {
+      if (pageNum === 1) setLoading(true);
+      else setLoadingMore(true);
+
       const role = activeTab === 'myRequests' ? 'requester' : 'donor';
-      const result = await requestsService.getHistory(role);
-      const filteredData = (result.data || []).filter((item: any) => item.status !== 'CANCELLED');
-      setData(filteredData);
+      const result = await requestsService.getHistory(role, pageNum, 10);
+      const fetchedData = result.data || [];
+      const filteredData = fetchedData.filter((item: any) => item.status !== 'CANCELLED');
+      
+      if (append) {
+        setData((prev) => [...prev, ...filteredData]);
+      } else {
+        setData(filteredData);
+      }
+      setTotalPages(result.totalPages || 1);
+      setPage(pageNum);
     } catch (err) {
       console.error('[History] Error:', err);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
   }, [activeTab]);
 
   useEffect(() => {
-    setLoading(true);
-    fetchData();
+    fetchData(1, false);
   }, [fetchData]);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchData();
+    await fetchData(1, false);
     setRefreshing(false);
+  };
+
+  const loadMore = () => {
+    if (!loadingMore && page < totalPages) {
+      fetchData(page + 1, true);
+    }
   };
 
   const handleCancelRequest = (requestId: string) => {
@@ -71,16 +95,16 @@ export default function HistoryScreen() {
     );
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusStyles = (status: string) => {
     switch (status) {
-      case 'COMPLETED': return Colors.success;
-      case 'PENDING': return Colors.warning;
+      case 'COMPLETED': return { bg: '#D1FAE5', text: '#065F46' };
+      case 'PENDING': return { bg: '#FEF3C7', text: '#92400E' };
+      case 'EXPIRED':
+      case 'CANCELLED': return { bg: '#F3F4F6', text: '#374151' };
       case 'MATCHED':
       case 'IN_PROGRESS':
-      case 'ARRIVED': return Colors.info;
-      case 'EXPIRED':
-      case 'CANCELLED': return Colors.textMuted;
-      default: return Colors.textSecondary;
+      case 'ARRIVED': return { bg: Colors.info + '22', text: Colors.info };
+      default: return { bg: Colors.surface, text: Colors.textSecondary };
     }
   };
 
@@ -120,16 +144,18 @@ export default function HistoryScreen() {
                   year: 'numeric',
                 })}
               </Text>
-              <Text style={styles.bagsText}>{item.bagsNeeded} {t('history.bags')}</Text>
+              <Text style={styles.bagsText}>
+                <Feather name="droplet" size={12} color={Colors.primary} /> {item.bagsNeeded} {t('history.bags')}
+              </Text>
             </View>
             <View style={{ alignItems: 'flex-end', gap: 6 }}>
               <View
                 style={[
                   styles.statusChip,
-                  { backgroundColor: getStatusColor(item.status) + '22' },
+                  { backgroundColor: getStatusStyles(item.status).bg },
                 ]}
               >
-                <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
+                <Text style={[styles.statusText, { color: getStatusStyles(item.status).text }]}>
                   {getStatusBangla(item.status)}
                 </Text>
               </View>
@@ -153,7 +179,12 @@ export default function HistoryScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{t('history.title')}</Text>
+      <View style={styles.headerRow}>
+        <Text style={styles.title}>{t('history.title')}</Text>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Feather name="sliders" size={20} color={Colors.text} />
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.tabRow}>
         {TABS.map((tab) => (
@@ -180,11 +211,28 @@ export default function HistoryScreen() {
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.3}
+        ListFooterComponent={
+          loadingMore ? (
+            <View style={styles.footerLoader}>
+              <ActivityIndicator size="small" color={Colors.primary} />
+            </View>
+          ) : null
+        }
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>📋</Text>
-            <Text style={styles.emptyText}>{loading ? t('history.loading') : t('history.noHistory')}</Text>
-          </View>
+          !loading ? (
+            <View style={styles.emptyContainer}>
+              <Feather name="file-text" size={64} color={Colors.border} style={{ marginBottom: 16 }} />
+              <Text style={styles.emptyTitle}>কোনো ইতিহাস পাওয়া যায়নি</Text>
+              <Text style={styles.emptyText}>আপনি এখনো কোনো আবেদন করেননি বা রক্তদান করেননি।</Text>
+              <Button 
+                title="নতুন আবেদন করুন" 
+                onPress={() => router.push('/(tabs)/request')} 
+                style={{ marginTop: 24, paddingHorizontal: 32 }}
+              />
+            </View>
+          ) : null
         }
       />
     </View>
@@ -193,23 +241,25 @@ export default function HistoryScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background, paddingTop: 60 },
-  title: { color: Colors.text, fontSize: 26, fontWeight: '800', paddingHorizontal: 20, marginBottom: 16 },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 16 },
+  title: { color: Colors.text, fontSize: 26, fontWeight: '800' },
+  filterBtn: { padding: 8, backgroundColor: Colors.surface, borderRadius: 10, borderWidth: 1, borderColor: Colors.border },
   tabRow: {
     flexDirection: 'row', marginHorizontal: 20, backgroundColor: Colors.surface,
     borderRadius: 14, padding: 4, marginBottom: 16, borderWidth: 1, borderColor: Colors.border,
   },
   tab: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 12 },
-  tabActive: { backgroundColor: Colors.accent },
-  tabText: { color: Colors.textSecondary, fontSize: 13, fontWeight: '600' },
-  tabTextActive: { color: '#FFF' },
+  tabActive: { backgroundColor: Colors.surfaceLight },
+  tabText: { color: Colors.textMuted, fontSize: 13, fontWeight: '600' },
+  tabTextActive: { color: Colors.primary, fontWeight: '700' },
   listContent: { paddingHorizontal: 20, paddingBottom: 32 },
   itemCard: { marginBottom: 10 },
   itemRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   bloodCircle: {
-    width: 46, height: 46, borderRadius: 23, backgroundColor: Colors.primaryGhost,
-    alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primary,
+    width: 46, height: 46, borderRadius: 23, backgroundColor: Colors.primary,
+    alignItems: 'center', justifyContent: 'center',
   },
-  bloodText: { color: Colors.primary, fontSize: 14, fontWeight: '800' },
+  bloodText: { color: '#FFF', fontSize: 14, fontWeight: '800' },
   itemInfo: { flex: 1 },
   hospitalName: { color: Colors.text, fontSize: 14, fontWeight: '600' },
   itemDate: { color: Colors.textMuted, fontSize: 12, marginTop: 2 },
@@ -221,7 +271,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(239, 68, 68, 0.12)', borderWidth: 1, borderColor: Colors.error,
   },
   cancelBtnText: { color: Colors.error, fontSize: 10, fontWeight: '700' },
-  emptyContainer: { alignItems: 'center', paddingVertical: 60 },
-  emptyIcon: { fontSize: 48, marginBottom: 12 },
-  emptyText: { color: Colors.textMuted, fontSize: 16 },
+  footerLoader: { paddingVertical: 16, alignItems: 'center' },
+  emptyContainer: { alignItems: 'center', paddingVertical: 60, paddingHorizontal: 40 },
+  emptyTitle: { color: Colors.text, fontSize: 18, fontWeight: '700', marginBottom: 8, textAlign: 'center' },
+  emptyText: { color: Colors.textSecondary, fontSize: 14, textAlign: 'center', lineHeight: 20 },
 });

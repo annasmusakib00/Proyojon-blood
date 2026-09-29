@@ -11,6 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
 import { BLOOD_GROUPS } from '../../constants/bloodGroups';
 import { ConveyanceAgreement } from '../../components/ConveyanceAgreement';
@@ -27,7 +28,8 @@ export default function RequestScreen() {
   const [hospitalName, setHospitalName] = useState('');
   const [hospitalLat, setHospitalLat] = useState<number | null>(null);
   const [hospitalLng, setHospitalLng] = useState<number | null>(null);
-  const [conveyanceAmount, setConveyanceAmount] = useState(200);
+  const [conveyanceType, setConveyanceType] = useState<number | 'other' | 'none'>(200);
+  const [customConveyance, setCustomConveyance] = useState('');
   const [showAgreement, setShowAgreement] = useState(false);
   const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(true);
@@ -80,6 +82,9 @@ export default function RequestScreen() {
   const handleSubmit = async () => {
     setShowAgreement(false);
     setLoading(true);
+    
+    const finalConveyance = conveyanceType === 'none' ? 0 : conveyanceType === 'other' ? (parseInt(customConveyance) || 0) : conveyanceType;
+
     try {
       const result = await requestsService.createRequest({
         blood_group: bloodGroup,
@@ -87,7 +92,7 @@ export default function RequestScreen() {
         hospital_name: hospitalName.trim(),
         hospital_lat: hospitalLat!,
         hospital_lng: hospitalLng!,
-        conveyance_amount: conveyanceAmount,
+        conveyance_amount: finalConveyance,
         agreement_accepted: true,
       });
       router.push(`/request/${result.data.request_id}`);
@@ -138,59 +143,104 @@ export default function RequestScreen() {
 
         <View style={styles.field}>
           <Text style={styles.label}>{t('request.bagsLabel')}</Text>
-          <View style={styles.stepperRow}>
+          <View style={styles.pillStepperContainer}>
             <TouchableOpacity
-              style={styles.stepperBtn}
+              style={styles.pillStepperBtn}
               onPress={() => setBagsNeeded((prev) => Math.max(1, prev - 1))}
             >
-              <Text style={styles.stepperBtnText}>−</Text>
+              <Text style={styles.pillStepperBtnText}>−</Text>
             </TouchableOpacity>
-            <View style={styles.stepperValue}>
-              <Text style={styles.stepperValueText}>{bagsNeeded}</Text>
+            <View style={styles.pillStepperValue}>
+              <Text style={styles.pillStepperValueText}>{bagsNeeded}</Text>
             </View>
             <TouchableOpacity
-              style={styles.stepperBtn}
+              style={styles.pillStepperBtn}
               onPress={() => setBagsNeeded((prev) => Math.min(10, prev + 1))}
             >
-              <Text style={styles.stepperBtnText}>+</Text>
+              <Text style={styles.pillStepperBtnText}>+</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.field}>
           <Text style={styles.label}>{t('request.hospitalLabel')}</Text>
-          <TextInput
-            style={styles.input}
-            value={hospitalName}
-            onChangeText={setHospitalName}
-            placeholder={t('request.hospitalPlaceholder')}
-            placeholderTextColor={Colors.textMuted}
-          />
+          <View style={styles.inputContainer}>
+            <Feather name="map-pin" size={18} color={Colors.textSecondary} style={styles.inputIcon} />
+            <TextInput
+              style={styles.inputWithIcon}
+              value={hospitalName}
+              onChangeText={setHospitalName}
+              placeholder={t('request.hospitalPlaceholder')}
+              placeholderTextColor={Colors.textSecondary}
+            />
+          </View>
         </View>
 
         <View style={styles.field}>
           <Text style={styles.label}>{t('request.conveyanceLabel')}</Text>
-          <View style={styles.conveyanceRow}>
+          <View style={styles.conveyanceGrid}>
             {CONVEYANCE_OPTIONS.map((amount) => (
               <TouchableOpacity
                 key={amount}
                 style={[
                   styles.conveyanceCard,
-                  conveyanceAmount === amount && styles.conveyanceSelected,
+                  conveyanceType === amount && styles.conveyanceSelected,
                 ]}
-                onPress={() => setConveyanceAmount(amount)}
+                onPress={() => setConveyanceType(amount)}
               >
                 <Text
                   style={[
                     styles.conveyanceText,
-                    conveyanceAmount === amount && styles.conveyanceTextSelected,
+                    conveyanceType === amount && styles.conveyanceTextSelected,
                   ]}
                 >
                   ৳{amount}
                 </Text>
               </TouchableOpacity>
             ))}
+            <TouchableOpacity
+              style={[
+                styles.conveyanceCard,
+                conveyanceType === 'none' && styles.conveyanceSelected,
+              ]}
+              onPress={() => setConveyanceType('none')}
+            >
+              <Text
+                style={[
+                  styles.conveyanceText,
+                  conveyanceType === 'none' && styles.conveyanceTextSelected,
+                ]}
+              >
+                প্রযোজ্য নয়
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.conveyanceCard,
+                conveyanceType === 'other' && styles.conveyanceSelected,
+              ]}
+              onPress={() => setConveyanceType('other')}
+            >
+              <Text
+                style={[
+                  styles.conveyanceText,
+                  conveyanceType === 'other' && styles.conveyanceTextSelected,
+                ]}
+              >
+                অন্যান্য
+              </Text>
+            </TouchableOpacity>
           </View>
+          {conveyanceType === 'other' && (
+            <TextInput
+              style={[styles.inputContainer, { marginTop: 12, paddingVertical: 12, color: Colors.text, fontSize: 14 }]}
+              value={customConveyance}
+              onChangeText={setCustomConveyance}
+              placeholder="ভাতার পরিমাণ লিখুন"
+              placeholderTextColor={Colors.textSecondary}
+              keyboardType="numeric"
+            />
+          )}
         </View>
 
         <View style={styles.footerContainer}>
@@ -200,16 +250,19 @@ export default function RequestScreen() {
             disabled={loading}
             activeOpacity={0.8}
           >
-            <Text style={styles.submitButtonText}>
-              {loading ? t('request.submitting') : t('request.submitButton')}
-            </Text>
+            <View style={styles.submitButtonInner}>
+              <Feather name="send" size={20} color="#FFFFFF" />
+              <Text style={styles.submitButtonText}>
+                {loading ? t('request.submitting') : t('request.submitButton')}
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </ScrollView>
 
       <ConveyanceAgreement
         visible={showAgreement}
-        amount={conveyanceAmount}
+        amount={conveyanceType === 'none' ? 0 : conveyanceType === 'other' ? (parseInt(customConveyance) || 0) : conveyanceType}
         onAccept={handleSubmit}
         onClose={() => setShowAgreement(false)}
       />
@@ -239,51 +292,66 @@ const styles = StyleSheet.create({
   locationOkIcon: { fontSize: 16 },
   locationOkText: { color: Colors.success, fontSize: 12, fontWeight: '600' },
 
-  field: { marginBottom: 18 },
-  label: { color: Colors.text, fontSize: 14, fontWeight: '700', marginBottom: 8 },
+  field: { marginBottom: 24 },
+  label: { color: Colors.textMuted, fontSize: 14, fontWeight: '700', marginBottom: 12 },
   bloodGroupGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   bloodGroupCard: {
-    width: '22%', aspectRatio: 1.4, backgroundColor: Colors.surface,
+    width: '22%', aspectRatio: 1.4, backgroundColor: Colors.surfaceLight,
     borderRadius: 12, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1.5, borderColor: Colors.border,
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
   },
-  bloodGroupSelected: { backgroundColor: Colors.primaryGhost, borderColor: Colors.primary },
+  bloodGroupSelected: { backgroundColor: Colors.primary, borderColor: Colors.primaryDark },
   bloodGroupLabel: { color: Colors.textSecondary, fontSize: 17, fontWeight: '700' },
-  bloodGroupLabelSelected: { color: Colors.primary },
+  bloodGroupLabelSelected: { color: '#FFF' },
 
-  stepperRow: { flexDirection: 'row', alignItems: 'center', gap: 14 },
-  stepperBtn: {
-    width: 40, height: 40, borderRadius: 20, backgroundColor: Colors.surface,
-    alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: Colors.border,
+  pillStepperContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surfaceLight,
+    borderRadius: 30,
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.05)',
   },
-  stepperBtnText: { color: Colors.text, fontSize: 20, fontWeight: '700' },
-  stepperValue: {
-    backgroundColor: Colors.surface, paddingHorizontal: 20, paddingVertical: 8,
-    borderRadius: 12, minWidth: 56, alignItems: 'center', borderWidth: 1.5, borderColor: Colors.border,
-  },
-  stepperValueText: { color: Colors.text, fontSize: 22, fontWeight: '800' },
+  pillStepperBtn: { paddingHorizontal: 22, paddingVertical: 14 },
+  pillStepperBtnText: { color: Colors.textSecondary, fontSize: 22, fontWeight: '600' },
+  pillStepperValue: { paddingHorizontal: 16 },
+  pillStepperValueText: { color: Colors.text, fontSize: 20, fontWeight: '800' },
 
-  input: {
-    backgroundColor: Colors.surface, borderRadius: 12, paddingHorizontal: 14,
-    paddingVertical: 12, color: Colors.text, fontSize: 14, borderWidth: 1.5, borderColor: Colors.border,
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surface,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: Colors.border,
+    paddingHorizontal: 14,
+  },
+  inputIcon: { marginRight: 8 },
+  inputWithIcon: {
+    flex: 1,
+    paddingVertical: 14,
+    color: Colors.text,
+    fontSize: 15,
   },
 
-  conveyanceRow: { flexDirection: 'row', gap: 10 },
+  conveyanceGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   conveyanceCard: {
-    flex: 1, backgroundColor: Colors.surface, borderRadius: 12,
-    paddingVertical: 12, alignItems: 'center', borderWidth: 1.5, borderColor: Colors.border,
+    flexBasis: '30%', flexGrow: 1, backgroundColor: Colors.surfaceLight, borderRadius: 12,
+    paddingVertical: 12, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
   },
-  conveyanceSelected: { backgroundColor: Colors.accentGhost, borderColor: Colors.accent },
-  conveyanceText: { color: Colors.textSecondary, fontSize: 16, fontWeight: '700' },
-  conveyanceTextSelected: { color: Colors.accent },
+  conveyanceSelected: { backgroundColor: 'rgba(16, 185, 129, 0.15)', borderColor: Colors.success },
+  conveyanceText: { color: Colors.textSecondary, fontSize: 15, fontWeight: '700' },
+  conveyanceTextSelected: { color: Colors.success },
 
-  footerContainer: { marginTop: 10, paddingBottom: 16 },
+  footerContainer: { marginTop: 16, paddingBottom: 24 },
   submitButton: {
-    backgroundColor: Colors.primary, height: 54, borderRadius: 27,
-    justifyContent: 'center', alignItems: 'center', elevation: 4,
-    shadowColor: Colors.primary, shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35, shadowRadius: 10,
+    backgroundColor: Colors.primary, height: 56, borderRadius: 28,
+    justifyContent: 'center', alignItems: 'center', elevation: 6,
+    shadowColor: Colors.primary, shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4, shadowRadius: 12,
   },
+  submitButtonInner: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   submitButtonDisabled: { backgroundColor: Colors.textMuted, elevation: 0, shadowOpacity: 0 },
-  submitButtonText: { color: '#FFFFFF', fontSize: 17, fontWeight: '800', letterSpacing: 0.3 },
+  submitButtonText: { color: '#FFFFFF', fontSize: 18, fontWeight: '800', letterSpacing: 0.3 },
 });

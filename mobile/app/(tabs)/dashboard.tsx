@@ -14,7 +14,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
-import { LockCountdown } from '../../components/LockCountdown';
+import { Feather } from '@expo/vector-icons';
 import { useAuthStore } from '../../stores/authStore';
 import { useLocaleStore } from '../../stores/localeStore';
 import { t } from '../../utils/i18n';
@@ -96,9 +96,15 @@ export default function DashboardScreen() {
     <View style={styles.container}>
       <ScrollView style={styles.contentScroll} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>{t('dashboard.greeting', { name: '' }).replace(' , ', '').replace(',', '')}</Text>
-            <Text style={styles.userName}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
+          <View style={styles.headerInfo}>
+            <Image 
+              source={{ uri: `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random` }} 
+              style={styles.profileAvatar} 
+            />
+            <View>
+              <Text style={styles.greeting}>{t('dashboard.greeting', { name: '' }).replace(' , ', '').replace(',', '')}</Text>
+              <Text style={styles.userName}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
+            </View>
           </View>
           <View style={styles.bloodBadge}>
             <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
@@ -122,7 +128,7 @@ export default function DashboardScreen() {
                   resizeMode="cover"
                 />
                 <LinearGradient
-                  colors={['transparent', 'rgba(0,0,0,0.7)', 'rgba(0,0,0,0.9)']}
+                  colors={['transparent', 'rgba(0,0,0,0.8)', '#000000']}
                   style={styles.slideOverlay}
                 >
                   <Text style={styles.slideText}>{slide.text}</Text>
@@ -216,11 +222,13 @@ export default function DashboardScreen() {
                         styles.statusBadge,
                         {
                           backgroundColor:
-                            req.status === 'COMPLETED'
-                              ? Colors.success + '22'
-                              : req.status === 'PENDING'
-                                ? Colors.warning + '22'
-                                : Colors.info + '22',
+                            req.status === 'EXPIRED'
+                              ? Colors.surfaceLight
+                              : req.status === 'COMPLETED'
+                                ? Colors.success + '22'
+                                : req.status === 'PENDING'
+                                  ? Colors.warning + '22'
+                                  : Colors.info + '22',
                         },
                       ]}
                     >
@@ -229,11 +237,13 @@ export default function DashboardScreen() {
                           styles.statusText,
                           {
                             color:
-                              req.status === 'COMPLETED'
-                                ? Colors.success
-                                : req.status === 'PENDING'
-                                  ? Colors.warning
-                                  : Colors.info,
+                              req.status === 'EXPIRED'
+                                ? Colors.textMuted
+                                : req.status === 'COMPLETED'
+                                  ? Colors.success
+                                  : req.status === 'PENDING'
+                                    ? Colors.warning
+                                    : Colors.info,
                           },
                         ]}
                       >
@@ -255,7 +265,7 @@ export default function DashboardScreen() {
           >
             <View style={styles.requestButtonInner}>
               <View style={styles.bloodDropIcon}>
-                <Text style={styles.bloodDropEmoji}>🩸</Text>
+                <Feather name="droplet" size={18} color="#FFF" />
               </View>
               <Text style={styles.requestButtonText}>
                 {t('dashboard.requestBlood')}
@@ -273,13 +283,15 @@ const styles = StyleSheet.create({
   contentScroll: { flex: 1 },
   contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 30 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  profileAvatar: { width: 40, height: 40, borderRadius: 20 },
   greeting: { color: Colors.textSecondary, fontSize: 13 },
   userName: { color: Colors.text, fontSize: 22, fontWeight: '800' },
   bloodBadge: {
-    width: 46, height: 46, borderRadius: 23, backgroundColor: Colors.primaryGhost,
-    alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primary,
+    width: 46, height: 46, borderRadius: 23, backgroundColor: Colors.primary,
+    alignItems: 'center', justifyContent: 'center',
   },
-  bloodBadgeText: { color: Colors.primary, fontSize: 15, fontWeight: '800' },
+  bloodBadgeText: { color: '#FFF', fontSize: 16, fontWeight: '800' },
 
   sliderContainer: { marginBottom: 12, borderRadius: 16, overflow: 'hidden', height: 160 },
   slider: { borderRadius: 16 },
@@ -310,29 +322,27 @@ const styles = StyleSheet.create({
   statsRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
   statCard: { flex: 1, alignItems: 'center', paddingVertical: 10 },
   statValue: { color: Colors.text, fontSize: 20, fontWeight: '800' },
-  statLabel: { color: Colors.textSecondary, fontSize: 10, marginTop: 2 },
+  statLabel: { color: Colors.textMuted, fontSize: 10, marginTop: 2 },
 
   section: { flex: 1 },
   sectionTitle: { color: Colors.text, fontSize: 16, fontWeight: '700', marginBottom: 8 },
   emptyCard: { paddingVertical: 16 },
   emptyText: { color: Colors.textMuted, textAlign: 'center', fontSize: 13 },
-  activityCard: { marginBottom: 8, paddingVertical: 10, paddingHorizontal: 12 },
+  activityCard: { marginBottom: 12, paddingVertical: 12, paddingHorizontal: 16 },
   activityRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   activityBlood: { color: Colors.primary, fontSize: 16, fontWeight: '800', width: 32 },
   activityHospital: { color: Colors.text, fontSize: 13, fontWeight: '600' },
-  activityDate: { color: Colors.textMuted, fontSize: 11, marginTop: 2 },
+  activityDate: { color: Colors.textMuted, fontSize: 10, marginTop: 2 },
   statusBadge: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
   statusText: { fontSize: 9, fontWeight: '700' },
 
   footerContainer: { marginTop: 'auto', paddingTop: 8, paddingBottom: 16 },
   requestButton: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.primary,
     height: 58,
     borderRadius: 29,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: Colors.primary,
     elevation: 4,
     shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
@@ -348,13 +358,12 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    backgroundColor: Colors.primaryGhost,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  bloodDropEmoji: { fontSize: 18 },
   requestButtonText: {
-    color: Colors.primary,
+    color: '#FFF',
     fontSize: 20,
     fontWeight: '900',
     letterSpacing: 0.5,

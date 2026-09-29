@@ -85,6 +85,7 @@ model User {
 
   // Push Notifications
   fcmToken        String?     @map("fcm_token")
+  notificationsEnabled Boolean @default(true) @map("notifications_enabled")
 
   // Activity tracking — updated on every app open / location update
   lastSeenAt      DateTime?   @map("last_seen_at")

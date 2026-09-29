@@ -536,8 +536,10 @@ export async function getRequestById(requestId: string): Promise<any> {
 // ─────────────────────────────────────────────
 export async function getHistory(
   userId: string,
-  role: 'requester' | 'donor'
-): Promise<BloodRequest[]> {
+  role: 'requester' | 'donor',
+  page: number = 1,
+  limit: number = 15
+): Promise<{ data: BloodRequest[]; total: number; page: number; totalPages: number }> {
   const whereClause =
     role === 'requester'
       ? { requesterId: userId }
@@ -548,21 +550,32 @@ export async function getHistory(
           ],
         };
 
-  const requests = await prisma.bloodRequest.findMany({
-    where: whereClause,
-    orderBy: { createdAt: 'desc' },
-    take: 50,
-    include: {
-      requester: {
-        select: { id: true, name: true, bloodGroup: true },
-      },
-      matchedDonor: {
-        select: { id: true, name: true, bloodGroup: true },
-      },
-    },
-  });
+  const skip = (page - 1) * limit;
 
-  return requests;
+  const [requests, total] = await Promise.all([
+    prisma.bloodRequest.findMany({
+      where: whereClause,
+      orderBy: { createdAt: 'desc' },
+      skip,
+      take: limit,
+      include: {
+        requester: {
+          select: { id: true, name: true, bloodGroup: true, phone: true },
+        },
+        matchedDonor: {
+          select: { id: true, name: true, bloodGroup: true, phone: true },
+        },
+      },
+    }),
+    prisma.bloodRequest.count({ where: whereClause })
+  ]);
+
+  return {
+    data: requests,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit)
+  };
 }
 
 // ─────────────────────────────────────────────
