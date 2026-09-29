@@ -19,6 +19,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { useLocaleStore } from '../../stores/localeStore';
 import { t } from '../../utils/i18n';
 import * as requestsService from '../../services/requests';
+import { LockCountdown } from '../../components/LockCountdown';
 
 export default function DashboardScreen() {
   const router = useRouter();

@@ -80,7 +80,7 @@ export async function cancelRequest(id: string) {
 /**
  * Get request history for the user.
  */
-export async function getHistory(role: 'requester' | 'donor') {
-  const response = await api.get(`/requests/history?role=${role}`);
+export async function getHistory(role: 'requester' | 'donor', page: number = 1, limit: number = 10) {
+  const response = await api.get(`/requests/history?role=${role}&page=${page}&limit=${limit}`);
   return response.data;
 }
