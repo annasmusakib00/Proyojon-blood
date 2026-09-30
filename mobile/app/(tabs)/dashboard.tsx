@@ -177,7 +177,7 @@ export default function DashboardScreen() {
             style={styles.slider}
           >
             {slideImages.map((slide, index) => (
-              <View key={index} style={[styles.slideWrapper, { width: SLIDE_WIDTH }]}>
+              <View key={index} style={[styles.slideWrapper, { width: SLIDE_WIDTH, height: '100%' }]}>
                 <Image
                   source={slide}
                   style={styles.slideImage}
