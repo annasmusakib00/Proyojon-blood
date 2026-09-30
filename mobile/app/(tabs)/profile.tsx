@@ -7,6 +7,9 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Switch,
+  TextInput,
+  Modal,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -26,6 +29,22 @@ export default function ProfileScreen() {
   const { user, logout, setUser, token } = useAuthStore();
   const { locale, toggleLocale } = useLocaleStore();
   const [uploading, setUploading] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const [showLocationEdit, setShowLocationEdit] = useState(false);
+  const [address, setAddress] = useState(user?.address || '');
+  const [showHelp, setShowHelp] = useState(false);
+  const [isEditNameVisible, setEditNameVisible] = useState(false);
+  const [newName, setNewName] = useState(user?.name || '');
+
+  const handleSaveName = () => {
+    setUser({ ...user, name: newName } as any);
+    setEditNameVisible(false);
+  };
+
+  const handleSaveAddress = () => {
+    setUser({ ...user, address } as any);
+    Alert.alert("Success", "Address saved successfully.");
+  };
 
   React.useEffect(() => {
     const fetchProfile = async () => {
@@ -135,7 +154,7 @@ export default function ProfileScreen() {
 
         <View style={styles.userNameRow}>
           <Text style={styles.userName}>{user?.name}</Text>
-          <TouchableOpacity style={styles.editBtn}>
+          <TouchableOpacity style={styles.editBtn} onPress={() => { setNewName(user?.name || ''); setEditNameVisible(true); }}>
             <Feather name="edit-2" size={16} color={Colors.textSecondary} />
           </TouchableOpacity>
         </View>
@@ -186,31 +205,81 @@ export default function ProfileScreen() {
       )}
 
       <View style={styles.menuList}>
-        <TouchableOpacity style={styles.menuItem}>
+        <View style={styles.menuItem}>
           <Feather name="bell" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
           <Text style={styles.menuItemText}>Notification Settings</Text>
-          <Feather name="chevron-right" size={20} color={Colors.border} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
+          <Switch 
+            value={notificationsEnabled} 
+            onValueChange={setNotificationsEnabled} 
+            trackColor={{ false: Colors.surfaceLight, true: Colors.primaryGhost }}
+            thumbColor={notificationsEnabled ? Colors.primary : Colors.textMuted}
+          />
+        </View>
+        <TouchableOpacity style={styles.menuItem} onPress={() => setShowLocationEdit(!showLocationEdit)}>
           <Feather name="map-pin" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
           <Text style={styles.menuItemText}>Location / Address</Text>
-          <Feather name="chevron-right" size={20} color={Colors.border} />
+          <Feather name={showLocationEdit ? "chevron-up" : "chevron-down"} size={20} color={Colors.border} />
         </TouchableOpacity>
+        {showLocationEdit && (
+          <View style={styles.expandableContent}>
+            <TextInput
+              style={styles.addressInput}
+              value={address}
+              onChangeText={setAddress}
+              placeholder="Enter your full address..."
+              placeholderTextColor={Colors.textMuted}
+              multiline
+            />
+            <TouchableOpacity style={styles.saveBtn} onPress={handleSaveAddress}>
+              <Text style={styles.saveBtnText}>Save Address</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/(tabs)/history')}>
           <Feather name="clock" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
           <Text style={styles.menuItemText}>Donation History</Text>
           <Feather name="chevron-right" size={20} color={Colors.border} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={() => setShowHelp(!showHelp)}>
           <Feather name="help-circle" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
           <Text style={styles.menuItemText}>Help & Support</Text>
-          <Feather name="chevron-right" size={20} color={Colors.border} />
+          <Feather name={showHelp ? "chevron-up" : "chevron-down"} size={20} color={Colors.border} />
         </TouchableOpacity>
+        {showHelp && (
+          <View style={styles.expandableContent}>
+            <Text style={styles.helpText}>
+              Need help? You can reach out to our dedicated support team 24/7. We are here to assist you with blood donation requests, account issues, and more. Contact us at support@proyojon.com.
+            </Text>
+          </View>
+        )}
         <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
           <Feather name="log-out" size={20} color={Colors.error} style={styles.menuIcon} />
           <Text style={[styles.menuItemText, { color: Colors.error }]}>{t('profile.logout')}</Text>
         </TouchableOpacity>
       </View>
+
+      <Modal visible={isEditNameVisible} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Edit Profile Name</Text>
+            <TextInput
+              style={styles.nameInput}
+              value={newName}
+              onChangeText={setNewName}
+              placeholder="Enter your name"
+              placeholderTextColor={Colors.textMuted}
+            />
+            <View style={styles.modalActions}>
+              <TouchableOpacity onPress={() => setEditNameVisible(false)} style={styles.modalBtn}>
+                <Text style={styles.modalBtnText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleSaveName} style={[styles.modalBtn, { backgroundColor: Colors.primary }]}>
+                <Text style={[styles.modalBtnText, { color: '#FFF' }]}>Save</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -246,4 +315,16 @@ const styles = StyleSheet.create({
   menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
   menuIcon: { marginRight: 14 },
   menuItemText: { color: Colors.text, fontSize: 15, fontWeight: '600', flex: 1 },
+  expandableContent: { padding: 16, backgroundColor: Colors.surface, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.05)' },
+  addressInput: { backgroundColor: Colors.background, borderRadius: 8, padding: 12, color: Colors.text, fontSize: 14, minHeight: 80, textAlignVertical: 'top', borderWidth: 1, borderColor: Colors.border, marginBottom: 12 },
+  saveBtn: { backgroundColor: Colors.primaryGhost, alignSelf: 'flex-start', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 8, borderWidth: 1, borderColor: Colors.primary },
+  saveBtnText: { color: Colors.primary, fontWeight: '700', fontSize: 13 },
+  helpText: { color: Colors.textSecondary, fontSize: 14, lineHeight: 22 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', padding: 20 },
+  modalContent: { backgroundColor: Colors.surface, borderRadius: 16, padding: 20, borderWidth: 1, borderColor: Colors.border },
+  modalTitle: { color: Colors.text, fontSize: 18, fontWeight: '800', marginBottom: 16 },
+  nameInput: { backgroundColor: Colors.background, borderRadius: 8, padding: 12, color: Colors.text, fontSize: 16, borderWidth: 1, borderColor: Colors.border, marginBottom: 20 },
+  modalActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12 },
+  modalBtn: { paddingHorizontal: 20, paddingVertical: 10, borderRadius: 8, backgroundColor: Colors.surfaceLight },
+  modalBtnText: { color: Colors.text, fontWeight: '700', fontSize: 14 },
 });

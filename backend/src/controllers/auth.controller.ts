@@ -30,3 +30,23 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
     next(error);
   }
 }
+
+export async function forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { phone } = req.body;
+    const result = await authService.forgotPassword(phone);
+    res.status(200).json({ success: true, data: result, message: 'OTP sent successfully' });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function resetPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const { phone, otp, password } = req.body;
+    const result = await authService.resetPassword(phone, otp, password);
+    res.status(200).json({ success: true, data: result, message: 'Password reset successfully' });
+  } catch (error) {
+    next(error);
+  }
+}

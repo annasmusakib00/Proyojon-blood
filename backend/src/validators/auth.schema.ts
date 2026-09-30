@@ -20,3 +20,13 @@ export const loginSchema = z.object({
   phone: z.string().regex(/^01[3-9]\d{8}$/, 'Invalid Bangladeshi phone number'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
+
+export const forgotPasswordSchema = z.object({
+  phone: z.string().regex(/^01[3-9]\d{8}$/, 'Invalid Bangladeshi phone number'),
+});
+
+export const resetPasswordSchema = z.object({
+  phone: z.string().regex(/^01[3-9]\d{8}$/, 'Invalid Bangladeshi phone number'),
+  otp: z.string().length(6, 'OTP must be exactly 6 digits'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});

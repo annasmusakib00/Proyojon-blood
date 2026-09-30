@@ -8,6 +8,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -26,6 +27,7 @@ export default function DashboardScreen() {
   const { user } = useAuthStore();
   const { locale } = useLocaleStore();
   const [recentRequests, setRecentRequests] = useState<any[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const { width } = Dimensions.get('window');
   const SLIDE_WIDTH = width - 32;
@@ -37,6 +39,7 @@ export default function DashboardScreen() {
   ];
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
+  const buttonScaleAnim = useRef(new Animated.Value(1)).current;
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -72,6 +75,23 @@ export default function DashboardScreen() {
     }
   }, [user?.isLocked, pulseAnim]);
 
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(buttonScaleAnim, {
+          toValue: 1.15,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(buttonScaleAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [buttonScaleAnim]);
+
   const loadRecentActivity = async () => {
     try {
       const result = await requestsService.getHistory('requester');
@@ -93,9 +113,27 @@ export default function DashboardScreen() {
     .replace('_POS', '+')
     .replace('_NEG', '−');
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await loadRecentActivity();
+    setRefreshing(false);
+  };
+
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.contentScroll} contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.contentScroll} 
+        contentContainerStyle={styles.contentContainer} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh} 
+            tintColor={Colors.primary} 
+            colors={[Colors.primary]} 
+          />
+        }
+      >
         <View style={styles.header}>
           <View style={styles.headerInfo}>
             <Image 
@@ -189,6 +227,21 @@ export default function DashboardScreen() {
           )}
         </View>
 
+        <View style={styles.actionContainer}>
+          <Animated.View style={{ transform: [{ scale: buttonScaleAnim }] }}>
+            <TouchableOpacity
+              style={styles.requestButton}
+              onPress={() => router.push('/(tabs)/request')}
+              activeOpacity={0.8}
+            >
+              <Feather name="search" size={52} color="#FFF" />
+            </TouchableOpacity>
+          </Animated.View>
+          <Text style={styles.requestButtonLabelText}>
+            {t('dashboard.requestBlood')}
+          </Text>
+        </View>
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
           {recentRequests.length === 0 ? (
@@ -257,23 +310,6 @@ export default function DashboardScreen() {
             ))
           )}
         </View>
-
-        <View style={styles.footerContainer}>
-          <TouchableOpacity
-            style={styles.requestButton}
-            onPress={() => router.push('/(tabs)/request')}
-            activeOpacity={0.8}
-          >
-            <View style={styles.requestButtonInner}>
-              <View style={styles.bloodDropIcon}>
-                <Feather name="droplet" size={18} color="#FFF" />
-              </View>
-              <Text style={styles.requestButtonText}>
-                {t('dashboard.requestBlood')}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
     </View>
   );
@@ -337,11 +373,12 @@ const styles = StyleSheet.create({
   statusBadge: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
   statusText: { fontSize: 9, fontWeight: '700' },
 
-  footerContainer: { marginTop: 'auto', paddingTop: 8, paddingBottom: 16 },
+  actionContainer: { paddingVertical: 24, alignItems: 'center' },
   requestButton: {
     backgroundColor: Colors.primary,
-    height: 58,
-    borderRadius: 29,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
@@ -350,23 +387,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 10,
   },
-  requestButtonInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  bloodDropIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  requestButtonText: {
-    color: '#FFF',
-    fontSize: 20,
-    fontWeight: '900',
+  requestButtonLabelText: {
+    marginTop: 16,
+    color: Colors.text,
+    fontSize: 18,
+    fontWeight: '800',
     letterSpacing: 0.5,
   },
 });

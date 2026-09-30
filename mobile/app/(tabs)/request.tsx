@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -34,10 +35,29 @@ export default function RequestScreen() {
   const [loading, setLoading] = useState(false);
   const [locationLoading, setLocationLoading] = useState(true);
   const [locationError, setLocationError] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   React.useEffect(() => {
     setLocationLoading(false);
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      let { status } = await Location.getForegroundPermissionsAsync();
+      if (status === 'granted') {
+        let location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+        setHospitalLat(location.coords.latitude);
+        setHospitalLng(location.coords.longitude);
+      }
+    } catch (err) {}
+    
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 600);
+  };
 
   const handlePreSubmit = async () => {
     if (!bloodGroup) {
@@ -110,7 +130,19 @@ export default function RequestScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.content} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh} 
+            tintColor={Colors.primary} 
+            colors={[Colors.primary]} 
+          />
+        }
+      >
         <Text style={styles.title}>{t('request.title')}</Text>
         <Text style={styles.subtitle}>{t('request.subtitle')}</Text>
 

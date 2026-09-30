@@ -173,3 +173,48 @@ export async function login(
 
   return { token, user: userData };
 }
+
+export async function forgotPassword(phone: string): Promise<{ message: string }> {
+  const user = await prisma.user.findUnique({ where: { phone } });
+  if (!user || !user.isVerified) {
+    throw new AppError(404, 'NOT_FOUND', 'Verified user not found with this phone number');
+  }
+
+  const otp = generateOTP();
+  const otpHash = await hashOTP(otp);
+  const otpExpiresAt = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
+
+  await prisma.user.update({
+    where: { phone },
+    data: { otpHash, otpExpiresAt },
+  });
+
+  await sendOtpSMS(phone, otp);
+  return { message: 'OTP sent successfully' };
+}
+
+export async function resetPassword(phone: string, otp: string, password: string): Promise<{ message: string }> {
+  const user = await prisma.user.findUnique({ where: { phone } });
+  if (!user || !user.isVerified) {
+    throw new AppError(404, 'NOT_FOUND', 'User not found');
+  }
+
+  if (!user.otpHash || !user.otpExpiresAt || new Date() > user.otpExpiresAt) {
+    throw new AppError(400, 'INVALID_OTP', 'OTP has expired or is invalid. Please request a new one.');
+  }
+
+  const isValid = await verifyOTP(otp, user.otpHash);
+  if (!isValid) {
+    throw new AppError(400, 'INVALID_OTP', 'Invalid OTP. Please try again.');
+  }
+
+  const bcryptjs = require('bcryptjs');
+  const passwordHash = await bcryptjs.hash(password, 10);
+
+  await prisma.user.update({
+    where: { phone },
+    data: { passwordHash, otpHash: null, otpExpiresAt: null },
+  });
+
+  return { message: 'Password reset successfully' };
+}
