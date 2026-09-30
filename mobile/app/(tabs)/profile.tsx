@@ -31,19 +31,29 @@ export default function ProfileScreen() {
   const [uploading, setUploading] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [showLocationEdit, setShowLocationEdit] = useState(false);
-  const [address, setAddress] = useState(user?.address || '');
+  const [address, setAddress] = useState(user?.locationText || '');
   const [showHelp, setShowHelp] = useState(false);
   const [isEditNameVisible, setEditNameVisible] = useState(false);
   const [newName, setNewName] = useState(user?.name || '');
 
-  const handleSaveName = () => {
-    setUser({ ...user, name: newName } as any);
-    setEditNameVisible(false);
+  const handleSaveName = async () => {
+    try {
+      await api.patch('/donor/profile', { name: newName });
+      setUser({ ...user, name: newName } as any);
+      setEditNameVisible(false);
+    } catch (err) {
+      Alert.alert('Error', 'Failed to update name');
+    }
   };
 
-  const handleSaveAddress = () => {
-    setUser({ ...user, address } as any);
-    Alert.alert("Success", "Address saved successfully.");
+  const handleSaveAddress = async () => {
+    try {
+      await api.patch('/donor/profile', { locationText: address });
+      setUser({ ...user, locationText: address } as any);
+      Alert.alert("Success", "Address saved successfully.");
+    } catch (err) {
+      Alert.alert('Error', 'Failed to update address');
+    }
   };
 
   React.useEffect(() => {
@@ -217,7 +227,14 @@ export default function ProfileScreen() {
         </View>
         <TouchableOpacity style={styles.menuItem} onPress={() => setShowLocationEdit(!showLocationEdit)}>
           <Feather name="map-pin" size={20} color={Colors.textSecondary} style={styles.menuIcon} />
-          <Text style={styles.menuItemText}>Location / Address</Text>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.menuItemText, { flex: 0 }]}>Location / Address</Text>
+            {user?.locationText ? (
+              <Text style={{ color: Colors.textMuted, fontSize: 12, marginTop: 2 }} numberOfLines={1}>
+                {user.locationText}
+              </Text>
+            ) : null}
+          </View>
           <Feather name={showLocationEdit ? "chevron-up" : "chevron-down"} size={20} color={Colors.border} />
         </TouchableOpacity>
         {showLocationEdit && (
