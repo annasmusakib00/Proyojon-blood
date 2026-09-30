@@ -134,7 +134,7 @@ export default function RequestScreen() {
       <ImageBackground 
         source={require('../../assets/images/body-bg.jpg')} 
         style={styles.container} 
-        imageStyle={{ opacity: 0.05, resizeMode: 'cover' }}
+        imageStyle={{ opacity: 0.025, resizeMode: 'cover' }}
       >
       <ScrollView 
         style={styles.scrollView} 

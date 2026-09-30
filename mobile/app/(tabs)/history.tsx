@@ -179,7 +179,7 @@ export default function HistoryScreen() {
   };
 
   return (
-    <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.05, resizeMode: 'repeat' }}>
+    <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.025, resizeMode: 'repeat' }}>
       <View style={styles.headerRow}>
         <Text style={styles.title}>{t('history.title')}</Text>
         <TouchableOpacity style={styles.filterBtn}>

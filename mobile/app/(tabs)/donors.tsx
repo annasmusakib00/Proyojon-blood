@@ -147,7 +147,7 @@ export default function DonorsScreen() {
   };
 
   return (
-    <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.05, resizeMode: 'repeat' }}>
+    <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.025, resizeMode: 'repeat' }}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>সক্রিয় ডোনার</Text>

@@ -141,7 +141,7 @@ export default function ProfileScreen() {
     <ImageBackground 
       source={require('../../assets/images/body-bg.jpg')} 
       style={styles.container} 
-      imageStyle={{ opacity: 0.05, resizeMode: 'cover' }}
+      imageStyle={{ opacity: 0.025, resizeMode: 'cover' }}
     >
       <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.contentContainer}>
       <View style={styles.headerRow}>
