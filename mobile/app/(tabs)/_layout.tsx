@@ -30,13 +30,14 @@ export default function TabLayout() {
           shadowRadius: 20,
         },
         tabBarBackground: () => (
-          <View style={{ flex: 1, borderRadius: 32, overflow: 'hidden', backgroundColor: 'rgba(15, 23, 42, 0.65)' }}>
-            <BlurView tint="dark" intensity={60} style={StyleSheet.absoluteFillObject} />
-            <View style={{ ...StyleSheet.absoluteFillObject, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', borderRadius: 32 }} />
+          <View style={{ flex: 1, borderRadius: 32, overflow: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.85)' }}>
+            <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFillObject} />
+            <View style={{ ...StyleSheet.absoluteFillObject, borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', borderRadius: 32 }} />
           </View>
         ),
         tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: '#8F9BB3',
+        tabBarInactiveTintColor: Colors.textMuted,
+        tabBarActiveBackgroundColor: Colors.primaryGhost,
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: '700',
@@ -44,6 +45,8 @@ export default function TabLayout() {
         },
         tabBarItemStyle: {
           paddingTop: 8,
+          borderRadius: 20,
+          margin: 4,
         },
       }}
     >
@@ -71,7 +74,7 @@ export default function TabLayout() {
           title: 'ডোনার',
           tabBarIcon: ({ focused }) => (
             <View style={[styles.centerTab, focused && styles.centerTabActive]}>
-              <Ionicons name={focused ? 'heart' : 'heart-outline'} size={24} color={focused ? Colors.primary : '#8F9BB3'} />
+              <Ionicons name={focused ? 'heart' : 'heart-outline'} size={24} color={focused ? Colors.primary : Colors.textMuted} />
             </View>
           ),
         }}
@@ -103,24 +106,24 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: Colors.surfaceLight,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
     elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 6,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: 'rgba(0,0,0,0.05)',
   },
   centerTabActive: {
     backgroundColor: Colors.primaryGhost,
-    borderColor: 'rgba(239, 68, 68, 0.2)',
+    borderColor: 'rgba(138, 3, 3, 0.2)',
     elevation: 8,
     shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
   },
 });

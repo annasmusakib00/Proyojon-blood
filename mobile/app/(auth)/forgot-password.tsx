@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   countryCode: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     paddingHorizontal: 16,
     borderRadius: 12,
     justifyContent: 'center',
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   input: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderRadius: 12,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: Colors.border,

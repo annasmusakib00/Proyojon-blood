@@ -229,7 +229,7 @@ export default function HistoryScreen() {
               <Button 
                 title="নতুন আবেদন করুন" 
                 onPress={() => router.push('/(tabs)/request')} 
-                style={{ marginTop: 24, paddingHorizontal: 32 }}
+                style={{ marginTop: 24 }}
               />
             </View>
           ) : null
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   statusText: { fontSize: 10, fontWeight: '700' },
   cancelBtn: {
     paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6,
-    backgroundColor: 'rgba(239, 68, 68, 0.12)', borderWidth: 1, borderColor: Colors.error,
+    backgroundColor: Colors.primaryGhost, borderWidth: 1, borderColor: Colors.error,
   },
   cancelBtnText: { color: Colors.error, fontSize: 10, fontWeight: '700' },
   footerLoader: { paddingVertical: 16, alignItems: 'center' },

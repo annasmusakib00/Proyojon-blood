@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
   bloodGroupCard: {
     width: '22%', aspectRatio: 1.4, backgroundColor: Colors.surfaceLight,
     borderRadius: 12, alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
+    borderWidth: 1, borderColor: Colors.border,
   },
   bloodGroupSelected: { backgroundColor: Colors.primary, borderColor: Colors.primaryDark },
   bloodGroupLabel: { color: Colors.textSecondary, fontSize: 17, fontWeight: '700' },
@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignSelf: 'flex-start',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.05)',
+    borderColor: Colors.border,
   },
   pillStepperBtn: { paddingHorizontal: 22, paddingVertical: 14 },
   pillStepperBtnText: { color: Colors.textSecondary, fontSize: 22, fontWeight: '600' },
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 12,
     borderWidth: 1.5,
     borderColor: Colors.border,
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
   conveyanceGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   conveyanceCard: {
     flexBasis: '30%', flexGrow: 1, backgroundColor: Colors.surfaceLight, borderRadius: 12,
-    paddingVertical: 12, alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
+    paddingVertical: 12, alignItems: 'center', borderWidth: 1, borderColor: Colors.border,
   },
   conveyanceSelected: { backgroundColor: 'rgba(16, 185, 129, 0.15)', borderColor: Colors.success },
   conveyanceText: { color: Colors.textSecondary, fontSize: 15, fontWeight: '700' },

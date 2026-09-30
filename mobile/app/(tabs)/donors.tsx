@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
 
   searchBarContainer: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.surface,
-    borderRadius: 12, marginTop: 16, marginBottom: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)',
+    borderRadius: 12, marginTop: 16, marginBottom: 12, borderWidth: 1, borderColor: Colors.border,
   },
   searchIcon: { paddingLeft: 12 },
   searchInput: { flex: 1, paddingVertical: 12, paddingHorizontal: 10, color: Colors.text, fontSize: 14 },

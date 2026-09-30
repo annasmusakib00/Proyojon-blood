@@ -51,7 +51,7 @@ export function Button({
         ]}
       >
         <LinearGradient
-          colors={[Colors.primary, '#991B1B']}
+          colors={[Colors.primary, Colors.primaryDark]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.primaryButton}

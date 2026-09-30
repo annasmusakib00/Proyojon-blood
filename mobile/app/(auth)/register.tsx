@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   input: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
@@ -380,7 +380,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   countryCode: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 12,
     paddingHorizontal: 14,
     justifyContent: 'center',
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: Colors.border,
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
   bloodGroupCard: {
     width: '22%',
     aspectRatio: 1,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.surfaceLight,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',

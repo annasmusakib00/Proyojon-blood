@@ -122,6 +122,22 @@ export default function DashboardScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.topHeader}>
+        <View style={styles.headerInfo}>
+          <Image 
+            source={{ uri: user?.profilePhoto || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random` }} 
+            style={styles.profileAvatar} 
+          />
+          <View>
+            <Text style={styles.greeting}>{t('dashboard.greeting', { name: '' }).replace(' , ', '').replace(',', '')}</Text>
+            <Text style={styles.userName}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
+          </View>
+        </View>
+        <View style={styles.bloodBadge}>
+          <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
+        </View>
+      </View>
+
       <ScrollView 
         style={styles.contentScroll} 
         contentContainerStyle={styles.contentContainer} 
@@ -135,22 +151,6 @@ export default function DashboardScreen() {
           />
         }
       >
-        <View style={styles.header}>
-          <View style={styles.headerInfo}>
-            <Image 
-              source={{ uri: `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random` }} 
-              style={styles.profileAvatar} 
-            />
-            <View>
-              <Text style={styles.greeting}>{t('dashboard.greeting', { name: '' }).replace(' , ', '').replace(',', '')}</Text>
-              <Text style={styles.userName}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
-            </View>
-          </View>
-          <View style={styles.bloodBadge}>
-            <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
-          </View>
-        </View>
-
         <View style={styles.sliderContainer}>
           <ScrollView
             ref={scrollViewRef}
@@ -238,7 +238,7 @@ export default function DashboardScreen() {
               activeOpacity={0.8}
             >
               <LinearGradient
-                colors={[Colors.primary, '#991B1B']}
+                colors={[Colors.primary, Colors.primaryDark]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.requestButton}
@@ -328,17 +328,34 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   contentScroll: { flex: 1 },
-  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 110 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  profileAvatar: { width: 40, height: 40, borderRadius: 20 },
-  greeting: { color: Colors.textSecondary, fontSize: 13 },
-  userName: { color: Colors.text, fontSize: 22, fontWeight: '800' },
-  bloodBadge: {
-    width: 46, height: 46, borderRadius: 23, backgroundColor: Colors.primary,
-    alignItems: 'center', justifyContent: 'center',
+  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 20, paddingBottom: 110 },
+  topHeader: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingHorizontal: 20,
+    paddingTop: 54, // Adjust for status bar
+    paddingBottom: 24,
+    backgroundColor: Colors.primary,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    elevation: 8,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    zIndex: 10,
   },
-  bloodBadgeText: { color: '#FFF', fontSize: 16, fontWeight: '800' },
+  headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  profileAvatar: { width: 44, height: 44, borderRadius: 22, borderWidth: 2, borderColor: '#FFFFFF' },
+  greeting: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '500' },
+  userName: { color: '#FFFFFF', fontSize: 22, fontWeight: '800' },
+  bloodBadge: {
+    width: 48, height: 48, borderRadius: 24, backgroundColor: '#FFFFFF',
+    alignItems: 'center', justifyContent: 'center',
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3
+  },
+  bloodBadgeText: { color: Colors.primary, fontSize: 16, fontWeight: '800' },
 
   sliderContainer: { marginBottom: 12, borderRadius: 16, overflow: 'hidden', height: 160 },
   slider: { borderRadius: 16 },
