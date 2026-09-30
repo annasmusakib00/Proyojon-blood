@@ -105,17 +105,17 @@ export default function ProfileScreen() {
     try {
       const IMGBB_API_KEY = '5a688b1fcb4e3c35bbaee51e9b72d2fb';
       
-      // Read file as base64 using expo-file-system
-      const FileSystem = await import('expo-file-system');
-      const base64 = await FileSystem.readAsStringAsync(uri, {
-        encoding: FileSystem.EncodingType.Base64,
-      });
+      // Use FormData for more reliable upload of large images in React Native
+      const formData = new FormData();
+      formData.append('image', {
+        uri: uri,
+        type: 'image/jpeg',
+        name: 'profile_photo.jpg',
+      } as any);
       
-      // Send as URL-encoded form data (most reliable method for React Native)
       const imgbbRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `image=${encodeURIComponent(base64)}`,
+        body: formData,
       });
       const imgbbData = await imgbbRes.json();
       
