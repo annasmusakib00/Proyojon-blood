@@ -35,11 +35,11 @@ export default function DashboardScreen() {
   const SLIDE_WIDTH = width - 32;
 
   const slideImages = [
-    { uri: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800' },
-    { uri: 'https://images.unsplash.com/photo-1584308666744-24d5e478ac5c?q=80&w=800' },
-    { uri: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800' },
-    { uri: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?q=80&w=800' },
-    { uri: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800' },
+    require('../../assets/images/slider1.png'),
+    require('../../assets/images/slider2.png'),
+    require('../../assets/images/slider3.png'),
+    require('../../assets/images/slider4.png'),
+    require('../../assets/images/slider5.png'),
   ];
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -176,7 +176,7 @@ export default function DashboardScreen() {
             {slideImages.map((slide, index) => (
               <View key={index} style={[styles.slideWrapper, { width: SLIDE_WIDTH }]}>
                 <Image
-                  source={{ uri: slide.uri }}
+                  source={slide}
                   style={styles.slideImage}
                   resizeMode="cover"
                 />
