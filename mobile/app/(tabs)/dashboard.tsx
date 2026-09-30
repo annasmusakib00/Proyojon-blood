@@ -10,6 +10,7 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/colors';
@@ -230,11 +231,20 @@ export default function DashboardScreen() {
         <View style={styles.actionContainer}>
           <Animated.View style={{ transform: [{ scale: buttonScaleAnim }] }}>
             <TouchableOpacity
-              style={styles.requestButton}
-              onPress={() => router.push('/(tabs)/request')}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                router.push('/(tabs)/request');
+              }}
               activeOpacity={0.8}
             >
-              <Feather name="search" size={52} color="#FFF" />
+              <LinearGradient
+                colors={[Colors.primary, '#991B1B']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.requestButton}
+              >
+                <Feather name="search" size={52} color="#FFF" />
+              </LinearGradient>
             </TouchableOpacity>
           </Animated.View>
           <Text style={styles.requestButtonLabelText}>
@@ -318,7 +328,7 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   contentScroll: { flex: 1 },
-  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 30 },
+  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 110 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   profileAvatar: { width: 40, height: 40, borderRadius: 20 },

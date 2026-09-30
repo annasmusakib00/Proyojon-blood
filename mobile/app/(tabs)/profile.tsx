@@ -286,7 +286,7 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 30 },
+  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 110 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   screenTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
   langToggle: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 6, backgroundColor: Colors.surface, borderRadius: 20, borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', gap: 6 },

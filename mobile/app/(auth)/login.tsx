@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Button } from '../../components/ui/Button';
+import { Feather } from '@expo/vector-icons';
 import * as authService from '../../services/auth';
 import { useAuthStore } from '../../stores/authStore';
 import { t } from '../../utils/i18n';
@@ -21,6 +22,7 @@ export default function LoginScreen() {
   const router = useRouter();
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { login: setAuth } = useAuthStore();
   const { locale } = useLocaleStore(); // subscribe to locale changes
@@ -75,14 +77,19 @@ export default function LoginScreen() {
           />
         </View>
 
-        <TextInput
-          style={[styles.input, { width: '100%', marginTop: 16 }]}
-          value={password}
-          onChangeText={setPassword}
-          placeholder={t('login.passwordPlaceholder')}
-          placeholderTextColor={Colors.textMuted}
-          secureTextEntry
-        />
+        <View style={styles.passwordContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            value={password}
+            onChangeText={setPassword}
+            placeholder={t('login.passwordPlaceholder')}
+            placeholderTextColor={Colors.textMuted}
+            secureTextEntry={!showPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+            <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} color={Colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity
           onPress={() => router.push('/(auth)/forgot-password')}
@@ -169,6 +176,26 @@ const styles = StyleSheet.create({
   },
   phoneInput: {
     flex: 1,
+  },
+  passwordContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    marginTop: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    color: Colors.text,
+    fontSize: 16,
+  },
+  eyeIcon: {
+    padding: 16,
   },
   registerLink: {
     marginTop: 24,

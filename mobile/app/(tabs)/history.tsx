@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   tabActive: { backgroundColor: Colors.surfaceLight },
   tabText: { color: Colors.textMuted, fontSize: 13, fontWeight: '600' },
   tabTextActive: { color: Colors.primary, fontWeight: '700' },
-  listContent: { paddingHorizontal: 20, paddingBottom: 32 },
+  listContent: { paddingHorizontal: 20, paddingBottom: 110 },
   itemCard: { marginBottom: 10 },
   itemRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   bloodCircle: {

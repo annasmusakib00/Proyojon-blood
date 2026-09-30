@@ -4,6 +4,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BlurView } from 'expo-blur';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -12,24 +13,37 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: Colors.surface,
-          borderTopColor: 'rgba(255,255,255,0.05)',
-          borderTopWidth: 1,
-          height: 64 + insets.bottom,
-          paddingBottom: 8 + insets.bottom,
-          paddingTop: 8,
-          elevation: 12,
+          position: 'absolute',
+          bottom: 16,
+          left: 16,
+          right: 16,
+          elevation: 20,
+          backgroundColor: 'transparent',
+          borderTopWidth: 0,
+          height: 64,
+          paddingBottom: 0,
+          paddingTop: 0,
+          borderRadius: 32,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.15,
-          shadowRadius: 12,
+          shadowOffset: { width: 0, height: 10 },
+          shadowOpacity: 0.3,
+          shadowRadius: 20,
         },
+        tabBarBackground: () => (
+          <View style={{ flex: 1, borderRadius: 32, overflow: 'hidden', backgroundColor: 'rgba(15, 23, 42, 0.65)' }}>
+            <BlurView tint="dark" intensity={60} style={StyleSheet.absoluteFillObject} />
+            <View style={{ ...StyleSheet.absoluteFillObject, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', borderRadius: 32 }} />
+          </View>
+        ),
         tabBarActiveTintColor: Colors.primary,
         tabBarInactiveTintColor: '#8F9BB3',
         tabBarLabelStyle: {
           fontSize: 10,
-          fontWeight: '600',
-          marginTop: 2,
+          fontWeight: '700',
+          marginBottom: 8,
+        },
+        tabBarItemStyle: {
+          paddingTop: 8,
         },
       }}
     >

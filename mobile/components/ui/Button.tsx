@@ -8,6 +8,8 @@ import {
   TextStyle,
   View,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/colors';
 
 interface ButtonProps {
@@ -31,30 +33,42 @@ export function Button({
 }: ButtonProps) {
   const isDisabled = disabled || loading;
 
+  const handlePress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    if (onPress) onPress();
+  };
+
   if (variant === 'primary') {
     return (
       <TouchableOpacity
-        onPress={onPress}
+        onPress={handlePress}
         disabled={isDisabled}
         activeOpacity={0.8}
         style={[
-          styles.primaryButton,
+          styles.primaryWrapper,
           isDisabled && styles.disabledPrimary,
           style,
         ]}
       >
-        {loading ? (
-          <ActivityIndicator color="#FFF" size="small" />
-        ) : (
-          <Text style={[styles.primaryText, textStyle]}>{title}</Text>
-        )}
+        <LinearGradient
+          colors={[Colors.primary, '#991B1B']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.primaryButton}
+        >
+          {loading ? (
+            <ActivityIndicator color="#FFF" size="small" />
+          ) : (
+            <Text style={[styles.primaryText, textStyle]}>{title}</Text>
+          )}
+        </LinearGradient>
       </TouchableOpacity>
     );
   }
 
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       disabled={isDisabled}
       activeOpacity={0.8}
       style={[
@@ -87,13 +101,20 @@ export function Button({
 }
 
 const styles = StyleSheet.create({
+  primaryWrapper: {
+    borderRadius: 14,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
+  },
   primaryButton: {
     paddingVertical: 16,
     paddingHorizontal: 24,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 14,
-    backgroundColor: Colors.primary,
     
     // 3D Pushable effect
     borderTopWidth: 1,
@@ -103,13 +124,7 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderRightColor: Colors.primaryDark,
     borderBottomWidth: 5,
-    borderBottomColor: Colors.primaryDark,
-    
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 8,
+    borderBottomColor: '#7F1D1D',
   },
   disabledPrimary: {
     opacity: 0.6,

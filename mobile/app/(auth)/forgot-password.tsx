@@ -7,7 +7,9 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  TouchableOpacity,
 } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Button } from '../../components/ui/Button';
@@ -19,7 +21,9 @@ export default function ForgotPasswordScreen() {
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSendOtp = async () => {
@@ -114,22 +118,32 @@ export default function ForgotPasswordScreen() {
               keyboardType="number-pad"
               maxLength={6}
             />
-            <TextInput
-              style={[styles.input, { width: '100%', marginBottom: 16 }]}
-              value={password}
-              onChangeText={setPassword}
-              placeholder="New Password"
-              placeholderTextColor={Colors.textMuted}
-              secureTextEntry
-            />
-            <TextInput
-              style={[styles.input, { width: '100%' }]}
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
-              placeholder="Confirm New Password"
-              placeholderTextColor={Colors.textMuted}
-              secureTextEntry
-            />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                value={password}
+                onChangeText={setPassword}
+                placeholder="New Password"
+                placeholderTextColor={Colors.textMuted}
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} color={Colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                placeholder="Confirm New Password"
+                placeholderTextColor={Colors.textMuted}
+                secureTextEntry={!showConfirmPassword}
+              />
+              <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+                <Feather name={showConfirmPassword ? 'eye' : 'eye-off'} size={20} color={Colors.textSecondary} />
+              </TouchableOpacity>
+            </View>
             <Button
               title="Reset Password"
               onPress={handleResetPassword}
@@ -204,5 +218,25 @@ const styles = StyleSheet.create({
   },
   phoneInput: {
     flex: 1,
+  },
+  passwordContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    marginBottom: 16,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    color: Colors.text,
+    fontSize: 16,
+  },
+  eyeIcon: {
+    padding: 16,
   },
 });

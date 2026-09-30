@@ -15,6 +15,7 @@ import { Colors } from '../../constants/colors';
 import { BLOOD_GROUPS } from '../../constants/bloodGroups';
 import { BD_DIVISIONS } from '../../constants/locations';
 import { Button } from '../../components/ui/Button';
+import { Feather } from '@expo/vector-icons';
 import * as authService from '../../services/auth';
 import { t } from '../../utils/i18n';
 
@@ -24,7 +25,9 @@ export default function RegisterScreen() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedBloodGroup, setSelectedBloodGroup] = useState('');
   const [selectedDivision, setSelectedDivision] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
@@ -149,30 +152,40 @@ export default function RegisterScreen() {
           <View style={styles.formContainer}>
             <View style={styles.field}>
               <Text style={styles.label}>{t('register.passwordLabel') || 'পাসওয়ার্ড'}</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder={t('register.passwordPlaceholder')}
-                placeholderTextColor={Colors.textMuted}
-                secureTextEntry
-                textContentType="newPassword"
-                autoComplete="password-new"
-              />
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder={t('register.passwordPlaceholder')}
+                  placeholderTextColor={Colors.textMuted}
+                  secureTextEntry={!showPassword}
+                  textContentType="newPassword"
+                  autoComplete="password-new"
+                />
+                <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                  <Feather name={showPassword ? 'eye' : 'eye-off'} size={20} color={Colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
             </View>
 
             <View style={styles.field}>
               <Text style={styles.label}>{t('register.confirmPasswordLabel') || 'পাসওয়ার্ড নিশ্চিত করুন'}</Text>
-              <TextInput
-                style={styles.input}
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-                placeholder={t('register.confirmPasswordPlaceholder')}
-                placeholderTextColor={Colors.textMuted}
-                secureTextEntry
-                textContentType="newPassword"
-                autoComplete="password-new"
-              />
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
+                  placeholder={t('register.confirmPasswordPlaceholder')}
+                  placeholderTextColor={Colors.textMuted}
+                  secureTextEntry={!showConfirmPassword}
+                  textContentType="newPassword"
+                  autoComplete="password-new"
+                />
+                <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+                  <Feather name={showConfirmPassword ? 'eye' : 'eye-off'} size={20} color={Colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         )}
@@ -381,6 +394,25 @@ const styles = StyleSheet.create({
   },
   phoneInput: {
     flex: 1,
+  },
+  passwordContainer: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: Colors.surface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    color: Colors.text,
+    fontSize: 16,
+  },
+  eyeIcon: {
+    padding: 16,
   },
   bloodGroupGrid: {
     flexDirection: 'row',

@@ -305,7 +305,7 @@ export default function RequestScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
   scrollView: { flex: 1 },
-  content: { padding: 20, paddingTop: 56, paddingBottom: 32 },
+  content: { padding: 20, paddingTop: 56, paddingBottom: 110 },
   title: { color: Colors.text, fontSize: 24, fontWeight: '800', marginBottom: 4 },
   subtitle: { color: Colors.textSecondary, fontSize: 13, marginBottom: 20, lineHeight: 19 },
 
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   conveyanceText: { color: Colors.textSecondary, fontSize: 15, fontWeight: '700' },
   conveyanceTextSelected: { color: Colors.success },
 
-  footerContainer: { marginTop: 16, paddingBottom: 24 },
+  footerContainer: { marginTop: 16, paddingBottom: 110 },
   submitButton: {
     backgroundColor: Colors.primary, height: 56, borderRadius: 28,
     justifyContent: 'center', alignItems: 'center', elevation: 6,
