@@ -147,7 +147,7 @@ export default function DashboardScreen() {
         <ImageBackground 
           source={require('../../assets/images/body-bg.jpg')} 
           style={{ flex: 1 }} 
-          imageStyle={{ opacity: 0.025, resizeMode: 'cover' }}
+          imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
         >
           <ScrollView 
         style={styles.contentScroll} 
