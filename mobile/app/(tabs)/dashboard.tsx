@@ -143,7 +143,13 @@ export default function DashboardScreen() {
         </View>
       </ImageBackground>
 
-      <ScrollView 
+      <View style={styles.contentBgWrapper}>
+        <ImageBackground 
+          source={require('../../assets/images/body-bg.jpg')} 
+          style={{ flex: 1 }} 
+          imageStyle={{ opacity: 0.05, resizeMode: 'cover' }}
+        >
+          <ScrollView 
         style={styles.contentScroll} 
         contentContainerStyle={styles.contentContainer} 
         showsVerticalScrollIndicator={false}
@@ -326,17 +332,23 @@ export default function DashboardScreen() {
           )}
         </View>
       </ScrollView>
+        </ImageBackground>
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.primary },
-  contentScroll: { 
-    flex: 1, 
+  contentBgWrapper: {
+    flex: 1,
     backgroundColor: Colors.background,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+    overflow: 'hidden',
+  },
+  contentScroll: { 
+    flex: 1, 
   },
   contentContainer: { flexGrow: 1, padding: 16, paddingTop: 20, paddingBottom: 110 },
   topHeader: { 

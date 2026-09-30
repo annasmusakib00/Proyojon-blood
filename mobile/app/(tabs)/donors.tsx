@@ -8,6 +8,7 @@ import {
   RefreshControl,
   Image,
   ScrollView,
+  ImageBackground,
   ActivityIndicator,
   TextInput,
 } from 'react-native';
@@ -146,7 +147,7 @@ export default function DonorsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.05, resizeMode: 'repeat' }}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>সক্রিয় ডোনার</Text>
@@ -350,7 +351,7 @@ export default function DonorsScreen() {
           </View>
         }
       />
-    </View>
+    </ImageBackground>
   );
 }
 

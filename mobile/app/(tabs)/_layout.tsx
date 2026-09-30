@@ -31,8 +31,8 @@ export default function TabLayout() {
         },
         tabBarBackground: () => (
           <View style={{ flex: 1, borderRadius: 32, overflow: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.85)' }}>
-            <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFillObject} />
-            <View style={{ ...StyleSheet.absoluteFillObject, borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', borderRadius: 32 }} />
+            <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFill} />
+            <View style={[StyleSheet.absoluteFill, { borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', borderRadius: 32 }]} />
           </View>
         ),
         tabBarActiveTintColor: Colors.primary,

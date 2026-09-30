@@ -10,6 +10,7 @@ import {
   Platform,
   ScrollView,
   RefreshControl,
+  ImageBackground,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -127,9 +128,14 @@ export default function RequestScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <ImageBackground 
+        source={require('../../assets/images/body-bg.jpg')} 
+        style={styles.container} 
+        imageStyle={{ opacity: 0.05, resizeMode: 'cover' }}
+      >
       <ScrollView 
         style={styles.scrollView} 
         contentContainerStyle={styles.content} 
@@ -291,6 +297,7 @@ export default function RequestScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      </ImageBackground>
 
       <ConveyanceAgreement
         visible={showAgreement}

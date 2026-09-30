@@ -10,6 +10,7 @@ import {
   Switch,
   TextInput,
   Modal,
+  ImageBackground,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -137,7 +138,12 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <ImageBackground 
+      source={require('../../assets/images/body-bg.jpg')} 
+      style={styles.container} 
+      imageStyle={{ opacity: 0.05, resizeMode: 'cover' }}
+    >
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.contentContainer}>
       <View style={styles.headerRow}>
         <Text style={styles.screenTitle}>{t('profile.title')}</Text>
         <TouchableOpacity style={styles.langToggle} onPress={toggleLocale}>
@@ -298,6 +304,7 @@ export default function ProfileScreen() {
         </View>
       </Modal>
     </ScrollView>
+    </ImageBackground>
   );
 }
 

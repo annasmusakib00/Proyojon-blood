@@ -8,6 +8,7 @@ import {
   RefreshControl,
   Alert,
   ActivityIndicator,
+  ImageBackground,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -178,7 +179,7 @@ export default function HistoryScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.05, resizeMode: 'repeat' }}>
       <View style={styles.headerRow}>
         <Text style={styles.title}>{t('history.title')}</Text>
         <TouchableOpacity style={styles.filterBtn}>
@@ -235,7 +236,7 @@ export default function HistoryScreen() {
           ) : null
         }
       />
-    </View>
+    </ImageBackground>
   );
 }
 
