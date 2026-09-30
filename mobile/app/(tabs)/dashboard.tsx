@@ -169,8 +169,11 @@ export default function DashboardScreen() {
             ref={scrollViewRef}
             horizontal
             pagingEnabled
-            scrollEnabled={false}
             showsHorizontalScrollIndicator={false}
+            onMomentumScrollEnd={(event) => {
+              const slideIndex = Math.round(event.nativeEvent.contentOffset.x / SLIDE_WIDTH);
+              setCurrentSlide(slideIndex);
+            }}
             style={styles.slider}
           >
             {slideImages.map((slide, index) => (
