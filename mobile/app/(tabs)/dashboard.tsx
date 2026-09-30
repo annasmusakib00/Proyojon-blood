@@ -35,9 +35,11 @@ export default function DashboardScreen() {
   const SLIDE_WIDTH = width - 32;
 
   const slideImages = [
-    { uri: 'https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=800', text: 'আপনার এক ব্যাগ রক্ত\nবাঁচাতে পারে একটি প্রাণ' },
-    { uri: 'https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=800', text: 'জরুরী মুহূর্তে রক্তদান করুন,\nমানবতার সেবায় এগিয়ে আসুন' },
-    { uri: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800', text: 'রক্তের অভাবে যেন\nকোনো জীবন ঝরে না যায়' },
+    { uri: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800' },
+    { uri: 'https://images.unsplash.com/photo-1584308666744-24d5e478ac5c?q=80&w=800' },
+    { uri: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=800' },
+    { uri: 'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?q=80&w=800' },
+    { uri: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800' },
   ];
 
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -178,17 +180,11 @@ export default function DashboardScreen() {
                   style={styles.slideImage}
                   resizeMode="cover"
                 />
-                <LinearGradient
-                  colors={['transparent', 'rgba(0,0,0,0.8)', '#000000']}
-                  style={styles.slideOverlay}
-                >
-                  <Text style={styles.slideText}>{slide.text}</Text>
-                  <View style={styles.slideIndicatorRow}>
-                    {slideImages.map((_, i) => (
-                      <View key={i} style={[styles.slideIndicator, currentSlide === i && styles.slideIndicatorActive]} />
-                    ))}
-                  </View>
-                </LinearGradient>
+                <View style={styles.slideIndicatorRow}>
+                  {slideImages.map((_, i) => (
+                    <View key={i} style={[styles.slideIndicator, currentSlide === i && styles.slideIndicatorActive]} />
+                  ))}
+                </View>
               </View>
             ))}
           </ScrollView>
