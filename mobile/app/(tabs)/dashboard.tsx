@@ -9,6 +9,7 @@ import {
   Dimensions,
   ScrollView,
   RefreshControl,
+  ImageBackground,
 } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
@@ -122,7 +123,11 @@ export default function DashboardScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.topHeader}>
+      <ImageBackground 
+        source={require('../../assets/images/header-bg.jpg')}
+        style={styles.topHeader}
+        imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
+      >
         <View style={styles.headerInfo}>
           <Image 
             source={{ uri: user?.profilePhoto || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random` }} 
@@ -136,7 +141,7 @@ export default function DashboardScreen() {
         <View style={styles.bloodBadge}>
           <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
         </View>
-      </View>
+      </ImageBackground>
 
       <ScrollView 
         style={styles.contentScroll} 
