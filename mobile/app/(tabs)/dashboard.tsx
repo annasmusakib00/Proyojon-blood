@@ -326,8 +326,16 @@ export default function DashboardScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  contentScroll: { flex: 1 },
+  container: { flex: 1, backgroundColor: Colors.primary },
+  contentScroll: { 
+    flex: 1, 
+    backgroundColor: Colors.background,
+    marginTop: -30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    zIndex: 10,
+    overflow: 'hidden',
+  },
   contentContainer: { flexGrow: 1, padding: 16, paddingTop: 20, paddingBottom: 110 },
   topHeader: { 
     flexDirection: 'row', 
@@ -335,16 +343,9 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     paddingHorizontal: 20,
     paddingTop: 54, // Adjust for status bar
-    paddingBottom: 24,
+    paddingBottom: 50, // Extra space to go under the curved content
     backgroundColor: Colors.primary,
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
-    elevation: 8,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    zIndex: 10,
+    zIndex: 1,
   },
   headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   profileAvatar: { width: 44, height: 44, borderRadius: 22, borderWidth: 2, borderColor: '#FFFFFF' },
