@@ -330,11 +330,8 @@ const styles = StyleSheet.create({
   contentScroll: { 
     flex: 1, 
     backgroundColor: Colors.background,
-    marginTop: -30,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    zIndex: 10,
-    overflow: 'hidden',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
   contentContainer: { flexGrow: 1, padding: 16, paddingTop: 20, paddingBottom: 110 },
   topHeader: { 
@@ -343,9 +340,8 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
     paddingHorizontal: 20,
     paddingTop: 54, // Adjust for status bar
-    paddingBottom: 50, // Extra space to go under the curved content
+    paddingBottom: 20, 
     backgroundColor: Colors.primary,
-    zIndex: 1,
   },
   headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   profileAvatar: { width: 44, height: 44, borderRadius: 22, borderWidth: 2, borderColor: '#FFFFFF' },
