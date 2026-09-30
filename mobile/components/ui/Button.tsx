@@ -103,11 +103,6 @@ export function Button({
 const styles = StyleSheet.create({
   primaryWrapper: {
     borderRadius: 14,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
-    elevation: 8,
   },
   primaryButton: {
     paddingVertical: 16,
@@ -115,6 +110,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 14,
+    
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    elevation: 8,
     
     // 3D Pushable effect
     borderTopWidth: 1,
