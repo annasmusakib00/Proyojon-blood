@@ -33,8 +33,7 @@ export default function TabLayout() {
           <View style={{ flex: 1, overflow: 'visible' }}>
             {/* Red curve overlaying behind the nav bar, merging with it */}
             <View style={{ position: 'absolute', top: 32, left: -16, right: -16, bottom: -50, backgroundColor: Colors.primary, borderTopLeftRadius: 24, borderTopRightRadius: 24 }} />
-            <View style={{ flex: 1, borderRadius: 100, overflow: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
-              <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFill} />
+            <View style={{ flex: 1, borderRadius: 100, overflow: 'hidden', backgroundColor: '#FFF' }}>
               <View style={[StyleSheet.absoluteFill, { borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', borderRadius: 100 }]} />
             </View>
           </View>

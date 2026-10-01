@@ -47,12 +47,14 @@ export async function updateLocationText(locationText: string) {
 export async function getAllDonors(filters?: {
   blood_group?: string;
   location?: string;
+  search?: string;
   page?: number;
   limit?: number;
 }) {
   const params = new URLSearchParams();
   if (filters?.blood_group) params.set('blood_group', filters.blood_group);
   if (filters?.location) params.set('location', filters.location);
+  if (filters?.search) params.set('search', filters.search);
   if (filters?.page) params.set('page', String(filters.page));
   if (filters?.limit) params.set('limit', String(filters.limit));
 

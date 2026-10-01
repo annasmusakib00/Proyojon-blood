@@ -28,6 +28,7 @@ export default function DonorsScreen() {
   const [loadingMore, setLoadingMore] = useState(false);
 
   // Filters
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedBloodGroup, setSelectedBloodGroup] = useState<string>('');
   const [selectedDivision, setSelectedDivision] = useState<string>('');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
@@ -47,6 +48,7 @@ export default function DonorsScreen() {
       const result = await donorService.getAllDonors({
         blood_group: selectedBloodGroup || undefined,
         location: locationFilter || undefined,
+        search: searchQuery || undefined,
         page: pageNum,
         limit: 20,
       });
@@ -67,10 +69,13 @@ export default function DonorsScreen() {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [selectedBloodGroup, selectedDivision, selectedDistrict]);
+  }, [selectedBloodGroup, selectedDivision, selectedDistrict, searchQuery]);
 
   useEffect(() => {
-    fetchDonors(1, false);
+    const timer = setTimeout(() => {
+      fetchDonors(1, false);
+    }, 400);
+    return () => clearTimeout(timer);
   }, [fetchDonors]);
 
   const onRefresh = async () => {
@@ -158,6 +163,10 @@ export default function DonorsScreen() {
             style={styles.searchInput}
             placeholder="Search by name or location..."
             placeholderTextColor={Colors.textMuted}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            returnKeyType="search"
+            onSubmitEditing={() => fetchDonors(1, false)}
           />
           <TouchableOpacity 
             style={styles.filterIconButton}

@@ -183,9 +183,6 @@ export default function HistoryScreen() {
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <Text style={styles.title}>{t('history.title')}</Text>
-          <TouchableOpacity style={styles.filterBtn}>
-            <Feather name="sliders" size={20} color={Colors.primary} />
-          </TouchableOpacity>
         </View>
 
         <View style={styles.tabRow}>
