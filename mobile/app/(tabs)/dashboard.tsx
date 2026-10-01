@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
   headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1, marginRight: 16 },
   profileAvatar: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: '#FFFFFF' },
   greeting: { color: 'rgba(255,255,255,0.85)', fontSize: 12, fontWeight: '500' },
-  userName: { color: '#FFFFFF', fontSize: 18, fontWeight: '700' },
+  userName: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
   bloodBadge: {
     width: 48, height: 48, borderRadius: 24, backgroundColor: '#FFFFFF',
     alignItems: 'center', justifyContent: 'center',
