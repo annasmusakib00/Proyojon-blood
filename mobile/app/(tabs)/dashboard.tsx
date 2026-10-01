@@ -168,10 +168,63 @@ export default function DashboardScreen() {
         flatListData={recentRequests}
         flatListKeyExtractor={(item: any) => item._id}
         flatListRenderItem={({ item }: { item: any }) => (
-          <RequestCard 
-            request={item} 
-            onPress={() => router.push(`/(tabs)/request?id=${item._id}`)} 
-          />
+          <TouchableOpacity
+            key={item.id || item._id}
+            onPress={() => router.push(`/request/${item.id || item._id}`)}
+          >
+            <Card style={styles.activityCard}>
+              <View style={styles.activityRow}>
+                <Text style={styles.activityBlood}>
+                  {item.bloodGroup?.replace('_POS', '+').replace('_NEG', '−')}
+                </Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.activityHospital}>
+                    {item.hospitalName}
+                  </Text>
+                  <Text style={styles.activityDate}>
+                    {new Date(item.createdAt).toLocaleDateString('bn-BD', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    styles.statusBadge,
+                    {
+                      backgroundColor:
+                        item.status === 'EXPIRED'
+                          ? Colors.surfaceLight
+                          : item.status === 'COMPLETED'
+                            ? Colors.success + '22'
+                            : item.status === 'PENDING'
+                              ? Colors.warning + '22'
+                              : Colors.info + '22',
+                    },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.statusText,
+                      {
+                        color:
+                          item.status === 'EXPIRED'
+                            ? Colors.textMuted
+                            : item.status === 'COMPLETED'
+                              ? Colors.success
+                              : item.status === 'PENDING'
+                                ? Colors.warning
+                                : Colors.info,
+                      },
+                    ]}
+                  >
+                    {item.status}
+                  </Text>
+                </View>
+              </View>
+            </Card>
+          </TouchableOpacity>
         )}
         flatListProps={{
           ListHeaderComponent: (
