@@ -249,30 +249,6 @@ export default function DashboardScreen() {
           )}
         </View>
 
-        <View style={styles.actionContainer}>
-          <Animated.View style={{ transform: [{ scale: buttonScaleAnim }] }}>
-            <TouchableOpacity
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                router.push('/(tabs)/request');
-              }}
-              activeOpacity={0.8}
-            >
-              <LinearGradient
-                colors={[Colors.primary, Colors.primaryDark]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.requestButton}
-              >
-                <Ionicons name="search" size={48} color="#FFF" />
-              </LinearGradient>
-            </TouchableOpacity>
-          </Animated.View>
-          <Text style={styles.requestButtonLabelText}>
-            {t('dashboard.requestBlood')}
-          </Text>
-        </View>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
           {recentRequests.length === 0 ? (
@@ -340,6 +316,35 @@ export default function DashboardScreen() {
               </TouchableOpacity>
             ))
           )}
+        </View>
+
+        <View style={styles.actionContainer}>
+          <Animated.View style={{ transform: [{ scale: buttonScaleAnim }] }}>
+            <TouchableOpacity
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                router.push('/(tabs)/request');
+              }}
+              activeOpacity={0.8}
+            >
+              <LinearGradient
+                colors={[Colors.primary, Colors.primaryDark]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.newRequestButton}
+              >
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  <Text style={styles.requestButtonTextSide}>দ্রুত ডোনার খুঁজুন</Text>
+                </View>
+                <View style={styles.requestButtonCenterCircle}>
+                  <Ionicons name="search" size={28} color={Colors.primary} />
+                </View>
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                  <Text style={styles.requestButtonTextSide}>এখানে ক্লিক করে</Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          </Animated.View>
         </View>
       </ScrollView>
         </ImageBackground>
@@ -431,25 +436,37 @@ const styles = StyleSheet.create({
   statusBadge: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
   statusText: { fontSize: 9, fontWeight: '700' },
 
-  actionContainer: { paddingVertical: 16, alignItems: 'center' },
-  requestButton: {
-    backgroundColor: Colors.primary,
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    justifyContent: 'center',
+  actionContainer: { paddingVertical: 16 },
+  newRequestButton: {
+    flexDirection: 'row',
     alignItems: 'center',
-    elevation: 12,
+    justifyContent: 'space-between',
+    backgroundColor: Colors.primary,
+    borderRadius: 100, // Pill shape
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    elevation: 8,
     shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
   },
-  requestButtonLabelText: {
-    marginTop: 12,
-    color: Colors.text,
-    fontSize: 18,
-    fontWeight: '800',
-    letterSpacing: 0.5,
+  requestButtonCenterCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+  },
+  requestButtonTextSide: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '700',
   },
 });
