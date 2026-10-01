@@ -41,15 +41,16 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: '700',
-          marginBottom: 4,
-          marginTop: -4,
+          marginBottom: 6,
+          marginTop: 2,
           lineHeight: 12,
         },
         tabBarItemStyle: {
           borderRadius: 100, // perfect pill
           marginHorizontal: 4,
-          marginVertical: 6,
-          paddingTop: 4,
+          marginVertical: 4,
+          paddingTop: 6,
+          paddingBottom: 2,
         },
       }}
     >
