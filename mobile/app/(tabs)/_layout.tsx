@@ -36,17 +36,20 @@ export default function TabLayout() {
           </View>
         ),
         tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.textMuted,
-        tabBarActiveBackgroundColor: Colors.primaryGhost,
+        tabBarInactiveTintColor: '#888888',
+        tabBarActiveBackgroundColor: 'rgba(138, 3, 3, 0.08)',
         tabBarLabelStyle: {
           fontSize: 10,
           fontWeight: '700',
-          marginBottom: 8,
+          marginBottom: 4,
+          marginTop: -4,
+          lineHeight: 12,
         },
         tabBarItemStyle: {
-          paddingTop: 8,
-          borderRadius: 20,
-          margin: 4,
+          borderRadius: 100, // perfect pill
+          marginHorizontal: 4,
+          marginVertical: 6,
+          paddingTop: 4,
         },
       }}
     >
@@ -72,10 +75,8 @@ export default function TabLayout() {
         name="donors"
         options={{
           title: 'ডোনার',
-          tabBarIcon: ({ focused }) => (
-            <View style={[styles.centerTab, focused && styles.centerTabActive]}>
-              <Ionicons name={focused ? 'heart' : 'heart-outline'} size={24} color={focused ? Colors.primary : Colors.textMuted} />
-            </View>
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? 'heart' : 'heart-outline'} size={24} color={color} />
           ),
         }}
       />
@@ -101,29 +102,4 @@ export default function TabLayout() {
   );
 }
 
-const styles = StyleSheet.create({
-  centerTab: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(0,0,0,0.05)',
-  },
-  centerTabActive: {
-    backgroundColor: Colors.primaryGhost,
-    borderColor: 'rgba(138, 3, 3, 0.2)',
-    elevation: 8,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-  },
-});
+const styles = StyleSheet.create({});
