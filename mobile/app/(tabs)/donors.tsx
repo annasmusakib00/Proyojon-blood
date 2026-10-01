@@ -45,6 +45,15 @@ export default function DonorsScreen() {
   const [total, setTotal] = useState(0);
 
   const fetchDonors = useCallback(async (pageNum = 1, append = false) => {
+    if (!searchQuery && !selectedBloodGroup && !selectedDivision && !selectedDistrict) {
+      setDonors([]);
+      setTotal(0);
+      setTotalPages(1);
+      setLoading(false);
+      setLoadingMore(false);
+      return;
+    }
+
     try {
       if (pageNum === 1) setLoading(true);
       else setLoadingMore(true);
@@ -99,6 +108,7 @@ export default function DonorsScreen() {
     setSelectedBloodGroup('');
     setSelectedDivision('');
     setSelectedDistrict('');
+    setSearchQuery('');
   };
 
   const activeFilterCount = [selectedBloodGroup, selectedDivision, selectedDistrict].filter(Boolean).length;
@@ -361,13 +371,17 @@ export default function DonorsScreen() {
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyIcon}>🔍</Text>
+            <Text style={styles.emptyIcon}>{(!hasActiveFilters && !searchQuery) ? '📍' : '🔍'}</Text>
             <Text style={styles.emptyText}>
-              {loading ? 'ডোনার খোঁজা হচ্ছে...' : 'কোনো ডোনার পাওয়া যায়নি'}
+              {loading 
+                ? 'ডোনার খোঁজা হচ্ছে...' 
+                : (!hasActiveFilters && !searchQuery)
+                  ? 'ডোনর খুঁজতে আপনার লোকেশন লিখে সার্চ করুন'
+                  : 'কোনো ডোনার পাওয়া যায়নি'}
             </Text>
-            {hasActiveFilters && !loading && (
+            {(hasActiveFilters || searchQuery) && !loading && (
               <TouchableOpacity style={styles.clearEmptyBtn} onPress={clearFilters}>
-                <Text style={styles.clearEmptyBtnText}>ফিল্টার সরিয়ে আবার দেখুন</Text>
+                <Text style={styles.clearEmptyBtnText}>সার্চ/ফিল্টার সরিয়ে ফেলুন</Text>
               </TouchableOpacity>
             )}
           </View>
