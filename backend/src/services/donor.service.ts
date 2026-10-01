@@ -120,6 +120,7 @@ export async function getProfile(userId: string) {
 export async function getAllDonors(filters: {
   blood_group?: string;
   location?: string;
+  search?: string;
   page?: number;
   limit?: number;
 }): Promise<{ donors: any[]; total: number; page: number; totalPages: number }> {
@@ -138,11 +139,16 @@ export async function getAllDonors(filters: {
   }
 
   if (filters.location) {
-    // Search in the user's name or any text-based location fields
-    // Since we store lat/lng, we also match division/district via a location field
     where.locationText = {
       contains: filters.location,
     };
+  }
+
+  if (filters.search) {
+    where.OR = [
+      { name: { contains: filters.search } },
+      { locationText: { contains: filters.search } },
+    ];
   }
 
   const [donors, total] = await Promise.all([

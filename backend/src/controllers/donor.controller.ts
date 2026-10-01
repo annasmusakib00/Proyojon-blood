@@ -67,10 +67,11 @@ export async function getProfile(req: Request, res: Response, next: NextFunction
 
 export async function getAllDonors(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
-    const { blood_group, location, page, limit } = req.query;
+    const { blood_group, location, search, page, limit } = req.query;
     const result = await donorService.getAllDonors({
       blood_group: blood_group as string | undefined,
       location: location as string | undefined,
+      search: search as string | undefined,
       page: page ? parseInt(page as string) : undefined,
       limit: limit ? parseInt(limit as string) : undefined,
     });
