@@ -66,6 +66,14 @@ export default function WelcomeScreen() {
         >
           <Text style={styles.loginButtonText}>{t('welcome.login')}</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.loginButton, { marginTop: 15, borderColor: Colors.primary, borderWidth: 1, backgroundColor: 'transparent', elevation: 0 }]}
+          onPress={() => router.push('/(auth)/onboarding')}
+          activeOpacity={0.8}
+        >
+          <Text style={[styles.loginButtonText, { fontSize: 14 }]}>[Test] View Onboarding</Text>
+        </TouchableOpacity>
       </ImageBackground>
     </View>
   );
