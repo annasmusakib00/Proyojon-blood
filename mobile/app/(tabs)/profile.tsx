@@ -160,7 +160,7 @@ export default function ProfileScreen() {
 
       <CustomRefreshScrollView 
         outerStyle={{ flex: 1 }}
-        innerStyle={styles.contentBgWrapper}
+        innerStyle={[styles.contentBgWrapper, { marginTop: -26 }]}
         imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
         imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'cover' }}
         style={{ flex: 1 }} 
@@ -168,6 +168,7 @@ export default function ProfileScreen() {
         refreshing={refreshing}
         onRefresh={onRefresh}
       >
+        <View style={styles.headerHandleBar} />
 
       <View style={styles.profileHeader}>
         <TouchableOpacity onPress={pickImage} disabled={uploading}>
@@ -326,14 +327,23 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  contentBgWrapper: { flex: 1 },
+  container: { flex: 1, backgroundColor: Colors.primary },
+  contentBgWrapper: { 
+    flex: 1,
+    backgroundColor: Colors.background,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 8,
+  },
   header: {
     paddingTop: 54,
-    paddingBottom: 16,
+    paddingBottom: 38,
     backgroundColor: Colors.primary,
-    marginBottom: 12,
-    zIndex: 10,
   },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20 },
   screenTitle: { color: '#FFF', fontSize: 26, fontWeight: '800' },
@@ -343,6 +353,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12,
   },
   langToggleText: { color: '#FFF', fontSize: 13, fontWeight: '700' },
+  headerHandleBar: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+    alignSelf: 'center',
+    marginTop: 8,
+    marginBottom: 4,
+  },
   
   contentContainer: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 120 },
   profileHeader: { alignItems: 'center', marginBottom: 16 },

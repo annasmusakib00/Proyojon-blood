@@ -7,7 +7,7 @@ import * as Haptics from 'expo-haptics';
 import { t } from '../../utils/i18n';
 import { useLocaleStore } from '../../stores/localeStore';
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const slides = [
   {
@@ -48,10 +48,17 @@ export default function OnboardingScreen() {
     }
   };
 
+  const handleBack = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    router.replace('/(auth)/welcome');
+  };
+
   const renderItem = ({ item }: { item: typeof slides[0] }) => {
     return (
       <View style={styles.slide}>
-        <Image source={item.image} style={styles.image} resizeMode="contain" />
+        <View style={styles.imageContainer}>
+          <Image source={item.image} style={styles.image} resizeMode="contain" />
+        </View>
         <View style={styles.textContainer}>
           <Text style={styles.title}>{t(item.titleKey)}</Text>
           <Text style={styles.description}>{t(item.descKey)}</Text>
@@ -62,6 +69,16 @@ export default function OnboardingScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Top Bar with Back and Skip */}
+      <View style={styles.topBar}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+          <Ionicons name="arrow-back" size={22} color={Colors.primary} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleBack}>
+          <Text style={styles.skipText}>এড়িয়ে যান</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         ref={flatListRef}
         data={slides}
@@ -73,6 +90,7 @@ export default function OnboardingScreen() {
         keyExtractor={(item) => item.id}
         onScroll={handleScroll}
         scrollEventThrottle={16}
+        style={{ flex: 1 }}
       />
 
       <View style={styles.footer}>
@@ -109,40 +127,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
   },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 8,
+    zIndex: 10,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.primaryGhost,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  skipText: {
+    color: Colors.textSecondary,
+    fontSize: 14,
+    fontWeight: '600',
+  },
   slide: {
     width,
     alignItems: 'center',
-    paddingTop: height * 0.1,
+    justifyContent: 'center',
+    paddingHorizontal: 30,
+  },
+  imageContainer: {
+    width: width * 0.72,
+    height: width * 0.72,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 28,
   },
   image: {
-    width: width * 0.8,
-    height: width * 0.8,
-    marginBottom: 40,
+    width: '100%',
+    height: '100%',
   },
   textContainer: {
-    paddingHorizontal: 40,
     alignItems: 'center',
+    paddingHorizontal: 10,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: '800',
-    color: '#1A1A1A', // Dark charcoal/black
+    color: Colors.primary,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   description: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '500',
-    color: '#4B5563', // Dark charcoal grey
+    color: '#4B5563',
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 22,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 40,
-    paddingBottom: 40,
+    paddingHorizontal: 30,
+    paddingBottom: 36,
   },
   paginationContainer: {
     flexDirection: 'row',
@@ -155,11 +202,11 @@ const styles = StyleSheet.create({
   },
   activeDot: {
     width: 24,
-    backgroundColor: Colors.primary, // #8A0303 Real Blood
+    backgroundColor: Colors.primary,
   },
   inactiveDot: {
     width: 8,
-    backgroundColor: '#D3D3D3', // Light grey
+    backgroundColor: '#D3D3D3',
   },
   nextButton: {
     width: 56,

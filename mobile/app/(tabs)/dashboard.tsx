@@ -156,7 +156,7 @@ export default function DashboardScreen() {
 
       <CustomRefreshScrollView
         outerStyle={{ flex: 1 }}
-        innerStyle={styles.contentBgWrapper}
+        innerStyle={[styles.contentBgWrapper, { marginTop: -26 }]}
         imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
         imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'cover' }}
         style={styles.contentScroll} 
@@ -228,7 +228,8 @@ export default function DashboardScreen() {
         )}
         ListHeaderComponent={(
           <>
-        <View style={styles.sliderContainer}>
+            <View style={styles.headerHandleBar} />
+            <View style={styles.sliderContainer}>
           <ScrollView
             ref={scrollViewRef}
             horizontal
@@ -369,37 +370,61 @@ const styles = StyleSheet.create({
   contentBgWrapper: {
     flex: 1,
     backgroundColor: Colors.background,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 8,
   },
   contentScroll: { 
     flex: 1, 
   },
-  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 20, paddingBottom: 110 },
+  contentContainer: { flexGrow: 1, paddingHorizontal: 16, paddingTop: 4, paddingBottom: 110 },
   topHeader: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
     alignItems: 'center', 
     paddingHorizontal: 20,
     paddingTop: 54, // Adjust for status bar
-    paddingBottom: 20, 
+    paddingBottom: 42, 
     backgroundColor: Colors.primary,
-    zIndex: 10,
   },
   headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1, marginRight: 16 },
-  profileAvatar: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: '#FFFFFF' },
+  profileAvatar: { 
+    width: 44, 
+    height: 44, 
+    borderRadius: 22, 
+    borderWidth: 2.5, 
+    borderColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4,
+  },
   greeting: { color: 'rgba(255,255,255,0.85)', fontSize: 12, fontWeight: '500' },
   userName: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
   bloodBadge: {
     width: 48, height: 48, borderRadius: 24, backgroundColor: '#FFFFFF',
     alignItems: 'center', justifyContent: 'center',
-    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3
+    shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 6, elevation: 4
   },
   bloodBadgeText: { color: Colors.primary, fontSize: 16, fontWeight: '800' },
   headerSearchIcon: {
     width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.15)',
     alignItems: 'center', justifyContent: 'center'
+  },
+  headerHandleBar: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+    alignSelf: 'center',
+    marginTop: 8,
+    marginBottom: 12,
   },
 
   sliderContainer: { marginBottom: 12, borderRadius: 16, overflow: 'hidden', height: 160 },

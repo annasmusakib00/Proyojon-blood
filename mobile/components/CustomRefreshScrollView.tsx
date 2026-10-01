@@ -88,23 +88,24 @@ export function CustomRefreshScrollView({
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
-        // Capture the gesture if we are near the top and pulling down
-        return scrollY.current <= 5 && gestureState.dy > 5 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
+        // Capture gesture more aggressively
+        return scrollY.current <= 5 && gestureState.dy > 2 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
       },
       onPanResponderGrant: () => {
         setIsPulling(true);
       },
       onPanResponderMove: (evt, gestureState) => {
         if (gestureState.dy > 0 && !refreshing) {
-          // Dampen the pull slightly less so it's easier to reach
-          const pullDistance = Math.min(gestureState.dy * 0.6, REFRESH_THRESHOLD * 1.5);
+          // 1:1 pull ratio for more responsive feel
+          const pullDistance = Math.min(gestureState.dy, REFRESH_THRESHOLD * 1.5);
           pullY.setValue(pullDistance);
         }
       },
       onPanResponderRelease: (evt, gestureState) => {
         setIsPulling(false);
-        const pullDistance = gestureState.dy * 0.6;
-        if (pullDistance >= REFRESH_THRESHOLD * 0.7 && !refreshing) {
+        const pullDistance = gestureState.dy;
+        // Trigger refresh much earlier
+        if (pullDistance >= REFRESH_THRESHOLD * 0.5 && !refreshing) {
           onRefresh();
         } else if (!refreshing) {
           Animated.spring(pullY, {
@@ -123,6 +124,38 @@ export function CustomRefreshScrollView({
 
   return (
     <View style={[styles.container, outerStyle]}>
+      {/* Refresh indicator renders FIRST (behind the body).
+          When body slides down, this white area is revealed underneath. */}
+      <View style={styles.refreshIndicatorContainer} pointerEvents="none">
+        <Animated.View
+          style={[
+            styles.refreshIconWrapper,
+            {
+              transform: [
+                {
+                  scale: pullY.interpolate({
+                    inputRange: [0, REFRESH_THRESHOLD * 0.6],
+                    outputRange: [0, 1],
+                    extrapolate: 'clamp',
+                  }),
+                },
+                { 
+                  rotate: refreshing ? spin : pullY.interpolate({
+                    inputRange: [0, REFRESH_THRESHOLD * 0.6],
+                    outputRange: ['0deg', '360deg'],
+                    extrapolate: 'clamp',
+                  }) 
+                },
+              ],
+            },
+          ]}
+        >
+          <Ionicons name="water" size={24} color={Colors.primary} />
+        </Animated.View>
+      </View>
+
+      {/* Body renders AFTER (on top of refresh indicator).
+          When pulled down, body slides revealing the indicator behind it. */}
       <Animated.View
         style={{ flex: 1, transform: [{ translateY: pullY }] }}
         {...panResponder.panHandlers}
@@ -205,35 +238,6 @@ export function CustomRefreshScrollView({
         )}
         </View>
       </Animated.View>
-
-      <View style={styles.refreshIndicatorContainer} pointerEvents="none">
-        <Animated.View
-          style={[
-            styles.refreshIconWrapper,
-            {
-              transform: [
-                {
-                  scale: pullY.interpolate({
-                    inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: [0, 1],
-                    extrapolate: 'clamp',
-                  }),
-                },
-                { 
-                  rotate: refreshing ? spin : pullY.interpolate({
-                    inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: ['0deg', '360deg'],
-                    extrapolate: 'clamp',
-                  }) 
-                },
-              ],
-            },
-          ]}
-        >
-          {/* Custom Theme Icon */}
-          <Ionicons name="water" size={24} color={Colors.primary} />
-        </Animated.View>
-      </View>
     </View>
   );
 }
@@ -241,18 +245,17 @@ export function CustomRefreshScrollView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: 'transparent',
     overflow: 'visible',
   },
   refreshIndicatorContainer: {
     position: 'absolute',
-    top: 0,
+    top: 26, // Counter-acts the marginTop: -26 of outerStyle so it starts exactly below the header
     left: 0,
     right: 0,
-    height: REFRESH_THRESHOLD,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'visible',
   },
   refreshIconWrapper: {
     width: 40,

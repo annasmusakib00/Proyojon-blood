@@ -25,12 +25,12 @@ export default function WelcomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Bottom overlay as requested */}
+      {/* Bottom overlay for creator credit */}
       <View style={styles.bottomOverlay}>
         <Text style={styles.madeByText}>Made by AN NASMU SAKIB</Text>
       </View>
 
-      {/* Top Half - Red Theme Overlay with Image */}
+      {/* Top Section - White Background with Transparent Image Texture */}
       <ImageBackground 
         source={require('../../assets/images/header-bg.jpg')}
         style={styles.topHalf}
@@ -38,17 +38,17 @@ export default function WelcomeScreen() {
       >
         <SafeAreaView style={styles.safeArea}>
           <TouchableOpacity style={styles.langToggle} onPress={toggleLocale}>
-            <Ionicons name="globe-outline" size={18} color="#FFF" />
+            <Ionicons name="globe-outline" size={18} color={Colors.primary} />
             <Text style={styles.langToggleText}>{locale === 'en' ? 'EN' : 'BN'}</Text>
           </TouchableOpacity>
 
           <Text style={styles.title}>{t('welcome.title')}</Text>
           <Text style={styles.tagline}>{t('welcome.tagline')}</Text>
-          <View style={[styles.iconContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 10 }]}>
+          <View style={styles.iconContainer}>
             <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10 }}>
               <Text style={styles.sideText}>{t('welcome.giveBlood')}</Text>
             </View>
-            <Ionicons name="water" size={130} color="#FFFFFF" style={styles.icon} />
+            <Ionicons name="water" size={115} color={Colors.primary} style={styles.icon} />
             <View style={{ flex: 1, alignItems: 'flex-start', paddingLeft: 10 }}>
               <Text style={styles.sideText}>{t('welcome.saveLife')}</Text>
             </View>
@@ -56,36 +56,46 @@ export default function WelcomeScreen() {
         </SafeAreaView>
       </ImageBackground>
 
-      {/* Bottom Half - White Space with Buttons */}
-      <ImageBackground 
-        source={require('../../assets/images/body-bg.jpg')}
-        style={styles.bottomHalf}
-        imageStyle={{ opacity: 0.12, resizeMode: 'cover' }}
-      >
-        <TouchableOpacity
-          style={styles.registerButton}
-          onPress={handleRegister}
-          activeOpacity={0.8}
+      {/* Floating White Sheet with Transparent 3D Buttons & Powered By Text */}
+      <View style={styles.bottomSheetWrapper}>
+        <ImageBackground 
+          source={require('../../assets/images/body-bg.jpg')}
+          style={styles.bottomHalf}
+          imageStyle={{ opacity: 0.04, resizeMode: 'cover' }}
         >
-          <Text style={styles.registerButtonText}>{t('welcome.register')}</Text>
-        </TouchableOpacity>
+          {/* Register Button (3D Red Glass, Rounded Corners) */}
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={handleRegister}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.registerButtonText}>{t('welcome.register')}</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={handleLogin}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.loginButtonText}>{t('welcome.login')}</Text>
-        </TouchableOpacity>
+          {/* Login Button (3D Transparent Glass, Rounded Corners) */}
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleLogin}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.loginButtonText}>{t('welcome.login')}</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={[styles.loginButton, { marginTop: 15, borderColor: Colors.primary, borderWidth: 1, backgroundColor: 'transparent', elevation: 0 }]}
-          onPress={() => router.push('/(auth)/onboarding')}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.loginButtonText, { fontSize: 14 }]}>{t('welcome.checkThisOut')}</Text>
-        </TouchableOpacity>
-      </ImageBackground>
+          {/* Check This Out Button (3D Transparent Glass Outline, Rounded Corners) */}
+          <TouchableOpacity
+            style={styles.checkThisOutButton}
+            onPress={() => router.push('/(auth)/onboarding')}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.checkThisOutButtonText}>{t('welcome.checkThisOut')}</Text>
+          </TouchableOpacity>
+
+          {/* Powered by PROYOJON text under all buttons */}
+          <View style={styles.poweredByContainer}>
+            <Text style={styles.poweredByText}>Powered by <Text style={styles.poweredByBrand}>PROYOJON</Text></Text>
+          </View>
+        </ImageBackground>
+      </View>
     </View>
   );
 }
@@ -96,19 +106,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   topHalf: {
-    height: height * 0.55,
-    backgroundColor: Colors.primary,
-    borderBottomLeftRadius: 50,
-    borderBottomRightRadius: 50,
-    elevation: 15,
-    shadowColor: Colors.primaryDark,
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 15,
-    overflow: 'hidden', // to ensure background image stays inside rounded corners
+    height: height * 0.52,
+    backgroundColor: '#FFFFFF',
+    overflow: 'hidden',
   },
   topHalfImage: {
-    opacity: 0.15,
+    opacity: 0.08,
     resizeMode: 'cover',
   },
   langToggle: {
@@ -120,12 +123,14 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 12, 
     paddingVertical: 6,
-    backgroundColor: 'rgba(255,255,255,0.2)', 
-    borderRadius: 12,
+    backgroundColor: 'rgba(138, 3, 3, 0.08)', 
+    borderWidth: 1,
+    borderColor: 'rgba(138, 3, 3, 0.2)',
+    borderRadius: 20,
     zIndex: 10,
   },
   langToggleText: { 
-    color: '#FFFFFF', 
+    color: Colors.primary, 
     fontSize: 13, 
     fontWeight: '700' 
   },
@@ -134,48 +139,61 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 30,
-    paddingTop: 60,
+    paddingTop: 30,
   },
   title: {
-    color: '#FFFFFF',
-    fontSize: 36,
+    color: Colors.primary,
+    fontSize: 34,
     fontWeight: '900',
-    marginBottom: 10,
+    marginBottom: 6,
     textAlign: 'center',
     letterSpacing: 1,
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 4 },
-    textShadowRadius: 6,
   },
   tagline: {
-    color: 'rgba(255,255,255,0.9)',
-    fontSize: 18,
+    color: Colors.textSecondary,
+    fontSize: 15,
     fontWeight: '600',
-    marginBottom: 30,
+    marginBottom: 14,
     textAlign: 'center',
-    lineHeight: 28,
+    lineHeight: 24,
   },
   iconContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 4,
   },
   icon: {
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 8 },
-    textShadowRadius: 15,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
   },
   sideText: {
-    color: '#FFFFFF',
-    fontSize: 18,
+    color: Colors.primary,
+    fontSize: 17,
     fontWeight: '800',
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 0, height: 4 },
-    textShadowRadius: 6,
+  },
+  bottomSheetWrapper: {
+    flex: 1,
+    marginTop: -26,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 36,
+    borderTopRightRadius: 36,
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 12,
+    overflow: 'hidden',
+    zIndex: 5,
   },
   bottomHalf: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
+    paddingTop: 48,
     paddingHorizontal: 30,
   },
   bottomOverlay: {
@@ -183,34 +201,36 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 45,
+    height: 40,
     backgroundColor: Colors.primary,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
-    zIndex: 1,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    zIndex: 10,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingBottom: 10,
+    justifyContent: 'center',
+    paddingBottom: 4,
   },
   madeByText: {
-    color: 'rgba(255,255,255,0.8)',
+    color: 'rgba(255,255,255,0.9)',
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1,
   },
   registerButton: {
-    backgroundColor: Colors.primary,
-    paddingVertical: 18,
-    borderRadius: 16,
+    backgroundColor: 'rgba(138, 3, 3, 0.92)',
+    paddingVertical: 16,
+    borderRadius: 28,
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 14,
     elevation: 8,
     shadowColor: Colors.primaryDark,
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.35,
     shadowRadius: 8,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
     borderBottomWidth: 5,
-    borderColor: Colors.primaryDark, // 3D effect
+    borderBottomColor: '#5C0101',
   },
   registerButtonText: {
     color: '#FFFFFF',
@@ -219,24 +239,61 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   loginButton: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 18,
-    borderRadius: 16,
+    backgroundColor: 'rgba(138, 3, 3, 0.04)',
+    paddingVertical: 16,
+    borderRadius: 28,
     alignItems: 'center',
+    marginBottom: 14,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    borderWidth: 2,
-    borderColor: '#EEEEEE',
-    borderBottomWidth: 5, // 3D effect
-    borderBottomColor: '#DDDDDD',
+    borderWidth: 1.5,
+    borderColor: 'rgba(138, 3, 3, 0.25)',
+    borderBottomWidth: 5,
+    borderBottomColor: 'rgba(138, 3, 3, 0.35)',
   },
   loginButtonText: {
     color: Colors.primary,
     fontSize: 18,
     fontWeight: '800',
     letterSpacing: 0.5,
+  },
+  checkThisOutButton: {
+    backgroundColor: 'rgba(138, 3, 3, 0.02)',
+    paddingVertical: 14,
+    borderRadius: 28,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    borderWidth: 1.5,
+    borderColor: 'rgba(138, 3, 3, 0.2)',
+    borderBottomWidth: 4,
+    borderBottomColor: 'rgba(138, 3, 3, 0.28)',
+  },
+  checkThisOutButtonText: {
+    color: Colors.primary,
+    fontSize: 14,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+  poweredByContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  poweredByText: {
+    color: Colors.textMuted,
+    fontSize: 12,
+    fontWeight: '600',
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+  },
+  poweredByBrand: {
+    color: Colors.primary,
+    fontWeight: '800',
   },
 });

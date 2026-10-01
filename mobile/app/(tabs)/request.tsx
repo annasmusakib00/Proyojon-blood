@@ -140,7 +140,7 @@ export default function RequestScreen() {
         </View>
         <CustomRefreshScrollView 
           outerStyle={{ flex: 1 }}
-          innerStyle={styles.contentBgWrapper}
+          innerStyle={[styles.contentBgWrapper, { marginTop: -26 }]}
           imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
           imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'cover' }}
           style={styles.scrollView} 
@@ -149,6 +149,7 @@ export default function RequestScreen() {
           refreshing={refreshing}
           onRefresh={onRefresh}
         >
+          <View style={styles.headerHandleBar} />
 
 
 
@@ -308,18 +309,36 @@ export default function RequestScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  contentBgWrapper: { flex: 1 },
+  container: { flex: 1, backgroundColor: Colors.primary },
+  contentBgWrapper: { 
+    flex: 1,
+    backgroundColor: Colors.background,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 8,
+  },
   header: {
     paddingHorizontal: 20,
     paddingTop: 54,
-    paddingBottom: 16,
+    paddingBottom: 38,
     backgroundColor: Colors.primary,
-    marginBottom: 12,
-    zIndex: 10,
   },
   headerTitle: { color: '#FFF', fontSize: 24, fontWeight: '800', marginBottom: 4 },
   headerSubtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 13, lineHeight: 19 },
+  headerHandleBar: {
+    width: 36,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(0, 0, 0, 0.12)',
+    alignSelf: 'center',
+    marginTop: 8,
+    marginBottom: 4,
+  },
   
   scrollView: { flex: 1 },
   content: { padding: 20, paddingBottom: 110 },
