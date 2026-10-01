@@ -17,7 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Ionicons } from '@expo/vector-icons';
 import { useAuthStore } from '../../stores/authStore';
 import { useLocaleStore } from '../../stores/localeStore';
 import { t } from '../../utils/i18n';
@@ -213,7 +213,10 @@ export default function DashboardScreen() {
 
         <View style={styles.statsRow}>
           <Card style={styles.statCard}>
-            <Text style={styles.statValue}>{user?.donationCount || 0}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text style={styles.statValue}>{user?.donationCount || 0}</Text>
+              <Ionicons name="water" size={16} color={Colors.primary} />
+            </View>
             <Text style={styles.statLabel}>{t('dashboard.donations')}</Text>
           </Card>
           {user?.badges?.some((b: any) => b.badgeType === 'HERO') && (
@@ -253,7 +256,7 @@ export default function DashboardScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.requestButton}
               >
-                <Feather name="search" size={52} color="#FFF" />
+                <Ionicons name="search" size={48} color="#FFF" />
               </LinearGradient>
             </TouchableOpacity>
           </Animated.View>
@@ -387,19 +390,22 @@ const styles = StyleSheet.create({
   slideIndicatorActive: { width: 20, backgroundColor: '#fff' },
 
   eligibilityCard: {
-    padding: 12, borderRadius: 14, borderWidth: 1, marginBottom: 12, alignItems: 'center',
-    backgroundColor: 'rgba(16, 185, 129, 0.08)', borderColor: Colors.success,
+    padding: 12, borderRadius: 14, marginBottom: 12, alignItems: 'center',
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
   },
   lockedContainer: { marginBottom: 12 },
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 2 },
   statusDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: Colors.success },
-  availabilityLabel: { fontSize: 16, fontWeight: '800', color: Colors.success },
-  availabilityHint: { fontSize: 12, marginTop: 2, fontWeight: '500', color: Colors.success },
+  availabilityLabel: { fontSize: 16, fontWeight: '800', color: Colors.text },
+  availabilityHint: { fontSize: 12, marginTop: 2, fontWeight: '600', color: Colors.textSecondary },
 
   statsRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
-  statCard: { flex: 1, alignItems: 'center', paddingVertical: 10 },
+  statCard: { 
+    flex: 1, alignItems: 'center', paddingVertical: 12,
+    elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.04, shadowRadius: 8
+  },
   statValue: { color: Colors.text, fontSize: 20, fontWeight: '800' },
-  statLabel: { color: Colors.textMuted, fontSize: 10, marginTop: 2 },
+  statLabel: { color: Colors.textSecondary, fontSize: 11, marginTop: 4, fontWeight: '600' },
 
   section: { flex: 1 },
   sectionTitle: { color: Colors.text, fontSize: 16, fontWeight: '700', marginBottom: 8 },
@@ -413,7 +419,7 @@ const styles = StyleSheet.create({
   statusBadge: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
   statusText: { fontSize: 9, fontWeight: '700' },
 
-  actionContainer: { paddingVertical: 24, alignItems: 'center' },
+  actionContainer: { paddingVertical: 16, alignItems: 'center' },
   requestButton: {
     backgroundColor: Colors.primary,
     width: 120,
@@ -421,14 +427,14 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 4,
+    elevation: 12,
     shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
   },
   requestButtonLabelText: {
-    marginTop: 16,
+    marginTop: 12,
     color: Colors.text,
     fontSize: 18,
     fontWeight: '800',
