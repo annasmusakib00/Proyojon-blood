@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   },
   bottomHalf: {
     flex: 1,
-    backgroundColor: '#FFFFFF', // Put white background back on bottomHalf
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     paddingHorizontal: 30,
   },
@@ -123,9 +123,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 40, // Match the safe area overlay in dashboard
+    height: 60,
     backgroundColor: Colors.primary,
-    zIndex: 1, // Fix visibility issue
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    zIndex: 1,
   },
   registerButton: {
     backgroundColor: Colors.primary,
