@@ -131,26 +131,34 @@ export default function RequestScreen() {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ImageBackground 
-        source={require('../../assets/images/body-bg.jpg')} 
-        style={styles.container} 
-        imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
-      >
-      <ScrollView 
-        style={styles.scrollView} 
-        contentContainerStyle={styles.content} 
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh} 
-            tintColor={Colors.primary} 
-            colors={[Colors.primary]} 
-          />
-        }
-      >
-        <Text style={styles.title}>{t('request.title')}</Text>
-        <Text style={styles.subtitle}>{t('request.subtitle')}</Text>
+      <View style={styles.container}>
+        <ImageBackground 
+          source={require('../../assets/images/header-bg.jpg')}
+          style={styles.header}
+          imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
+        >
+          <Text style={styles.headerTitle}>{t('request.title')}</Text>
+          <Text style={styles.headerSubtitle}>{t('request.subtitle')}</Text>
+        </ImageBackground>
+        
+        <ImageBackground 
+          source={require('../../assets/images/body-bg.jpg')} 
+          style={styles.contentBgWrapper} 
+          imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
+        >
+        <ScrollView 
+          style={styles.scrollView} 
+          contentContainerStyle={styles.content} 
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl 
+              refreshing={refreshing} 
+              onRefresh={onRefresh} 
+              tintColor={Colors.primary} 
+              colors={[Colors.primary]} 
+            />
+          }
+        >
 
 
 
@@ -298,6 +306,7 @@ export default function RequestScreen() {
         </View>
       </ScrollView>
       </ImageBackground>
+      </View>
 
       <ConveyanceAgreement
         visible={showAgreement}
@@ -311,10 +320,21 @@ export default function RequestScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
+  contentBgWrapper: { flex: 1 },
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 54,
+    paddingBottom: 16,
+    backgroundColor: Colors.primary,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    marginBottom: 12,
+  },
+  headerTitle: { color: '#FFF', fontSize: 24, fontWeight: '800', marginBottom: 4 },
+  headerSubtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 13, lineHeight: 19 },
+  
   scrollView: { flex: 1 },
-  content: { padding: 20, paddingTop: 56, paddingBottom: 110 },
-  title: { color: Colors.text, fontSize: 24, fontWeight: '800', marginBottom: 4 },
-  subtitle: { color: Colors.textSecondary, fontSize: 13, marginBottom: 20, lineHeight: 19 },
+  content: { padding: 20, paddingBottom: 110 },
 
   locationWarning: {
     flexDirection: 'row', alignItems: 'center', gap: 10,

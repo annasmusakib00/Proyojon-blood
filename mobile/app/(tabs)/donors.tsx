@@ -149,7 +149,11 @@ export default function DonorsScreen() {
   return (
     <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.035, resizeMode: 'repeat' }}>
       {/* Header */}
-      <View style={styles.header}>
+      <ImageBackground 
+        source={require('../../assets/images/header-bg.jpg')}
+        style={styles.header}
+        imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
+      >
         <Text style={styles.title}>সক্রিয় ডোনার</Text>
         
         <View style={styles.searchBarContainer}>
@@ -200,7 +204,7 @@ export default function DonorsScreen() {
             <Text style={[styles.quickFilterText, selectedDivision === 'Chattogram' && styles.quickFilterTextActive]}>Chattogram</Text>
           </TouchableOpacity>
         </ScrollView>
-      </View>
+      </ImageBackground>
 
       {/* Filter Panel */}
       {showFilters && (
@@ -356,14 +360,22 @@ export default function DonorsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background, paddingTop: 54 },
-  header: { paddingHorizontal: 20, marginBottom: 12 },
-  title: { color: Colors.text, fontSize: 22, fontWeight: '800' },
-  subtitle: { color: Colors.textSecondary, fontSize: 13, marginTop: 4, fontWeight: '600' },
+  container: { flex: 1, backgroundColor: Colors.background },
+  header: { 
+    paddingHorizontal: 20, 
+    paddingTop: 54, 
+    paddingBottom: 16,
+    marginBottom: 12, 
+    backgroundColor: Colors.primary,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  title: { color: '#FFF', fontSize: 22, fontWeight: '800' },
+  subtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: 4, fontWeight: '600' },
 
   searchBarContainer: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.surface,
-    borderRadius: 12, marginTop: 16, marginBottom: 12, borderWidth: 1, borderColor: Colors.border,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF',
+    borderRadius: 12, marginTop: 16, marginBottom: 12,
   },
   searchIcon: { paddingLeft: 12 },
   searchInput: { flex: 1, paddingVertical: 12, paddingHorizontal: 10, color: Colors.text, fontSize: 14 },
@@ -378,11 +390,11 @@ const styles = StyleSheet.create({
 
   quickFilterRow: { marginTop: 14, marginBottom: 4 },
   quickFilterChip: {
-    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: Colors.surface,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginRight: 8,
+    paddingHorizontal: 14, paddingVertical: 8, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.15)',
+    borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)', marginRight: 8,
   },
-  quickFilterChipActive: { backgroundColor: Colors.primaryGhost, borderColor: Colors.primary },
-  quickFilterText: { color: Colors.textSecondary, fontSize: 12, fontWeight: '600' },
+  quickFilterChipActive: { backgroundColor: '#FFF', borderColor: '#FFF' },
+  quickFilterText: { color: '#FFF', fontSize: 12, fontWeight: '600' },
   quickFilterTextActive: { color: Colors.primary, fontWeight: '700' },
 
   filterPanel: {

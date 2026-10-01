@@ -179,32 +179,40 @@ export default function HistoryScreen() {
   };
 
   return (
-    <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.035, resizeMode: 'repeat' }}>
-      <View style={styles.headerRow}>
-        <Text style={styles.title}>{t('history.title')}</Text>
-        <TouchableOpacity style={styles.filterBtn}>
-          <Feather name="sliders" size={20} color={Colors.text} />
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.tabRow}>
-        {TABS.map((tab) => (
-          <TouchableOpacity
-            key={tab}
-            style={[styles.tab, activeTab === tab && styles.tabActive]}
-            onPress={() => setActiveTab(tab)}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                activeTab === tab && styles.tabTextActive,
-              ]}
-            >
-              {t(`history.${tab}`)}
-            </Text>
+    <View style={styles.container}>
+      <ImageBackground 
+        source={require('../../assets/images/header-bg.jpg')}
+        style={styles.header}
+        imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
+      >
+        <View style={styles.headerRow}>
+          <Text style={styles.title}>{t('history.title')}</Text>
+          <TouchableOpacity style={styles.filterBtn}>
+            <Feather name="sliders" size={20} color={Colors.primary} />
           </TouchableOpacity>
-        ))}
-      </View>
+        </View>
+
+        <View style={styles.tabRow}>
+          {TABS.map((tab) => (
+            <TouchableOpacity
+              key={tab}
+              style={[styles.tab, activeTab === tab && styles.tabActive]}
+              onPress={() => setActiveTab(tab)}
+            >
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === tab && styles.tabTextActive,
+                ]}
+              >
+                {t(`history.${tab}`)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ImageBackground>
+
+      <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.contentBgWrapper} imageStyle={{ opacity: 0.035, resizeMode: 'repeat' }}>
 
       <FlatList
         data={data}
@@ -236,22 +244,32 @@ export default function HistoryScreen() {
           ) : null
         }
       />
-    </ImageBackground>
+      </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background, paddingTop: 60 },
+  container: { flex: 1, backgroundColor: Colors.background },
+  contentBgWrapper: { flex: 1 },
+  header: { 
+    paddingTop: 54,
+    paddingBottom: 16,
+    backgroundColor: Colors.primary,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    marginBottom: 12,
+  },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 16 },
-  title: { color: Colors.text, fontSize: 26, fontWeight: '800' },
-  filterBtn: { padding: 8, backgroundColor: Colors.surface, borderRadius: 10, borderWidth: 1, borderColor: Colors.border },
+  title: { color: '#FFF', fontSize: 26, fontWeight: '800' },
+  filterBtn: { padding: 8, backgroundColor: '#FFF', borderRadius: 10 },
   tabRow: {
-    flexDirection: 'row', marginHorizontal: 20, backgroundColor: Colors.surface,
-    borderRadius: 14, padding: 4, marginBottom: 16, borderWidth: 1, borderColor: Colors.border,
+    flexDirection: 'row', marginHorizontal: 20, backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 14, padding: 4,
   },
   tab: { flex: 1, paddingVertical: 10, alignItems: 'center', borderRadius: 12 },
-  tabActive: { backgroundColor: Colors.surfaceLight },
-  tabText: { color: Colors.textMuted, fontSize: 13, fontWeight: '600' },
+  tabActive: { backgroundColor: '#FFF' },
+  tabText: { color: '#FFF', fontSize: 13, fontWeight: '600' },
   tabTextActive: { color: Colors.primary, fontWeight: '700' },
   listContent: { paddingHorizontal: 20, paddingBottom: 110 },
   itemCard: { marginBottom: 10 },

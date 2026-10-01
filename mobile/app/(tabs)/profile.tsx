@@ -138,19 +138,27 @@ export default function ProfileScreen() {
   };
 
   return (
-    <ImageBackground 
-      source={require('../../assets/images/body-bg.jpg')} 
-      style={styles.container} 
-      imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
-    >
+    <View style={styles.container}>
+      <ImageBackground 
+        source={require('../../assets/images/header-bg.jpg')}
+        style={styles.header}
+        imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
+      >
+        <View style={styles.headerRow}>
+          <Text style={styles.screenTitle}>{t('profile.title')}</Text>
+          <TouchableOpacity style={styles.langToggle} onPress={toggleLocale}>
+            <Feather name="globe" size={18} color="#FFF" />
+            <Text style={styles.langToggleText}>{locale === 'en' ? 'EN' : 'BN'}</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+
+      <ImageBackground 
+        source={require('../../assets/images/body-bg.jpg')} 
+        style={styles.contentBgWrapper} 
+        imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
+      >
       <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.contentContainer}>
-      <View style={styles.headerRow}>
-        <Text style={styles.screenTitle}>{t('profile.title')}</Text>
-        <TouchableOpacity style={styles.langToggle} onPress={toggleLocale}>
-          <Feather name="globe" size={18} color={Colors.textSecondary} />
-          <Text style={styles.langToggleText}>{locale === 'en' ? 'EN' : 'BN'}</Text>
-        </TouchableOpacity>
-      </View>
 
       <View style={styles.profileHeader}>
         <TouchableOpacity onPress={pickImage} disabled={uploading}>
@@ -303,18 +311,33 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
-    </ScrollView>
-    </ImageBackground>
+      </ScrollView>
+      </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: Colors.background },
-  contentContainer: { flexGrow: 1, padding: 16, paddingTop: 50, paddingBottom: 110 },
-  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  screenTitle: { fontSize: 22, fontWeight: '800', color: Colors.text },
-  langToggle: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, paddingVertical: 6, backgroundColor: Colors.surface, borderRadius: 20, borderWidth: 1, borderColor: Colors.border, gap: 6 },
-  langToggleText: { color: Colors.textSecondary, fontWeight: '700', fontSize: 13 },
+  contentBgWrapper: { flex: 1 },
+  header: {
+    paddingTop: 54,
+    paddingBottom: 16,
+    backgroundColor: Colors.primary,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    marginBottom: 12,
+  },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20 },
+  screenTitle: { color: '#FFF', fontSize: 26, fontWeight: '800' },
+  langToggle: {
+    flexDirection: 'row', alignItems: 'center', gap: 6,
+    paddingHorizontal: 12, paddingVertical: 6,
+    backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12,
+  },
+  langToggleText: { color: '#FFF', fontSize: 13, fontWeight: '700' },
+  
+  contentContainer: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 120 },
   profileHeader: { alignItems: 'center', marginBottom: 16 },
   avatar: { width: 76, height: 76, borderRadius: 38, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primaryGhost, marginBottom: 8 },
   avatarImage: { width: 76, height: 76, borderRadius: 38, borderWidth: 2, borderColor: Colors.primaryGhost, marginBottom: 8 },

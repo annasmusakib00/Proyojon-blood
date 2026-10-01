@@ -30,9 +30,13 @@ export default function TabLayout() {
           shadowRadius: 20,
         },
         tabBarBackground: () => (
-          <View style={{ flex: 1, borderRadius: 32, overflow: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.85)' }}>
-            <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFill} />
-            <View style={[StyleSheet.absoluteFill, { borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', borderRadius: 32 }]} />
+          <View style={{ flex: 1, overflow: 'visible' }}>
+            {/* Red block that fills the space below the floating nav bar */}
+            <View style={{ position: 'absolute', bottom: -100, left: -16, right: -16, height: 116, backgroundColor: Colors.primary, borderTopLeftRadius: 24, borderTopRightRadius: 24 }} />
+            <View style={{ flex: 1, borderRadius: 100, overflow: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
+              <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFill} />
+              <View style={[StyleSheet.absoluteFill, { borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', borderRadius: 100 }]} />
+            </View>
           </View>
         ),
         tabBarActiveTintColor: Colors.primary,
