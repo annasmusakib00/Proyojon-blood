@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,15 +25,22 @@ export default function WelcomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Top Half - Red Theme Overlay */}
-      <View style={styles.topHalf}>
+      {/* Bottom overlay as requested */}
+      <View style={styles.bottomOverlay} />
+
+      {/* Top Half - Red Theme Overlay with Image */}
+      <ImageBackground 
+        source={require('../../assets/images/header-bg.jpg')}
+        style={styles.topHalf}
+        imageStyle={styles.topHalfImage}
+      >
         <SafeAreaView style={styles.safeArea}>
           <Text style={styles.tagline}>{t('welcome.tagline')}</Text>
           <View style={styles.iconContainer}>
-            <Ionicons name="water" size={140} color="#FFFFFF" style={styles.icon} />
+            <Ionicons name="water" size={160} color="#FFFFFF" style={styles.icon} />
           </View>
         </SafeAreaView>
-      </View>
+      </ImageBackground>
 
       {/* Bottom Half - White Space with Buttons */}
       <View style={styles.bottomHalf}>
@@ -72,6 +79,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 15,
+    overflow: 'hidden', // to ensure background image stays inside rounded corners
+  },
+  topHalfImage: {
+    opacity: 0.15,
+    resizeMode: 'cover',
   },
   safeArea: {
     flex: 1,
@@ -82,14 +94,14 @@ const styles = StyleSheet.create({
   },
   tagline: {
     color: '#FFFFFF',
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '800',
     marginBottom: 40,
     textAlign: 'center',
-    lineHeight: 38,
-    textShadowColor: 'rgba(0,0,0,0.2)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    lineHeight: 40,
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 6,
   },
   iconContainer: {
     alignItems: 'center',
@@ -102,9 +114,20 @@ const styles = StyleSheet.create({
   },
   bottomHalf: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     paddingHorizontal: 30,
+    borderBottomLeftRadius: 50, // To match the bottom overlay
+    borderBottomRightRadius: 50, // To match the bottom overlay
+  },
+  bottomOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 100, // Safe area red block at bottom
+    backgroundColor: Colors.primary,
+    zIndex: -1,
   },
   registerButton: {
     backgroundColor: Colors.primary,
@@ -112,11 +135,13 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     marginBottom: 20,
-    elevation: 6,
-    shadowColor: Colors.primary,
+    elevation: 8,
+    shadowColor: Colors.primaryDark,
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.4,
     shadowRadius: 8,
+    borderBottomWidth: 5,
+    borderColor: Colors.primaryDark, // 3D effect
   },
   registerButtonText: {
     color: '#FFFFFF',
@@ -129,8 +154,15 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     borderRadius: 16,
     alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
     borderWidth: 2,
-    borderColor: Colors.primary,
+    borderColor: '#EEEEEE',
+    borderBottomWidth: 5, // 3D effect
+    borderBottomColor: '#DDDDDD',
   },
   loginButtonText: {
     color: Colors.primary,
