@@ -378,6 +378,7 @@ const styles = StyleSheet.create({
     paddingTop: 54, // Adjust for status bar
     paddingBottom: 20, 
     backgroundColor: Colors.primary,
+    zIndex: 10,
   },
   headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1, marginRight: 16 },
   profileAvatar: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: '#FFFFFF' },

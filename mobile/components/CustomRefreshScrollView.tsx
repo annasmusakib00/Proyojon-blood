@@ -88,22 +88,23 @@ export function CustomRefreshScrollView({
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
-        // Capture the gesture if we are at the top and the user is pulling down significantly
-        return scrollY.current <= 0 && gestureState.dy > 5 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
+        // Capture the gesture if we are near the top and pulling down
+        return scrollY.current <= 5 && gestureState.dy > 5 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
       },
       onPanResponderGrant: () => {
         setIsPulling(true);
       },
       onPanResponderMove: (evt, gestureState) => {
         if (gestureState.dy > 0 && !refreshing) {
-          // Dampen the pull
-          const pullDistance = Math.min(gestureState.dy * 0.5, REFRESH_THRESHOLD * 1.5);
+          // Dampen the pull slightly less so it's easier to reach
+          const pullDistance = Math.min(gestureState.dy * 0.6, REFRESH_THRESHOLD * 1.5);
           pullY.setValue(pullDistance);
         }
       },
       onPanResponderRelease: (evt, gestureState) => {
         setIsPulling(false);
-        if (gestureState.dy * 0.5 >= REFRESH_THRESHOLD && !refreshing) {
+        const pullDistance = gestureState.dy * 0.6;
+        if (pullDistance >= REFRESH_THRESHOLD * 0.7 && !refreshing) {
           onRefresh();
         } else if (!refreshing) {
           Animated.spring(pullY, {
@@ -122,34 +123,11 @@ export function CustomRefreshScrollView({
 
   return (
     <View style={[styles.container, outerStyle]}>
-      {/* Background refresh icon container */}
-      <View style={styles.refreshIndicatorContainer}>
-        <Animated.View
-          style={[
-            styles.refreshIconWrapper,
-            {
-              transform: [
-                {
-                  scale: pullY.interpolate({
-                    inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: [0, 1],
-                    extrapolate: 'clamp',
-                  }),
-                },
-                { rotate: spin },
-              ],
-            },
-          ]}
-        >
-          {/* Custom Theme Icon */}
-          <Ionicons name="water" size={32} color={Colors.primary} />
-        </Animated.View>
-      </View>
-
       <Animated.View
-        style={[{ flex: 1 }, innerStyle, { transform: [{ translateY: pullY }] }]}
+        style={{ flex: 1, transform: [{ translateY: pullY }] }}
         {...panResponder.panHandlers}
       >
+        <View style={[{ flex: 1 }, innerStyle]}>
         {imageBackgroundSource ? (
           <ImageBackground
             source={imageBackgroundSource}
@@ -225,6 +203,31 @@ export function CustomRefreshScrollView({
             </ScrollView>
           )
         )}
+        </View>
+
+        {/* Background refresh icon container - ATTACHED TO SLIDING VIEW, RENDERED LAST SO IT SITS ON TOP OF WHITE CONTENT */}
+        <View style={styles.refreshIndicatorContainer}>
+          <Animated.View
+            style={[
+              styles.refreshIconWrapper,
+              {
+                transform: [
+                  {
+                    scale: pullY.interpolate({
+                      inputRange: [0, REFRESH_THRESHOLD],
+                      outputRange: [0, 1],
+                      extrapolate: 'clamp',
+                    }),
+                  },
+                  { rotate: spin },
+                ],
+              },
+            ]}
+          >
+            {/* Custom Theme Icon */}
+            <Ionicons name="water" size={32} color={Colors.primary} />
+          </Animated.View>
+        </View>
       </Animated.View>
     </View>
   );
@@ -237,13 +240,12 @@ const styles = StyleSheet.create({
   },
   refreshIndicatorContainer: {
     position: 'absolute',
-    top: 0,
+    top: -REFRESH_THRESHOLD + 10,
     left: 0,
     right: 0,
     height: REFRESH_THRESHOLD,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: -1, // Keep behind the white content
   },
   refreshIconWrapper: {
     width: 48,

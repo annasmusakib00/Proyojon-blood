@@ -332,6 +332,7 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     backgroundColor: Colors.primary,
     marginBottom: 12,
+    zIndex: 10,
   },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20 },
   screenTitle: { color: '#FFF', fontSize: 26, fontWeight: '800' },
