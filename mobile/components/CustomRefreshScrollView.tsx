@@ -123,11 +123,40 @@ export function CustomRefreshScrollView({
 
   return (
     <View style={[styles.container, outerStyle]}>
+      <View style={styles.refreshIndicatorContainer}>
+        <Animated.View
+          style={[
+            styles.refreshIconWrapper,
+            {
+              transform: [
+                {
+                  scale: pullY.interpolate({
+                    inputRange: [0, REFRESH_THRESHOLD],
+                    outputRange: [0, 1],
+                    extrapolate: 'clamp',
+                  }),
+                },
+                { 
+                  rotate: refreshing ? spin : pullY.interpolate({
+                    inputRange: [0, REFRESH_THRESHOLD],
+                    outputRange: ['0deg', '360deg'],
+                    extrapolate: 'clamp',
+                  }) 
+                },
+              ],
+            },
+          ]}
+        >
+          {/* Custom Theme Icon */}
+          <Ionicons name="water" size={24} color={Colors.primary} />
+        </Animated.View>
+      </View>
+
       <Animated.View
         style={{ flex: 1, transform: [{ translateY: pullY }] }}
         {...panResponder.panHandlers}
       >
-        <View style={[{ flex: 1 }, innerStyle]}>
+        <View style={[{ flex: 1, backgroundColor: Colors.background }, innerStyle]}>
         {imageBackgroundSource ? (
           <ImageBackground
             source={imageBackgroundSource}
@@ -205,41 +234,6 @@ export function CustomRefreshScrollView({
         )}
         </View>
       </Animated.View>
-
-      {/* Background refresh icon container - SIBLING TO SLIDING VIEW */}
-      <Animated.View 
-        style={[
-          styles.refreshIndicatorContainer,
-          { transform: [{ translateY: pullY }] }
-        ]}
-      >
-        <Animated.View
-          style={[
-            styles.refreshIconWrapper,
-            {
-              transform: [
-                {
-                  scale: pullY.interpolate({
-                    inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: [0, 1],
-                    extrapolate: 'clamp',
-                  }),
-                },
-                { 
-                  rotate: refreshing ? spin : pullY.interpolate({
-                    inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: ['0deg', '360deg'],
-                    extrapolate: 'clamp',
-                  }) 
-                },
-              ],
-            },
-          ]}
-        >
-          {/* Custom Theme Icon */}
-          <Ionicons name="water" size={24} color={Colors.primary} />
-        </Animated.View>
-      </Animated.View>
     </View>
   );
 }
@@ -251,7 +245,7 @@ const styles = StyleSheet.create({
   },
   refreshIndicatorContainer: {
     position: 'absolute',
-    top: -REFRESH_THRESHOLD + 10,
+    top: 0,
     left: 0,
     right: 0,
     height: REFRESH_THRESHOLD,
