@@ -72,7 +72,7 @@ export default function WelcomeScreen() {
           onPress={() => router.push('/(auth)/onboarding')}
           activeOpacity={0.8}
         >
-          <Text style={[styles.loginButtonText, { fontSize: 14 }]}>[Test] View Onboarding</Text>
+          <Text style={[styles.loginButtonText, { fontSize: 14 }]}>এটা দেখে নিন</Text>
         </TouchableOpacity>
       </ImageBackground>
     </View>
