@@ -9,8 +9,8 @@ import {
   ScrollView,
   Switch,
   TextInput,
-  Modal,
   ImageBackground,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -30,6 +30,7 @@ export default function ProfileScreen() {
   const { user, logout, setUser, token } = useAuthStore();
   const { locale, toggleLocale } = useLocaleStore();
   const [uploading, setUploading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [showLocationEdit, setShowLocationEdit] = useState(false);
   const [address, setAddress] = useState(user?.locationText || '');
@@ -68,6 +69,17 @@ export default function ProfileScreen() {
     };
     fetchProfile();
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const res = await api.get('/donor/me');
+      if (res.data?.success && res.data.data) {
+        setUser(res.data.data);
+      }
+    } catch (err) {}
+    setRefreshing(false);
+  };
 
   const bloodGroupDisplay = (user?.bloodGroup || '')
     .replace('_POS', '+')
@@ -150,7 +162,20 @@ export default function ProfileScreen() {
         style={styles.contentBgWrapper} 
         imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
       >
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.contentContainer}>
+      <ScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={Colors.primary}
+            colors={[Colors.primary]}
+            progressBackgroundColor="#FFFFFF"
+            progressViewOffset={20}
+          />
+        }
+      >
 
       <View style={styles.profileHeader}>
         <TouchableOpacity onPress={pickImage} disabled={uploading}>

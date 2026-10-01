@@ -153,7 +153,9 @@ export default function RequestScreen() {
               refreshing={refreshing} 
               onRefresh={onRefresh} 
               tintColor={Colors.primary} 
-              colors={[Colors.primary]} 
+              colors={[Colors.primary]}
+              progressBackgroundColor="#FFFFFF"
+              progressViewOffset={20}
             />
           }
         >

@@ -339,7 +339,14 @@ export default function DonorsScreen() {
         renderItem={renderDonorItem}
         contentContainerStyle={styles.listContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh} 
+            tintColor={Colors.primary}
+            colors={[Colors.primary]} 
+            progressBackgroundColor="#FFFFFF"
+            progressViewOffset={20}
+          />
         }
         onEndReached={loadMore}
         onEndReachedThreshold={0.3}

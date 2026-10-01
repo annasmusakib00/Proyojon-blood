@@ -214,7 +214,16 @@ export default function HistoryScreen() {
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh} 
+            tintColor={Colors.primary}
+            colors={[Colors.primary]} 
+            progressBackgroundColor="#FFFFFF"
+            progressViewOffset={20}
+          />
+        }
         onEndReached={loadMore}
         onEndReachedThreshold={0.3}
         ListFooterComponent={

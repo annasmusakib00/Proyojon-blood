@@ -169,6 +169,8 @@ export default function DashboardScreen() {
             onRefresh={onRefresh} 
             tintColor={Colors.primary} 
             colors={[Colors.primary]} 
+            progressBackgroundColor="#FFFFFF"
+            progressViewOffset={20}
           />
         }
       >
