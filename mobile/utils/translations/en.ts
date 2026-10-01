@@ -52,7 +52,7 @@ export const en = {
     recentActivity: 'Recent Activity',
     noActivity: 'No activity yet',
     readyMessage: 'You are ready to donate blood',
-    findDonorFast: 'Find Donor Fast',
+    findDonorFast: 'Turn On Radar',
     clickHere: 'Click Here',
     hero: 'Hero',
     organizer: 'Organizer',

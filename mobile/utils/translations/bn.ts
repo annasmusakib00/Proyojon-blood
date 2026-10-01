@@ -52,7 +52,7 @@ export const bn = {
     recentActivity: 'সাম্প্রতিক কার্যক্রম',
     noActivity: 'এখনো কোনো কার্যক্রম নেই',
     readyMessage: 'আপনি রক্তদানের জন্য প্রস্তুত আছেন',
-    findDonorFast: 'দ্রুত ডোনার খুঁজুন',
+    findDonorFast: 'রাডার চালু করুন',
     clickHere: 'এখানে ক্লিক করে',
     hero: 'হিরো',
     organizer: 'সংগঠক',
