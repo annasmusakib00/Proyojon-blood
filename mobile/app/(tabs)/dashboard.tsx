@@ -319,32 +319,30 @@ export default function DashboardScreen() {
         </View>
 
         <View style={styles.actionContainer}>
-          <Animated.View style={{ transform: [{ scale: buttonScaleAnim }] }}>
-            <TouchableOpacity
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                router.push('/(tabs)/request');
-              }}
-              activeOpacity={0.8}
+          <TouchableOpacity
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              router.push('/(tabs)/request');
+            }}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={[Colors.primary, Colors.primaryDark]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.newRequestButton}
             >
-              <LinearGradient
-                colors={[Colors.primary, Colors.primaryDark]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.newRequestButton}
-              >
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                  <Text style={styles.requestButtonTextSide}>দ্রুত ডোনার খুঁজুন</Text>
-                </View>
-                <View style={styles.requestButtonCenterCircle}>
-                  <MaterialCommunityIcons name="radar" size={32} color={Colors.primary} />
-                </View>
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                  <Text style={styles.requestButtonTextSide}>এখানে ক্লিক করে</Text>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-          </Animated.View>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={styles.requestButtonTextSide}>দ্রুত ডোনার খুঁজুন</Text>
+              </View>
+              <Animated.View style={[styles.requestButtonCenterCircle, { transform: [{ scale: buttonScaleAnim }] }]}>
+                <MaterialCommunityIcons name="radar" size={32} color={Colors.primary} />
+              </Animated.View>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+                <Text style={styles.requestButtonTextSide}>এখানে ক্লিক করে</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </ScrollView>
         </ImageBackground>
