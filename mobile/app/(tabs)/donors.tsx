@@ -385,7 +385,6 @@ const styles = StyleSheet.create({
     marginBottom: 12, 
     backgroundColor: Colors.primary,
     zIndex: 10,
-    elevation: 20,
   },
   title: { color: '#FFF', fontSize: 22, fontWeight: '800' },
   subtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: 4, fontWeight: '600' },

@@ -386,7 +386,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20, 
     backgroundColor: Colors.primary,
     zIndex: 10,
-    elevation: 20,
   },
   headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1, marginRight: 16 },
   profileAvatar: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: '#FFFFFF' },

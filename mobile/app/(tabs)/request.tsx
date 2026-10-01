@@ -317,7 +317,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     marginBottom: 12,
     zIndex: 10,
-    elevation: 20,
   },
   headerTitle: { color: '#FFF', fontSize: 24, fontWeight: '800', marginBottom: 4 },
   headerSubtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 13, lineHeight: 19 },
