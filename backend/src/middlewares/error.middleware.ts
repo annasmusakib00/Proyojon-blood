@@ -12,8 +12,9 @@ export function errorMiddleware(
   _next: NextFunction
 ): void {
   // Handle known AppError instances
-  if (err instanceof AppError) {
-    res.status(err.statusCode).json({
+  if (err instanceof AppError || (err as any).statusCode) {
+    const statusCode = (err as any).statusCode || 400;
+    res.status(statusCode).json({
       success: false,
       error: {
         code: err.code,
