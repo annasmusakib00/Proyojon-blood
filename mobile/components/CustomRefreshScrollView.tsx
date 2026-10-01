@@ -241,7 +241,7 @@ export function CustomRefreshScrollView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: Colors.background,
     overflow: 'visible',
   },
   refreshIndicatorContainer: {
