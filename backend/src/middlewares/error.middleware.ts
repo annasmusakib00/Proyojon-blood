@@ -17,9 +17,9 @@ export function errorMiddleware(
     res.status(statusCode).json({
       success: false,
       error: {
-        code: err.code,
+        code: (err as any).code || 'ERROR',
         message: err.message,
-        ...(err.details && { details: err.details }),
+        ...((err as any).details && { details: (err as any).details }),
       },
     });
     return;
