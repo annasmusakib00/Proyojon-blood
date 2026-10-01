@@ -41,8 +41,7 @@ export function useNotifications() {
         // Expose interval to be cleared, though it's global for the app lifetime
         (globalThis as any).__expoPolling = pollInterval;
 
-        // Skip actual push notification setup for now since FCM keys are missing in backend
-        return;
+        // Now proceeding to Expo Push Notification setup
 
         const Device = await import('expo-device');
         if (!Device.isDevice) {
