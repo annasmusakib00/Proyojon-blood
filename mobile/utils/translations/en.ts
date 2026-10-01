@@ -71,7 +71,7 @@ export const en = {
     hospitalLabel: 'Hospital Name',
     hospitalPlaceholder: 'e.g. Dhaka Medical College',
     conveyanceLabel: 'Conveyance Allowance (BDT)',
-    submitButton: 'Send Emergency Request',
+    submitButton: 'Turn On Emergency Radar',
     submitting: 'Submitting request...',
     locationRequired: 'Please turn on your phone location. Without it, nearby donors cannot be found.',
     bloodGroupRequired: 'Please select the blood group needed',

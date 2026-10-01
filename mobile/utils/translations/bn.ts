@@ -71,7 +71,7 @@ export const bn = {
     hospitalLabel: 'হাসপাতালের নাম',
     hospitalPlaceholder: 'যেমন: ঢাকা মেডিকেল কলেজ',
     conveyanceLabel: 'যাতায়াত ভাতা (টাকায়)',
-    submitButton: 'জরুরি আবেদন পাঠান',
+    submitButton: 'ইমারজেন্সি রাডার চালু করুন',
     submitting: 'আবেদন পাঠানো হচ্ছে...',
     locationRequired: 'অনুগ্রহ করে আপনার ফোনের লোকেশন চালু করুন, নাহলে কাছের ডোনার খুঁজে পাওয়া সম্ভব নয়।',
     bloodGroupRequired: 'কোন গ্রুপের রক্ত প্রয়োজন তা নির্বাচন করুন',
