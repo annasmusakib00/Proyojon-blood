@@ -7,6 +7,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
@@ -94,6 +95,7 @@ export default function VerifyOtpScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <ScrollView contentContainerStyle={styles.contentScroll} showsVerticalScrollIndicator={false}>
       <View style={styles.content}>
         <Text style={styles.icon}>🔐</Text>
         <Text style={styles.title}>Verify OTP</Text>
@@ -141,6 +143,7 @@ export default function VerifyOtpScreen() {
           )}
         </View>
       </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -150,10 +153,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  content: {
-    flex: 1,
-    padding: 24,
+  contentScroll: {
+    flexGrow: 1,
     justifyContent: 'center',
+  },
+  content: {
+    padding: 24,
     alignItems: 'center',
   },
   icon: {

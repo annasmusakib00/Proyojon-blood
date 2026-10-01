@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -78,6 +79,7 @@ export default function ForgotPasswordScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <ScrollView contentContainerStyle={styles.contentScroll} showsVerticalScrollIndicator={false}>
       <View style={styles.content}>
         <Text style={styles.title}>Forgot Password</Text>
         <Text style={styles.subtitle}>
@@ -160,6 +162,7 @@ export default function ForgotPasswordScreen() {
           textStyle={{ color: Colors.textSecondary }}
         />
       </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -169,10 +172,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  content: {
-    flex: 1,
-    padding: 24,
+  contentScroll: {
+    flexGrow: 1,
     justifyContent: 'center',
+  },
+  content: {
+    padding: 24,
     alignItems: 'center',
   },
   title: {

@@ -97,7 +97,8 @@ export default function RegisterScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.contentScroll} showsVerticalScrollIndicator={false}>
+        <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.logo}>🩸</Text>
           <Text style={styles.appName} numberOfLines={1} adjustsFontSizeToFit>{t('register.title')}</Text>
@@ -290,6 +291,7 @@ export default function RegisterScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -299,8 +301,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
+  contentScroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
   content: {
-    flex: 1,
     padding: 24,
     justifyContent: 'center',
   },

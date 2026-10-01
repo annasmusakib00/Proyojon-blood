@@ -18,6 +18,8 @@ import { useAuthStore } from '../../stores/authStore';
 import { t } from '../../utils/i18n';
 import { useLocaleStore } from '../../stores/localeStore';
 
+import { ScrollView } from 'react-native';
+
 export default function LoginScreen() {
   const router = useRouter();
   const [phone, setPhone] = useState('');
@@ -57,7 +59,8 @@ export default function LoginScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.contentScroll} showsVerticalScrollIndicator={false}>
+        <View style={styles.content}>
         <Text style={styles.logo}>🩸</Text>
         <Text style={styles.title}>{t('login.title')}</Text>
         <Text style={styles.subtitle}>{t('login.subtitle')}</Text>
@@ -115,6 +118,7 @@ export default function LoginScreen() {
           </Text>
         </TouchableOpacity>
       </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -124,10 +128,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
-  content: {
-    flex: 1,
-    padding: 24,
+  contentScroll: {
+    flexGrow: 1,
     justifyContent: 'center',
+  },
+  content: {
+    padding: 24,
     alignItems: 'center',
   },
   logo: {

@@ -1,13 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, SafeAreaView, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ImageBackground, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { t } from '../../utils/i18n';
 import { useLocaleStore } from '../../stores/localeStore';
 import * as Haptics from 'expo-haptics';
-
-const { height } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -63,6 +61,7 @@ export default function WelcomeScreen() {
           style={styles.bottomHalf}
           imageStyle={{ opacity: 0.04, resizeMode: 'cover' }}
         >
+          <ScrollView contentContainerStyle={styles.bottomHalfScroll} showsVerticalScrollIndicator={false}>
           {/* Register Button (3D Red Glass, Rounded Corners) */}
           <TouchableOpacity
             style={styles.registerButton}
@@ -94,6 +93,7 @@ export default function WelcomeScreen() {
           <View style={styles.poweredByContainer}>
             <Text style={styles.poweredByText}>Powered by <Text style={styles.poweredByBrand}>PROYOJON</Text></Text>
           </View>
+          </ScrollView>
         </ImageBackground>
       </View>
     </View>
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   topHalf: {
-    height: height * 0.52,
+    flex: 1.1,
     backgroundColor: '#FFFFFF',
     overflow: 'hidden',
   },
@@ -192,8 +192,12 @@ const styles = StyleSheet.create({
   bottomHalf: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  bottomHalfScroll: {
+    flexGrow: 1,
     justifyContent: 'flex-start',
     paddingTop: 48,
+    paddingBottom: 60,
     paddingHorizontal: 30,
   },
   bottomOverlay: {
