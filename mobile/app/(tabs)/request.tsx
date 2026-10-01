@@ -132,14 +132,10 @@ export default function RequestScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.container}>
-        <ImageBackground 
-          source={require('../../assets/images/header-bg.jpg')}
-          style={styles.header}
-          imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
-        >
+        <View style={styles.header}>
           <Text style={styles.headerTitle}>{t('request.title')}</Text>
           <Text style={styles.headerSubtitle}>{t('request.subtitle')}</Text>
-        </ImageBackground>
+        </View>
         
         <ImageBackground 
           source={require('../../assets/images/body-bg.jpg')} 

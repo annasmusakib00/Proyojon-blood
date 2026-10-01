@@ -14,7 +14,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: 16,
+          bottom: 8,
           left: 16,
           right: 16,
           elevation: 20,
@@ -31,8 +31,8 @@ export default function TabLayout() {
         },
         tabBarBackground: () => (
           <View style={{ flex: 1, overflow: 'visible' }}>
-            {/* Red block that fills the space below the floating nav bar */}
-            <View style={{ position: 'absolute', bottom: -100, left: -16, right: -16, height: 116, backgroundColor: Colors.primary, borderTopLeftRadius: 24, borderTopRightRadius: 24 }} />
+            {/* Red curve overlaying behind the nav bar, merging with it */}
+            <View style={{ position: 'absolute', top: 32, left: -16, right: -16, bottom: -50, backgroundColor: Colors.primary, borderTopLeftRadius: 24, borderTopRightRadius: 24 }} />
             <View style={{ flex: 1, borderRadius: 100, overflow: 'hidden', backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
               <BlurView tint="light" intensity={80} style={StyleSheet.absoluteFill} />
               <View style={[StyleSheet.absoluteFill, { borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', borderRadius: 100 }]} />

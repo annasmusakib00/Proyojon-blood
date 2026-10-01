@@ -149,11 +149,7 @@ export default function DonorsScreen() {
   return (
     <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.035, resizeMode: 'repeat' }}>
       {/* Header */}
-      <ImageBackground 
-        source={require('../../assets/images/header-bg.jpg')}
-        style={styles.header}
-        imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
-      >
+      <View style={styles.header}>
         <Text style={styles.title}>সক্রিয় ডোনার</Text>
         
         <View style={styles.searchBarContainer}>
@@ -204,7 +200,7 @@ export default function DonorsScreen() {
             <Text style={[styles.quickFilterText, selectedDivision === 'Chattogram' && styles.quickFilterTextActive]}>Chattogram</Text>
           </TouchableOpacity>
         </ScrollView>
-      </ImageBackground>
+      </View>
 
       {/* Filter Panel */}
       {showFilters && (

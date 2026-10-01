@@ -139,11 +139,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <ImageBackground 
-        source={require('../../assets/images/header-bg.jpg')}
-        style={styles.header}
-        imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
-      >
+      <View style={styles.header}>
         <View style={styles.headerRow}>
           <Text style={styles.screenTitle}>{t('profile.title')}</Text>
           <TouchableOpacity style={styles.langToggle} onPress={toggleLocale}>
@@ -151,7 +147,7 @@ export default function ProfileScreen() {
             <Text style={styles.langToggleText}>{locale === 'en' ? 'EN' : 'BN'}</Text>
           </TouchableOpacity>
         </View>
-      </ImageBackground>
+      </View>
 
       <ImageBackground 
         source={require('../../assets/images/body-bg.jpg')} 
