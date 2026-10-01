@@ -35,6 +35,16 @@ export const en = {
     recentActivity: 'Recent Activity',
     noActivity: 'No activity yet',
     readyMessage: 'You are ready to donate blood',
+    findDonorFast: 'Find Donor Fast',
+    clickHere: 'Click Here',
+    hero: 'Hero',
+    organizer: 'Organizer',
+    comingSoon: 'Coming Soon',
+  },
+  donors: {
+    title: 'Active Donors',
+    searchPlaceholder: 'Search by name or location...',
+    subtitle: 'All Bangladesh • {{total}} Donors',
   },
   request: {
     title: 'Request Blood',
@@ -98,5 +108,12 @@ export const en = {
   },
   splash: {
     tagline: 'Donate Blood, Save Lives',
+  },
+  tabs: {
+    home: 'Home',
+    request: 'Request',
+    donors: 'Donors',
+    history: 'History',
+    profile: 'Profile',
   },
 };

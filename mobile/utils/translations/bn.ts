@@ -35,6 +35,16 @@ export const bn = {
     recentActivity: 'সাম্প্রতিক কার্যক্রম',
     noActivity: 'এখনো কোনো কার্যক্রম নেই',
     readyMessage: 'আপনি রক্তদানের জন্য প্রস্তুত আছেন',
+    findDonorFast: 'দ্রুত ডোনার খুঁজুন',
+    clickHere: 'এখানে ক্লিক করে',
+    hero: 'হিরো',
+    organizer: 'সংগঠক',
+    comingSoon: 'শীঘ্রই আসছে',
+  },
+  donors: {
+    title: 'সক্রিয় ডোনার',
+    searchPlaceholder: 'নাম বা লোকেশন দিয়ে খুঁজুন...',
+    subtitle: 'সারা বাংলাদেশ • {{total}} জন ডোনার',
   },
   request: {
     title: 'রক্তের জন্য আবেদন করুন',
@@ -98,5 +108,12 @@ export const bn = {
   },
   splash: {
     tagline: 'রক্ত দিন, জীবন বাঁচান',
+  },
+  tabs: {
+    home: 'হোম',
+    request: 'আবেদন',
+    donors: 'ডোনার',
+    history: 'ইতিহাস',
+    profile: 'প্রোফাইল',
   },
 };

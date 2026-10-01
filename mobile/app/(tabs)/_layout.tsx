@@ -5,8 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BlurView } from 'expo-blur';
+import { useLocaleStore } from '../../stores/localeStore';
+import { t } from '../../utils/i18n';
 
 export default function TabLayout() {
+  const { locale } = useLocaleStore();
   const insets = useSafeAreaInsets();
   return (
     <Tabs
@@ -60,7 +63,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'হোম',
+          title: t('tabs.home'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'home' : 'home-outline'} size={24} color={color} />
           ),
@@ -69,7 +72,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="request"
         options={{
-          title: 'আবেদন',
+          title: t('tabs.request'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'water' : 'water-outline'} size={24} color={color} />
           ),
@@ -78,7 +81,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="donors"
         options={{
-          title: 'ডোনার',
+          title: t('tabs.donors'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'heart' : 'heart-outline'} size={24} color={color} />
           ),
@@ -87,7 +90,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="history"
         options={{
-          title: 'ইতিহাস',
+          title: t('tabs.history'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'document-text' : 'document-text-outline'} size={24} color={color} />
           ),
@@ -96,7 +99,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'প্রোফাইল',
+          title: t('tabs.profile'),
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'person' : 'person-outline'} size={24} color={color} />
           ),

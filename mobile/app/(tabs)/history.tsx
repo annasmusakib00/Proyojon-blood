@@ -16,12 +16,14 @@ import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import * as requestsService from '../../services/requests';
+import { useLocaleStore } from '../../stores/localeStore';
 import { t } from '../../utils/i18n';
 
 const TABS = ['myRequests', 'myDonations'] as const;
 
 export default function HistoryScreen() {
   const router = useRouter();
+  const { locale } = useLocaleStore();
   const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>('myRequests');
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

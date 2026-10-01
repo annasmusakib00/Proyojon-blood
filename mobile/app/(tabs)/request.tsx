@@ -19,12 +19,14 @@ import { BLOOD_GROUPS } from '../../constants/bloodGroups';
 import { ConveyanceAgreement } from '../../components/ConveyanceAgreement';
 import * as requestsService from '../../services/requests';
 import * as Location from 'expo-location';
+import { useLocaleStore } from '../../stores/localeStore';
 import { t } from '../../utils/i18n';
 
 const CONVEYANCE_OPTIONS = [200, 250, 300];
 
 export default function RequestScreen() {
   const router = useRouter();
+  const { locale } = useLocaleStore();
   const [bloodGroup, setBloodGroup] = useState('');
   const [bagsNeeded, setBagsNeeded] = useState(1);
   const [hospitalName, setHospitalName] = useState('');

@@ -20,8 +20,11 @@ import { BLOOD_GROUPS } from '../../constants/bloodGroups';
 import { BD_DIVISIONS } from '../../constants/locations';
 import * as donorService from '../../services/donor';
 
+import { useLocaleStore } from '../../stores/localeStore';
+
 export default function DonorsScreen() {
   const router = useRouter();
+  const { locale } = useLocaleStore();
   const [donors, setDonors] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -155,13 +158,13 @@ export default function DonorsScreen() {
     <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.035, resizeMode: 'repeat' }}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>সক্রিয় ডোনার</Text>
+        <Text style={styles.title}>{t('donors.title')}</Text>
         
         <View style={styles.searchBarContainer}>
           <Feather name="search" size={18} color={Colors.textSecondary} style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
-            placeholder="Search by name or location..."
+            placeholder={t('donors.searchPlaceholder')}
             placeholderTextColor={Colors.textMuted}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -181,7 +184,7 @@ export default function DonorsScreen() {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.subtitle}>সারা বাংলাদেশ • {total} জন ডোনার</Text>
+        <Text style={styles.subtitle}>{t('donors.subtitle', { total: total.toString() })}</Text>
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickFilterRow}>
           <TouchableOpacity 

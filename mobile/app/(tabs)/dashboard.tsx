@@ -230,13 +230,13 @@ export default function DashboardScreen() {
           {user?.badges?.some((b: any) => b.badgeType === 'HERO') && (
             <Card style={styles.statCard}>
               <Badge type="HERO" size="small" />
-              <Text style={styles.statLabel}>হিরো</Text>
+              <Text style={styles.statLabel}>{t('dashboard.hero')}</Text>
             </Card>
           )}
           {user?.badges?.some((b: any) => b.badgeType === 'ORGANIZER') && (
             <Card style={styles.statCard}>
               <Badge type="ORGANIZER" size="small" />
-              <Text style={styles.statLabel}>সংগঠক</Text>
+              <Text style={styles.statLabel}>{t('dashboard.organizer')}</Text>
             </Card>
           )}
           {(!user?.badges || user.badges.length === 0) && (
@@ -244,7 +244,7 @@ export default function DashboardScreen() {
               <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: Colors.surfaceLight, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontSize: 20 }}>🏅</Text>
               </View>
-              <Text style={styles.statLabel}>শীঘ্রই আসছে</Text>
+              <Text style={styles.statLabel}>{t('dashboard.comingSoon')}</Text>
             </Card>
           )}
         </View>
@@ -333,13 +333,13 @@ export default function DashboardScreen() {
               style={styles.newRequestButton}
             >
               <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={styles.requestButtonTextSide}>দ্রুত ডোনার খুঁজুন</Text>
+                <Text style={styles.requestButtonTextSide}>{t('dashboard.findDonorFast')}</Text>
               </View>
               <Animated.View style={[styles.requestButtonCenterCircle, { transform: [{ scale: buttonScaleAnim }] }]}>
                 <MaterialCommunityIcons name="radar" size={32} color={Colors.primary} />
               </Animated.View>
               <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={styles.requestButtonTextSide}>এখানে ক্লিক করে</Text>
+                <Text style={styles.requestButtonTextSide}>{t('dashboard.clickHere')}</Text>
               </View>
             </LinearGradient>
           </TouchableOpacity>
