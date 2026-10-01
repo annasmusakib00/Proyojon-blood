@@ -67,7 +67,7 @@ function RootLayoutNav() {
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!isAuthenticated && !inAuthGroup) {
-      router.replace('/(auth)/welcome');
+      router.replace('/(auth)/onboarding');
     } else if (isAuthenticated && inAuthGroup) {
       router.replace('/(tabs)/dashboard');
     }
