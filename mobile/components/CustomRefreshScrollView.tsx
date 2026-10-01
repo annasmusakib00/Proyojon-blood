@@ -123,6 +123,35 @@ export function CustomRefreshScrollView({
 
   return (
     <View style={[styles.container, outerStyle]}>
+      <View style={styles.refreshIndicatorContainer} pointerEvents="none">
+        <Animated.View
+          style={[
+            styles.refreshIconWrapper,
+            {
+              transform: [
+                {
+                  scale: pullY.interpolate({
+                    inputRange: [0, REFRESH_THRESHOLD],
+                    outputRange: [0.5, 1],
+                    extrapolate: 'clamp',
+                  }),
+                },
+                { 
+                  rotate: refreshing ? spin : pullY.interpolate({
+                    inputRange: [0, REFRESH_THRESHOLD],
+                    outputRange: ['0deg', '360deg'],
+                    extrapolate: 'clamp',
+                  }) 
+                },
+              ],
+            },
+          ]}
+        >
+          {/* Custom Theme Icon */}
+          <Ionicons name="water" size={24} color={Colors.primary} />
+        </Animated.View>
+      </View>
+
       <Animated.View
         style={{ flex: 1, transform: [{ translateY: pullY }] }}
         {...panResponder.panHandlers}
@@ -205,35 +234,6 @@ export function CustomRefreshScrollView({
         )}
         </View>
       </Animated.View>
-
-      <View style={styles.refreshIndicatorContainer} pointerEvents="none">
-        <Animated.View
-          style={[
-            styles.refreshIconWrapper,
-            {
-              transform: [
-                {
-                  scale: pullY.interpolate({
-                    inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: [0, 1],
-                    extrapolate: 'clamp',
-                  }),
-                },
-                { 
-                  rotate: refreshing ? spin : pullY.interpolate({
-                    inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: ['0deg', '360deg'],
-                    extrapolate: 'clamp',
-                  }) 
-                },
-              ],
-            },
-          ]}
-        >
-          {/* Custom Theme Icon */}
-          <Ionicons name="water" size={24} color={Colors.primary} />
-        </Animated.View>
-      </View>
     </View>
   );
 }
@@ -241,7 +241,8 @@ export function CustomRefreshScrollView({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: Colors.background,
+    overflow: 'visible',
   },
   refreshIndicatorContainer: {
     position: 'absolute',
@@ -251,6 +252,7 @@ const styles = StyleSheet.create({
     height: REFRESH_THRESHOLD,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'visible',
   },
   refreshIconWrapper: {
     width: 40,
