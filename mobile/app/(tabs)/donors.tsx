@@ -157,7 +157,7 @@ export default function DonorsScreen() {
   };
 
   return (
-    <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.container} imageStyle={{ opacity: 0.035, resizeMode: 'repeat' }}>
+    <View style={{ flex: 1, backgroundColor: Colors.primary }}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>{t('donors.title')}</Text>
@@ -216,8 +216,25 @@ export default function DonorsScreen() {
         </ScrollView>
       </View>
 
-      {/* Filter Panel */}
-      {showFilters && (
+      <CustomRefreshScrollView
+        outerStyle={{ flex: 1 }}
+        innerStyle={{ flex: 1, backgroundColor: Colors.background }}
+        imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
+        imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'repeat' }}
+        isFlatList={true}
+        flatListData={donors}
+        flatListKeyExtractor={(item: any) => item.id}
+        flatListRenderItem={renderDonorItem}
+        contentContainerStyle={styles.listContent}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.3}
+        ListHeaderComponent={
+          <>
+            {/* Filter Panel */}
+            {showFilters && (
+
         <View style={styles.filterPanel}>
           {/* Blood Group Filter */}
           <Text style={styles.filterLabel}>রক্তের গ্রুপ</Text>
@@ -332,18 +349,8 @@ export default function DonorsScreen() {
           )}
         </ScrollView>
       )}
-
-      {/* Donor List */}
-      <CustomRefreshScrollView
-        isFlatList={true}
-        flatListData={donors}
-        flatListKeyExtractor={(item: any) => item.id}
-        flatListRenderItem={renderDonorItem}
-        contentContainerStyle={styles.listContent}
-        refreshing={refreshing}
-        onRefresh={onRefresh}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.3}
+          </>
+        }
         ListFooterComponent={
           loadingMore ? (
             <View style={styles.footerLoader}>
@@ -365,7 +372,7 @@ export default function DonorsScreen() {
           </View>
         }
       />
-    </ImageBackground>
+    </View>
   );
 }
 

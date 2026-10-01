@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Animated, PanResponder, ScrollView, FlatList, StyleSheet, View, Easing, Text } from 'react-native';
+import { Animated, PanResponder, ScrollView, FlatList, StyleSheet, View, Easing, Text, ImageBackground } from 'react-native';
 import { Colors } from '../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -9,6 +9,10 @@ interface Props {
   refreshing: boolean;
   onRefresh: () => void;
   children?: React.ReactNode;
+  outerStyle?: any;
+  innerStyle?: any;
+  imageBackgroundSource?: any;
+  imageBackgroundStyle?: any;
   style?: any;
   contentContainerStyle?: any;
   showsVerticalScrollIndicator?: boolean;
@@ -27,6 +31,10 @@ export function CustomRefreshScrollView({
   refreshing,
   onRefresh,
   children,
+  outerStyle,
+  innerStyle,
+  imageBackgroundSource,
+  imageBackgroundStyle,
   style,
   contentContainerStyle,
   showsVerticalScrollIndicator = false,
@@ -79,9 +87,9 @@ export function CustomRefreshScrollView({
 
   const panResponder = useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        // Only trigger pull-to-refresh if we are at the top and pulling down
-        return scrollY.current <= 0 && gestureState.dy > 10;
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => {
+        // Capture the gesture if we are at the top and the user is pulling down significantly
+        return scrollY.current <= 0 && gestureState.dy > 5 && Math.abs(gestureState.dy) > Math.abs(gestureState.dx);
       },
       onPanResponderGrant: () => {
         setIsPulling(true);
@@ -113,7 +121,7 @@ export function CustomRefreshScrollView({
   });
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={[styles.container, outerStyle]}>
       {/* Background refresh icon container */}
       <View style={styles.refreshIndicatorContainer}>
         <Animated.View
@@ -139,41 +147,83 @@ export function CustomRefreshScrollView({
       </View>
 
       <Animated.View
-        style={{ flex: 1, transform: [{ translateY: pullY }] }}
+        style={[{ flex: 1 }, innerStyle, { transform: [{ translateY: pullY }] }]}
         {...panResponder.panHandlers}
       >
-        {isFlatList ? (
-          <FlatList
-            data={flatListData}
-            renderItem={flatListRenderItem}
-            keyExtractor={flatListKeyExtractor}
+        {imageBackgroundSource ? (
+          <ImageBackground
+            source={imageBackgroundSource}
             style={{ flex: 1 }}
-            contentContainerStyle={contentContainerStyle}
-            showsVerticalScrollIndicator={showsVerticalScrollIndicator}
-            onScroll={(e) => {
-              scrollY.current = e.nativeEvent.contentOffset.y;
-            }}
-            scrollEventThrottle={16}
-            bounces={false}
-            onEndReached={onEndReached}
-            onEndReachedThreshold={onEndReachedThreshold}
-            ListFooterComponent={ListFooterComponent}
-            ListHeaderComponent={ListHeaderComponent}
-            ListEmptyComponent={ListEmptyComponent}
-          />
-        ) : (
-          <ScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={contentContainerStyle}
-            showsVerticalScrollIndicator={showsVerticalScrollIndicator}
-            onScroll={(e) => {
-              scrollY.current = e.nativeEvent.contentOffset.y;
-            }}
-            scrollEventThrottle={16}
-            bounces={false}
+            imageStyle={imageBackgroundStyle}
           >
-            {children}
-          </ScrollView>
+            {isFlatList ? (
+              <FlatList
+                data={flatListData}
+                renderItem={flatListRenderItem}
+                keyExtractor={flatListKeyExtractor}
+                style={style || { flex: 1 }}
+                contentContainerStyle={contentContainerStyle}
+                showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+                onScroll={(e) => {
+                  scrollY.current = e.nativeEvent.contentOffset.y;
+                }}
+                scrollEventThrottle={16}
+                bounces={false}
+                onEndReached={onEndReached}
+                onEndReachedThreshold={onEndReachedThreshold}
+                ListFooterComponent={ListFooterComponent}
+                ListHeaderComponent={ListHeaderComponent}
+                ListEmptyComponent={ListEmptyComponent}
+              />
+            ) : (
+              <ScrollView
+                style={style || { flex: 1 }}
+                contentContainerStyle={contentContainerStyle}
+                showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+                onScroll={(e) => {
+                  scrollY.current = e.nativeEvent.contentOffset.y;
+                }}
+                scrollEventThrottle={16}
+                bounces={false}
+              >
+                {children}
+              </ScrollView>
+            )}
+          </ImageBackground>
+        ) : (
+          isFlatList ? (
+            <FlatList
+              data={flatListData}
+              renderItem={flatListRenderItem}
+              keyExtractor={flatListKeyExtractor}
+              style={style || { flex: 1 }}
+              contentContainerStyle={contentContainerStyle}
+              showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+              onScroll={(e) => {
+                scrollY.current = e.nativeEvent.contentOffset.y;
+              }}
+              scrollEventThrottle={16}
+              bounces={false}
+              onEndReached={onEndReached}
+              onEndReachedThreshold={onEndReachedThreshold}
+              ListFooterComponent={ListFooterComponent}
+              ListHeaderComponent={ListHeaderComponent}
+              ListEmptyComponent={ListEmptyComponent}
+            />
+          ) : (
+            <ScrollView
+              style={style || { flex: 1 }}
+              contentContainerStyle={contentContainerStyle}
+              showsVerticalScrollIndicator={showsVerticalScrollIndicator}
+              onScroll={(e) => {
+                scrollY.current = e.nativeEvent.contentOffset.y;
+              }}
+              scrollEventThrottle={16}
+              bounces={false}
+            >
+              {children}
+            </ScrollView>
+          )
         )}
       </Animated.View>
     </View>

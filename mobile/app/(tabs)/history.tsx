@@ -208,9 +208,11 @@ export default function HistoryScreen() {
         </View>
       </View>
 
-      <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.contentBgWrapper} imageStyle={{ opacity: 0.035, resizeMode: 'repeat' }}>
-
       <CustomRefreshScrollView
+        outerStyle={{ flex: 1 }}
+        innerStyle={styles.contentBgWrapper}
+        imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
+        imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'repeat' }}
         isFlatList={true}
         flatListData={data}
         flatListKeyExtractor={(item: any) => item.id}
@@ -242,7 +244,6 @@ export default function HistoryScreen() {
           ) : null
         }
       />
-      </ImageBackground>
     </View>
   );
 }

@@ -157,12 +157,11 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      <ImageBackground 
-        source={require('../../assets/images/body-bg.jpg')} 
-        style={styles.contentBgWrapper} 
-        imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
-      >
       <CustomRefreshScrollView 
+        outerStyle={{ flex: 1 }}
+        innerStyle={styles.contentBgWrapper}
+        imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
+        imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'cover' }}
         style={{ flex: 1 }} 
         contentContainerStyle={styles.contentContainer}
         refreshing={refreshing}
@@ -321,7 +320,6 @@ export default function ProfileScreen() {
         </View>
       </Modal>
       </CustomRefreshScrollView>
-      </ImageBackground>
     </View>
   );
 }

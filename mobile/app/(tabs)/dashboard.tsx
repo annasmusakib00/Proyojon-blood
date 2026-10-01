@@ -154,19 +154,17 @@ export default function DashboardScreen() {
         </View>
       </ImageBackground>
 
-      <View style={styles.contentBgWrapper}>
-        <ImageBackground 
-          source={require('../../assets/images/body-bg.jpg')} 
-          style={{ flex: 1 }} 
-          imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
-        >
-          <CustomRefreshScrollView 
-            style={styles.contentScroll} 
-            contentContainerStyle={styles.contentContainer} 
-            showsVerticalScrollIndicator={false}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          >
+      <CustomRefreshScrollView
+        outerStyle={{ flex: 1 }}
+        innerStyle={styles.contentBgWrapper}
+        imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
+        imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'cover' }}
+        style={styles.contentScroll} 
+        contentContainerStyle={styles.contentContainer} 
+        showsVerticalScrollIndicator={false}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      >
         <View style={styles.sliderContainer}>
           <ScrollView
             ref={scrollViewRef}
@@ -354,9 +352,7 @@ export default function DashboardScreen() {
             </Animated.View>
           </TouchableOpacity>
         </View>
-          </CustomRefreshScrollView>
-        </ImageBackground>
-      </View>
+      </CustomRefreshScrollView>
     </View>
   );
 }

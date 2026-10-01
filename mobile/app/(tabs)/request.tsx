@@ -138,12 +138,11 @@ export default function RequestScreen() {
           <Text style={styles.headerTitle}>{t('request.title')}</Text>
           <Text style={styles.headerSubtitle}>{t('request.subtitle')}</Text>
         </View>
-        <ImageBackground 
-          source={require('../../assets/images/body-bg.jpg')} 
-          style={styles.contentBgWrapper} 
-          imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
-        >
         <CustomRefreshScrollView 
+          outerStyle={{ flex: 1 }}
+          innerStyle={styles.contentBgWrapper}
+          imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
+          imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'cover' }}
           style={styles.scrollView} 
           contentContainerStyle={styles.content} 
           showsVerticalScrollIndicator={false}
@@ -296,7 +295,6 @@ export default function RequestScreen() {
           </TouchableOpacity>
         </View>
         </CustomRefreshScrollView>
-      </ImageBackground>
       </View>
 
       <ConveyanceAgreement
