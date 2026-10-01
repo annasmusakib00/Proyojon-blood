@@ -164,7 +164,18 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={onRefresh}
-      >
+        isFlatList={true}
+        flatListData={recentRequests}
+        flatListKeyExtractor={(item: any) => item._id}
+        flatListRenderItem={({ item }: { item: any }) => (
+          <RequestCard 
+            request={item} 
+            onPress={() => router.push(`/(tabs)/request?id=${item._id}`)} 
+          />
+        )}
+        flatListProps={{
+          ListHeaderComponent: (
+            <>
         <View style={styles.sliderContainer}>
           <ScrollView
             ref={scrollViewRef}
@@ -242,74 +253,17 @@ export default function DashboardScreen() {
           )}
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
-          {recentRequests.length === 0 ? (
-            <Card style={styles.emptyCard}>
-              <Text style={styles.emptyText}>{t('dashboard.noActivity')}</Text>
-            </Card>
-          ) : (
-            recentRequests.map((req: any) => (
-              <TouchableOpacity
-                key={req.id}
-                onPress={() => router.push(`/request/${req.id}`)}
-              >
-                <Card style={styles.activityCard}>
-                  <View style={styles.activityRow}>
-                    <Text style={styles.activityBlood}>
-                      {req.bloodGroup?.replace('_POS', '+').replace('_NEG', '−')}
-                    </Text>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.activityHospital}>
-                        {req.hospitalName}
-                      </Text>
-                      <Text style={styles.activityDate}>
-                        {new Date(req.createdAt).toLocaleDateString('bn-BD', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                        })}
-                      </Text>
-                    </View>
-                    <View
-                      style={[
-                        styles.statusBadge,
-                        {
-                          backgroundColor:
-                            req.status === 'EXPIRED'
-                              ? Colors.surfaceLight
-                              : req.status === 'COMPLETED'
-                                ? Colors.success + '22'
-                                : req.status === 'PENDING'
-                                  ? Colors.warning + '22'
-                                  : Colors.info + '22',
-                        },
-                      ]}
-                    >
-                      <Text
-                        style={[
-                          styles.statusText,
-                          {
-                            color:
-                              req.status === 'EXPIRED'
-                                ? Colors.textMuted
-                                : req.status === 'COMPLETED'
-                                  ? Colors.success
-                                  : req.status === 'PENDING'
-                                    ? Colors.warning
-                                    : Colors.info,
-                          },
-                        ]}
-                      >
-                        {req.status}
-                      </Text>
-                    </View>
-                  </View>
-                </Card>
-              </TouchableOpacity>
-            ))
-          )}
-        </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
+            {recentRequests.length === 0 && (
+              <Card style={styles.emptyCard}>
+                <Text style={styles.emptyText}>{t('dashboard.noActivity')}</Text>
+              </Card>
+            )}
+          </View>
+        </>
+      ),
+      ListFooterComponent: (
 
         <View style={styles.actionContainer}>
           <TouchableOpacity
@@ -352,7 +306,9 @@ export default function DashboardScreen() {
             </Animated.View>
           </TouchableOpacity>
         </View>
-      </CustomRefreshScrollView>
+      )
+    }}
+  />
     </View>
   );
 }
