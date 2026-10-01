@@ -3,7 +3,14 @@ import { Platform } from 'react-native';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
+
+let Notifications: any = null;
+try {
+  Notifications = require('expo-notifications');
+} catch (e) {
+  console.warn('[Notifications] expo-notifications not available in this environment (likely Expo Go Android). Push notifications disabled.');
+}
+
 import { useNotificationStore } from '../stores/notificationStore';
 import { updateFcmToken } from '../services/donor';
 
@@ -48,6 +55,11 @@ export function useNotifications() {
 
         if (!Device.isDevice) {
           console.warn('[Notifications] Push only works on physical devices');
+          return;
+        }
+        
+        if (!Notifications) {
+          console.warn('[Notifications] Not supported in this environment');
           return;
         }
 
