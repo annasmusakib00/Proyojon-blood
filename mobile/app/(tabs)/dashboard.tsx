@@ -226,9 +226,8 @@ export default function DashboardScreen() {
             </Card>
           </TouchableOpacity>
         )}
-        flatListProps={{
-          ListHeaderComponent: (
-            <>
+        ListHeaderComponent={(
+          <>
         <View style={styles.sliderContainer}>
           <ScrollView
             ref={scrollViewRef}
@@ -315,8 +314,8 @@ export default function DashboardScreen() {
             )}
           </View>
         </>
-      ),
-      ListFooterComponent: (
+      )}
+      ListFooterComponent={(
 
         <View style={styles.actionContainer}>
           <TouchableOpacity
@@ -359,9 +358,8 @@ export default function DashboardScreen() {
             </Animated.View>
           </TouchableOpacity>
         </View>
-      )
-    }}
-  />
+      )}
+    />
     </View>
   );
 }
