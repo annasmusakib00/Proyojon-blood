@@ -4,6 +4,9 @@ export const bn = {
     tagline: 'আপনার এক ব্যাগ রক্তে\nবেঁচে উঠতে পারে একটি জীবন',
     register: 'নতুন একাউন্ট খুলুন',
     login: 'লগইন করুন',
+    giveBlood: 'রক্ত দিন',
+    saveLife: 'জীবন বাঁচান',
+    checkThisOut: 'এটা দেখে নিন',
   },
   login: {
     title: 'আবার স্বাগতম',

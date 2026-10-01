@@ -4,6 +4,9 @@ export const en = {
     tagline: 'Your one bag of blood\ncan save a life',
     register: 'Create New Account',
     login: 'Log In',
+    giveBlood: 'Give Blood',
+    saveLife: 'Save Life',
+    checkThisOut: 'Check This Out',
   },
   login: {
     title: 'Welcome Back',

@@ -46,11 +46,11 @@ export default function WelcomeScreen() {
           <Text style={styles.tagline}>{t('welcome.tagline')}</Text>
           <View style={[styles.iconContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 10 }]}>
             <View style={{ flex: 1, alignItems: 'flex-end', paddingRight: 10 }}>
-              <Text style={styles.sideText}>রক্ত দিন</Text>
+              <Text style={styles.sideText}>{t('welcome.giveBlood')}</Text>
             </View>
             <Ionicons name="water" size={130} color="#FFFFFF" style={styles.icon} />
             <View style={{ flex: 1, alignItems: 'flex-start', paddingLeft: 10 }}>
-              <Text style={styles.sideText}>জীবন বাঁচান</Text>
+              <Text style={styles.sideText}>{t('welcome.saveLife')}</Text>
             </View>
           </View>
         </SafeAreaView>
@@ -83,7 +83,7 @@ export default function WelcomeScreen() {
           onPress={() => router.push('/(auth)/onboarding')}
           activeOpacity={0.8}
         >
-          <Text style={[styles.loginButtonText, { fontSize: 14 }]}>এটা দেখে নিন</Text>
+          <Text style={[styles.loginButtonText, { fontSize: 14 }]}>{t('welcome.checkThisOut')}</Text>
         </TouchableOpacity>
       </ImageBackground>
     </View>
