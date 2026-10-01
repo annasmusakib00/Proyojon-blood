@@ -93,20 +93,6 @@ export async function createRequest(
         ).then((result) => logNotification(request.id, donor.id, 'PUSH', !!result))
       );
     }
-
-    // Channel 2: SMS
-    notifications.push(
-      sendSMS(
-        donor.phone,
-        emergencyAlertSMS({
-          bags: data.bags_needed,
-          bloodGroup: data.blood_group,
-          hospitalName: data.hospital_name,
-          conveyanceAmount: data.conveyance_amount,
-          phone: request.requester.phone,
-        })
-      ).then((success) => logNotification(request.id, donor.id, 'SMS', success))
-    );
   }
 
   // Fire all notifications in parallel
@@ -161,15 +147,7 @@ export async function sendIndividualDonorRequest(
   const requesterInfo = request.requester;
   const notifications: Promise<void>[] = [];
 
-  // Channel 1: SMS with requester's full info + phone number
-  const smsBody = `জরুরী রক্তের অনুরোধ!\n${requesterInfo.name} আপনাকে রক্তদানের অনুরোধ পাঠিয়েছেন।\nরক্তের গ্রুপ: ${bloodGroupDisplay}\nপরিমাণ: ${request.bagsNeeded} ব্যাগ\nহাসপাতাল: ${request.hospitalName}\nযাতায়াত ভাতা: ${request.conveyanceAmount} BDT\nযোগাযোগ: ${requesterInfo.phone}\nProjectojon অ্যাপ খুলুন বিস্তারিত দেখতে।`;
-
-  notifications.push(
-    sendSMS(donor.phone, smsBody)
-      .then((success) => logNotification(requestId, donorId, 'SMS', success))
-  );
-
-  // Channel 2: Push notification (in-app, data-only — works with just internet)
+  // Channel 1: Push notification (in-app, data-only — works with just internet)
   if (donor.fcmToken) {
     notifications.push(
       sendPushNotification(
