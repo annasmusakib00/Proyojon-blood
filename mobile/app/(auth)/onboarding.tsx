@@ -4,21 +4,23 @@ import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import { t } from '../../utils/i18n';
+import { useLocaleStore } from '../../stores/localeStore';
 
 const { width, height } = Dimensions.get('window');
 
 const slides = [
   {
     id: '1',
-    title: 'ইমার্জেন্সি ডোনার রাডার',
-    description: "ইমার্জেন্সি ডোনার খুঁজে পেতে অবশ্যই সঠিক তথ্য দিয়ে রাডার চালু করুন। রাডার আপনার ৫ কিলোমিটার এরিয়ার মধ্যে থাকা ডোনার পেতে সাহায্য করবে।",
-    image: require('../../assets/images/onboarding_radar.jpg'),
+    titleKey: 'onboarding.radarTitle',
+    descKey: 'onboarding.radarDesc',
+    image: require('../../assets/images/onboarding_radar.png'),
   },
   {
     id: '2',
-    title: 'অ্যাক্টিভ ডোনার খুঁজুন',
-    description: "অ্যাক্টিভ ডোনারদের খুঁজে পেতে 'ডোনার' মেনুতে ক্লিক করে আপনার জেলা বা লোকেশন অনুযায়ী সার্চ করে ডোনার খুঁজে বের করুন।",
-    image: require('../../assets/images/onboarding_search.jpg'),
+    titleKey: 'onboarding.searchTitle',
+    descKey: 'onboarding.searchDesc',
+    image: require('../../assets/images/onboarding_search.png'),
   }
 ];
 
@@ -26,6 +28,7 @@ export default function OnboardingScreen() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef<FlatList>(null);
   const router = useRouter();
+  const { locale } = useLocaleStore();
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const slideSize = event.nativeEvent.layoutMeasurement.width;
@@ -50,8 +53,8 @@ export default function OnboardingScreen() {
       <View style={styles.slide}>
         <Image source={item.image} style={styles.image} resizeMode="contain" />
         <View style={styles.textContainer}>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.title}>{t(item.titleKey)}</Text>
+          <Text style={styles.description}>{t(item.descKey)}</Text>
         </View>
       </View>
     );
@@ -91,7 +94,7 @@ export default function OnboardingScreen() {
           activeOpacity={0.8}
         >
           {currentIndex === slides.length - 1 ? (
-            <Text style={styles.getStartedText}>শুরু করুন</Text>
+            <Text style={styles.getStartedText}>{t('onboarding.start')}</Text>
           ) : (
             <Ionicons name="arrow-forward" size={24} color="#FFFFFF" />
           )}

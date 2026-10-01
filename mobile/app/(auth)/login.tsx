@@ -95,7 +95,7 @@ export default function LoginScreen() {
           onPress={() => router.push('/(auth)/forgot-password')}
           style={styles.forgotPasswordLink}
         >
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          <Text style={styles.forgotPasswordText}>{t('login.forgotPassword')}</Text>
         </TouchableOpacity>
 
         <Button

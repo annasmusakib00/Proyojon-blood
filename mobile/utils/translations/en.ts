@@ -13,6 +13,14 @@ export const en = {
     button: 'Login',
     noAccount: "Don't have an account yet?",
     registerLink: 'Create a new account',
+    forgotPassword: 'Forgot Password?',
+  },
+  onboarding: {
+    radarTitle: 'Emergency Donor Radar',
+    radarDesc: 'Turn on the radar with proper info to find emergency donors. The radar will help you find donors within a 5km radius.',
+    searchTitle: 'Find Active Donors',
+    searchDesc: 'Click the "Donors" menu to search for active donors by district or location.',
+    start: 'Get Started',
   },
   register: {
     title: 'Join Us',

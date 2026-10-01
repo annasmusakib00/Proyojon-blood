@@ -11,7 +11,7 @@ const { height } = Dimensions.get('window');
 
 export default function WelcomeScreen() {
   const router = useRouter();
-  const { locale } = useLocaleStore(); // to trigger re-renders on locale change
+  const { locale, toggleLocale } = useLocaleStore();
 
   const handleRegister = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -37,6 +37,11 @@ export default function WelcomeScreen() {
         imageStyle={styles.topHalfImage}
       >
         <SafeAreaView style={styles.safeArea}>
+          <TouchableOpacity style={styles.langToggle} onPress={toggleLocale}>
+            <Ionicons name="globe-outline" size={18} color="#FFF" />
+            <Text style={styles.langToggleText}>{locale === 'en' ? 'EN' : 'BN'}</Text>
+          </TouchableOpacity>
+
           <Text style={styles.title}>{t('welcome.title')}</Text>
           <Text style={styles.tagline}>{t('welcome.tagline')}</Text>
           <View style={[styles.iconContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: 10 }]}>
@@ -105,6 +110,24 @@ const styles = StyleSheet.create({
   topHalfImage: {
     opacity: 0.15,
     resizeMode: 'cover',
+  },
+  langToggle: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    gap: 6,
+    paddingHorizontal: 12, 
+    paddingVertical: 6,
+    backgroundColor: 'rgba(255,255,255,0.2)', 
+    borderRadius: 12,
+    zIndex: 10,
+  },
+  langToggleText: { 
+    color: '#FFFFFF', 
+    fontSize: 13, 
+    fontWeight: '700' 
   },
   safeArea: {
     flex: 1,
