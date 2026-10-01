@@ -39,8 +39,10 @@ export default function WelcomeScreen() {
         <SafeAreaView style={styles.safeArea}>
           <Text style={styles.title}>{t('welcome.title')}</Text>
           <Text style={styles.tagline}>{t('welcome.tagline')}</Text>
-          <View style={styles.iconContainer}>
-            <Ionicons name="water" size={160} color="#FFFFFF" style={styles.icon} />
+          <View style={[styles.iconContainer, { flexDirection: 'row', alignItems: 'center' }]}>
+            <Text style={styles.sideText}>রক্ত দিন</Text>
+            <Ionicons name="water" size={160} color="#FFFFFF" style={[styles.icon, { marginHorizontal: 5 }]} />
+            <Text style={styles.sideText}>জীবন বাঁচান</Text>
           </View>
         </SafeAreaView>
       </ImageBackground>
@@ -134,6 +136,14 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0,0,0,0.3)',
     textShadowOffset: { width: 0, height: 8 },
     textShadowRadius: 15,
+  },
+  sideText: {
+    color: '#FFFFFF',
+    fontSize: 24,
+    fontWeight: '800',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 0, height: 4 },
+    textShadowRadius: 6,
   },
   bottomHalf: {
     flex: 1,
