@@ -219,21 +219,8 @@ export default function HistoryScreen() {
         flatListKeyExtractor={(item: any) => item.id}
         flatListRenderItem={renderItem}
         contentContainerStyle={styles.listContent}
-<<<<<<< HEAD
         refreshing={refreshing}
         onRefresh={onRefresh}
-=======
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh} 
-            tintColor={Colors.primary}
-            colors={[Colors.primary]} 
-            progressBackgroundColor="#FFFFFF"
-            progressViewOffset={20}
-          />
-        }
->>>>>>> 1c8769e569d7cb7c332bde394ae3bdf4b427369f
         onEndReached={loadMore}
         onEndReachedThreshold={0.3}
         ListFooterComponent={
