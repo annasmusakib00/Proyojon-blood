@@ -21,6 +21,7 @@ import { BD_DIVISIONS } from '../../constants/locations';
 import * as donorService from '../../services/donor';
 
 import { useLocaleStore } from '../../stores/localeStore';
+import { t } from '../../utils/i18n';
 
 export default function DonorsScreen() {
   const router = useRouter();
