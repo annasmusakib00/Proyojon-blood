@@ -13,16 +13,21 @@ const api = axios.create({
   },
 });
 
-// Request interceptor — attach JWT from SecureStore
+import { useAuthStore } from '../stores/authStore';
+
+// Request interceptor — attach JWT from Zustand store or SecureStore
 api.interceptors.request.use(
   async (config) => {
     try {
-      const token = await SecureStore.getItemAsync('auth_token');
+      let token = useAuthStore.getState().token;
+      if (!token) {
+        token = await SecureStore.getItemAsync('auth_token');
+      }
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
     } catch (error) {
-      console.error('[API] Failed to get token from SecureStore:', error);
+      console.error('[API] Failed to get token:', error);
     }
     return config;
   },
