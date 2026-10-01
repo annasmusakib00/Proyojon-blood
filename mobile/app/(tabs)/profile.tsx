@@ -10,7 +10,11 @@ import {
   Switch,
   TextInput,
   ImageBackground,
+<<<<<<< HEAD
   Modal,
+=======
+  RefreshControl,
+>>>>>>> 1c8769e569d7cb7c332bde394ae3bdf4b427369f
 } from 'react-native';
 import { CustomRefreshScrollView } from '../../components/CustomRefreshScrollView';
 import { useRouter } from 'expo-router';
@@ -31,6 +35,7 @@ export default function ProfileScreen() {
   const { user, logout, setUser, token } = useAuthStore();
   const { locale, toggleLocale } = useLocaleStore();
   const [uploading, setUploading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [showLocationEdit, setShowLocationEdit] = useState(false);
   const [address, setAddress] = useState(user?.locationText || '');
@@ -70,7 +75,10 @@ export default function ProfileScreen() {
     fetchProfile();
   }, []);
 
+<<<<<<< HEAD
   const [refreshing, setRefreshing] = useState(false);
+=======
+>>>>>>> 1c8769e569d7cb7c332bde394ae3bdf4b427369f
   const onRefresh = async () => {
     setRefreshing(true);
     try {
@@ -168,7 +176,24 @@ export default function ProfileScreen() {
         refreshing={refreshing}
         onRefresh={onRefresh}
       >
+<<<<<<< HEAD
         <View style={styles.headerHandleBar} />
+=======
+      <ScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={styles.contentContainer}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={Colors.primary}
+            colors={[Colors.primary]}
+            progressBackgroundColor="#FFFFFF"
+            progressViewOffset={20}
+          />
+        }
+      >
+>>>>>>> 1c8769e569d7cb7c332bde394ae3bdf4b427369f
 
       <View style={styles.profileHeader}>
         <TouchableOpacity onPress={pickImage} disabled={uploading}>

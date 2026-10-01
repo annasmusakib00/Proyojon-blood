@@ -350,7 +350,26 @@ export default function DonorsScreen() {
           )}
         </ScrollView>
       )}
+<<<<<<< HEAD
           </>
+=======
+
+      {/* Donor List */}
+      <FlatList
+        data={donors}
+        keyExtractor={(item) => item.id}
+        renderItem={renderDonorItem}
+        contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl 
+            refreshing={refreshing} 
+            onRefresh={onRefresh} 
+            tintColor={Colors.primary}
+            colors={[Colors.primary]} 
+            progressBackgroundColor="#FFFFFF"
+            progressViewOffset={20}
+          />
+>>>>>>> 1c8769e569d7cb7c332bde394ae3bdf4b427369f
         }
         ListFooterComponent={
           loadingMore ? (
