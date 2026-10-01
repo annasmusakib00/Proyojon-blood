@@ -41,7 +41,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Clear token and let the auth guard redirect to login
       try {
-        await SecureStore.deleteItemAsync('auth_token');
+        useAuthStore.getState().logout();
       } catch (e) {
         console.error('[API] Failed to clear token:', e);
       }
