@@ -325,23 +325,35 @@ export default function DashboardScreen() {
               router.push('/(tabs)/request');
             }}
             activeOpacity={0.8}
+            style={styles.newRequestButtonWrapper}
           >
-            <LinearGradient
-              colors={[Colors.primary, Colors.primaryDark]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.newRequestButton}
-            >
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={styles.requestButtonTextSide}>{t('dashboard.findDonorFast')}</Text>
-              </View>
-              <Animated.View style={[styles.requestButtonCenterCircle, { transform: [{ scale: buttonScaleAnim }] }]}>
-                <MaterialCommunityIcons name="radar" size={32} color={Colors.primary} />
-              </Animated.View>
-              <View style={{ flex: 1, alignItems: 'center' }}>
-                <Text style={styles.requestButtonTextSide}>{t('dashboard.clickHere')}</Text>
-              </View>
-            </LinearGradient>
+            <View style={styles.leftPillContainer}>
+              <LinearGradient
+                colors={[Colors.primary, Colors.primaryDark]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.leftPillBody}
+              >
+                <Text style={styles.requestButtonTextSide} numberOfLines={1} adjustsFontSizeToFit>{t('dashboard.findDonorFast')}</Text>
+              </LinearGradient>
+              <View style={styles.leftPillArrow} />
+            </View>
+
+            <Animated.View style={[styles.requestButtonCenterCircle, { transform: [{ scale: buttonScaleAnim }] }]}>
+              <MaterialCommunityIcons name="radar" size={38} color={Colors.primary} />
+            </Animated.View>
+            
+            <View style={styles.rightPillContainer}>
+              <View style={styles.rightPillArrow} />
+              <LinearGradient
+                colors={[Colors.primary, Colors.primaryDark]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.rightPillBody}
+              >
+                <Text style={styles.requestButtonTextSide} numberOfLines={1} adjustsFontSizeToFit>{t('dashboard.clickHere')}</Text>
+              </LinearGradient>
+            </View>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -434,20 +446,77 @@ const styles = StyleSheet.create({
   statusBadge: { paddingHorizontal: 6, paddingVertical: 3, borderRadius: 6 },
   statusText: { fontSize: 9, fontWeight: '700' },
 
-  actionContainer: { paddingVertical: 16 },
-  newRequestButton: {
+  actionContainer: { paddingVertical: 20 },
+  newRequestButtonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.primary,
-    borderRadius: 100, // Pill shape
-    paddingHorizontal: 12,
-    paddingVertical: 2, // Thinner button
+    position: 'relative',
+    marginVertical: 10,
+    width: '100%',
+  },
+  leftPillContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginRight: 40,
+  },
+  leftPillBody: {
+    flex: 1,
+    height: 52,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: 26,
+    borderBottomLeftRadius: 26,
+    paddingLeft: 10,
+  },
+  leftPillArrow: {
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderTopWidth: 26,
+    borderBottomWidth: 26,
+    borderLeftWidth: 16,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: Colors.primaryDark,
+  },
+  rightPillContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 40,
+  },
+  rightPillArrow: {
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderTopWidth: 26,
+    borderBottomWidth: 26,
+    borderRightWidth: 16,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderRightColor: Colors.primary,
+  },
+  rightPillBody: {
+    flex: 1,
+    height: 52,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopRightRadius: 26,
+    borderBottomRightRadius: 26,
+    paddingRight: 10,
   },
   requestButtonCenterCircle: {
-    width: 50, // slightly smaller circle
-    height: 50,
-    borderRadius: 25,
+    position: 'absolute',
+    alignSelf: 'center',
+    left: '50%',
+    marginLeft: -38, // Center exactly
+    width: 76, // bigger circle
+    height: 76,
+    borderRadius: 38,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
