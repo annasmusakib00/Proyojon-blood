@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 4,
   },
-  listContent: { paddingHorizontal: 20, paddingBottom: 110 },
+  listContent: { paddingHorizontal: 20, paddingBottom: 130 },
   itemCard: { marginBottom: 10 },
   itemRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   bloodCircle: {

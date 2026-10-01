@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   contentScroll: { 
     flex: 1, 
   },
-  contentContainer: { flexGrow: 1, paddingHorizontal: 16, paddingTop: 4, paddingBottom: 110 },
+  contentContainer: { flexGrow: 1, paddingHorizontal: 16, paddingTop: 4, paddingBottom: 130 },
   topHeader: { 
     flexDirection: 'row', 
     justifyContent: 'space-between', 
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
   },
   leftPillBody: {
     flex: 1,
-    height: 52,
+    height: 42,
     justifyContent: 'center',
     alignItems: 'center',
     borderTopLeftRadius: 26,
@@ -502,8 +502,8 @@ const styles = StyleSheet.create({
     height: 0,
     backgroundColor: 'transparent',
     borderStyle: 'solid',
-    borderTopWidth: 26,
-    borderBottomWidth: 26,
+    borderTopWidth: 21,
+    borderBottomWidth: 21,
     borderLeftWidth: 16,
     borderTopColor: 'transparent',
     borderBottomColor: 'transparent',
@@ -520,8 +520,8 @@ const styles = StyleSheet.create({
     height: 0,
     backgroundColor: 'transparent',
     borderStyle: 'solid',
-    borderTopWidth: 26,
-    borderBottomWidth: 26,
+    borderTopWidth: 21,
+    borderBottomWidth: 21,
     borderRightWidth: 16,
     borderTopColor: 'transparent',
     borderBottomColor: 'transparent',
@@ -529,7 +529,7 @@ const styles = StyleSheet.create({
   },
   rightPillBody: {
     flex: 1,
-    height: 52,
+    height: 42,
     justifyContent: 'center',
     alignItems: 'center',
     borderTopRightRadius: 26,
@@ -540,10 +540,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     left: '50%',
-    marginLeft: -38, // Center exactly
-    width: 76, 
-    height: 76,
-    borderRadius: 38,
+    marginLeft: -32, // Center exactly
+    width: 64, 
+    height: 64,
+    borderRadius: 32,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -557,9 +557,9 @@ const styles = StyleSheet.create({
     zIndex: 10, // Ensure it's above
   },
   requestButtonInnerCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     backgroundColor: 'rgba(138, 3, 3, 0.06)', // Light red tint
     alignItems: 'center',
     justifyContent: 'center',

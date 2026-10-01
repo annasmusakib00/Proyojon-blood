@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
   activeTagText: { color: Colors.primary, fontSize: 12, fontWeight: '600' },
   activeTagClose: { color: Colors.primary, fontSize: 14, fontWeight: '800' },
 
-  listContent: { paddingHorizontal: 16, paddingBottom: 100 },
+  listContent: { paddingHorizontal: 16, paddingBottom: 130 },
 
   donorCard: { marginBottom: 10, paddingVertical: 12, paddingHorizontal: 14 },
   donorRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },

@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   
-  contentContainer: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 120 },
+  contentContainer: { flexGrow: 1, paddingHorizontal: 20, paddingBottom: 130 },
   profileHeader: { alignItems: 'center', marginBottom: 16 },
   avatar: { width: 76, height: 76, borderRadius: 38, backgroundColor: Colors.primaryGhost, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.primaryGhost, marginBottom: 8 },
   avatarImage: { width: 76, height: 76, borderRadius: 38, borderWidth: 2, borderColor: Colors.primaryGhost, marginBottom: 8 },

@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
   },
   
   scrollView: { flex: 1 },
-  content: { padding: 20, paddingBottom: 110 },
+  content: { padding: 20, paddingBottom: 130 },
 
   locationWarning: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
   conveyanceText: { color: Colors.textSecondary, fontSize: 15, fontWeight: '700' },
   conveyanceTextSelected: { color: Colors.success },
 
-  footerContainer: { marginTop: 16, paddingBottom: 110 },
+  footerContainer: { marginTop: 16, paddingBottom: 130 },
   submitButton: {
     backgroundColor: Colors.primary, height: 56, borderRadius: 28,
     justifyContent: 'center', alignItems: 'center', elevation: 6,
