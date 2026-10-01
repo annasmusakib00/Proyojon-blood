@@ -17,7 +17,7 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           position: 'absolute',
-          bottom: 8,
+          bottom: Math.max(16, insets.bottom + 12),
           left: 16,
           right: 16,
           elevation: 20,
@@ -35,7 +35,7 @@ export default function TabLayout() {
         tabBarBackground: () => (
           <View style={{ flex: 1, overflow: 'visible' }}>
             {/* Red curve overlaying behind the nav bar, merging with it */}
-            <View style={{ position: 'absolute', top: 32, left: -16, right: -16, bottom: -50, backgroundColor: Colors.primary, borderTopLeftRadius: 24, borderTopRightRadius: 24 }} />
+            <View style={{ position: 'absolute', top: 32, left: -16, right: -16, bottom: -150, backgroundColor: Colors.primary, borderTopLeftRadius: 24, borderTopRightRadius: 24 }} />
             <View style={{ flex: 1, borderRadius: 100, overflow: 'hidden', backgroundColor: '#FFF' }}>
               <View style={[StyleSheet.absoluteFill, { borderWidth: 1, borderColor: 'rgba(0,0,0,0.05)', borderRadius: 100 }]} />
             </View>
