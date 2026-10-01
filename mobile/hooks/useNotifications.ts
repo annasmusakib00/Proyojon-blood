@@ -83,7 +83,17 @@ export function useNotifications() {
           return;
         }
 
-        const tokenData = await Notifications.getExpoPushTokenAsync();
+        const projectId =
+          Constants?.expoConfig?.extra?.eas?.projectId ??
+          Constants?.easConfig?.projectId;
+
+        if (!projectId) {
+          console.warn('[Notifications] EAS projectId is missing in app.json');
+        }
+
+        const tokenData = await Notifications.getExpoPushTokenAsync({
+          projectId,
+        });
         const token = tokenData.data;
         setExpoPushToken(token);
 
