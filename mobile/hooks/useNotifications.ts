@@ -17,6 +17,9 @@ export function useNotifications() {
         // Expo push notifications require backend Firebase setup that is not fully completed yet.
         // We will use polling everywhere for now so that testing in both Expo Go and built APK works perfectly.
         const pollInterval = setInterval(async () => {
+          const { useAuthStore } = await import('../stores/authStore');
+          if (!useAuthStore.getState().isAuthenticated) return;
+
           try {
             const api = (await import('../services/api')).default;
             const res = await api.get('/donor/pending-requests');
