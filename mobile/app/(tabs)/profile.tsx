@@ -105,7 +105,7 @@ export default function ProfileScreen() {
   const uploadProfilePhoto = async (base64Data: string) => {
     setUploading(true);
     try {
-      const IMGBB_API_KEY = '5a688b1fcb4e3c35bbaee51e9b72d2fb';
+      const IMGBB_API_KEY = '92e878c94ca2e2da7bdb797109718cba';
       
       const formData = new FormData();
       formData.append('image', base64Data);
