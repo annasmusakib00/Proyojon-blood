@@ -140,8 +140,16 @@ export default function DashboardScreen() {
             <Text style={styles.userName}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
           </View>
         </View>
-        <View style={styles.bloodBadge}>
-          <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+          <TouchableOpacity 
+            onPress={() => router.push('/(tabs)/request')}
+            style={styles.headerSearchIcon}
+          >
+            <Ionicons name="search" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+          <View style={styles.bloodBadge}>
+            <Text style={styles.bloodBadgeText}>{bloodGroupDisplay}</Text>
+          </View>
         </View>
       </ImageBackground>
 
@@ -372,6 +380,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3
   },
   bloodBadgeText: { color: Colors.primary, fontSize: 16, fontWeight: '800' },
+  headerSearchIcon: {
+    width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.15)',
+    alignItems: 'center', justifyContent: 'center'
+  },
 
   sliderContainer: { marginBottom: 12, borderRadius: 16, overflow: 'hidden', height: 160 },
   slider: { borderRadius: 16 },
