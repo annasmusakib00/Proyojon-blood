@@ -213,16 +213,9 @@ export function CustomRefreshScrollView({
             {
               transform: [
                 {
-                  translateY: pullY.interpolate({
-                    inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: [-60, 20],
-                    extrapolate: 'clamp',
-                  }),
-                },
-                {
                   scale: pullY.interpolate({
                     inputRange: [0, REFRESH_THRESHOLD],
-                    outputRange: [0.5, 1],
+                    outputRange: [0, 1],
                     extrapolate: 'clamp',
                   }),
                 },
