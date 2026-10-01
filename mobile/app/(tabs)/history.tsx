@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   ImageBackground,
 } from 'react-native';
+import { CustomRefreshScrollView } from '../../components/CustomRefreshScrollView';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
@@ -209,12 +210,14 @@ export default function HistoryScreen() {
 
       <ImageBackground source={require('../../assets/images/body-bg.jpg')} style={styles.contentBgWrapper} imageStyle={{ opacity: 0.035, resizeMode: 'repeat' }}>
 
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
+      <CustomRefreshScrollView
+        isFlatList={true}
+        flatListData={data}
+        flatListKeyExtractor={(item: any) => item.id}
+        flatListRenderItem={renderItem}
         contentContainerStyle={styles.listContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         onEndReached={loadMore}
         onEndReachedThreshold={0.3}
         ListFooterComponent={

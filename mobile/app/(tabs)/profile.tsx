@@ -9,9 +9,9 @@ import {
   ScrollView,
   Switch,
   TextInput,
-  Modal,
   ImageBackground,
 } from 'react-native';
+import { CustomRefreshScrollView } from '../../components/CustomRefreshScrollView';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
@@ -68,6 +68,18 @@ export default function ProfileScreen() {
     };
     fetchProfile();
   }, []);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    try {
+      const res = await api.get('/donor/me');
+      if (res.data?.success && res.data.data) {
+        setUser(res.data.data);
+      }
+    } catch (err) {}
+    setRefreshing(false);
+  };
 
   const bloodGroupDisplay = (user?.bloodGroup || '')
     .replace('_POS', '+')
@@ -150,7 +162,12 @@ export default function ProfileScreen() {
         style={styles.contentBgWrapper} 
         imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
       >
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.contentContainer}>
+      <CustomRefreshScrollView 
+        style={{ flex: 1 }} 
+        contentContainerStyle={styles.contentContainer}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      >
 
       <View style={styles.profileHeader}>
         <TouchableOpacity onPress={pickImage} disabled={uploading}>
@@ -303,7 +320,7 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
-      </ScrollView>
+      </CustomRefreshScrollView>
       </ImageBackground>
     </View>
   );

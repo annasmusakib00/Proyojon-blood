@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
   TextInput,
 } from 'react-native';
+import { CustomRefreshScrollView } from '../../components/CustomRefreshScrollView';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
@@ -333,14 +334,14 @@ export default function DonorsScreen() {
       )}
 
       {/* Donor List */}
-      <FlatList
-        data={donors}
-        keyExtractor={(item) => item.id}
-        renderItem={renderDonorItem}
+      <CustomRefreshScrollView
+        isFlatList={true}
+        flatListData={donors}
+        flatListKeyExtractor={(item: any) => item.id}
+        flatListRenderItem={renderDonorItem}
         contentContainerStyle={styles.listContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />
-        }
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         onEndReached={loadMore}
         onEndReachedThreshold={0.3}
         ListFooterComponent={

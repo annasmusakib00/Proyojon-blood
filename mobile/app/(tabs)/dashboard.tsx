@@ -11,6 +11,7 @@ import {
   RefreshControl,
   ImageBackground,
 } from 'react-native';
+import { CustomRefreshScrollView } from '../../components/CustomRefreshScrollView';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -159,19 +160,13 @@ export default function DashboardScreen() {
           style={{ flex: 1 }} 
           imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
         >
-          <ScrollView 
-        style={styles.contentScroll} 
-        contentContainerStyle={styles.contentContainer} 
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl 
-            refreshing={refreshing} 
-            onRefresh={onRefresh} 
-            tintColor={Colors.primary} 
-            colors={[Colors.primary]} 
-          />
-        }
-      >
+          <CustomRefreshScrollView 
+            style={styles.contentScroll} 
+            contentContainerStyle={styles.contentContainer} 
+            showsVerticalScrollIndicator={false}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          >
         <View style={styles.sliderContainer}>
           <ScrollView
             ref={scrollViewRef}
@@ -359,7 +354,7 @@ export default function DashboardScreen() {
             </Animated.View>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+          </CustomRefreshScrollView>
         </ImageBackground>
       </View>
     </View>

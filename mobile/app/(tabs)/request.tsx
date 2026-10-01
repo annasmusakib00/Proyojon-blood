@@ -9,9 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  RefreshControl,
   ImageBackground,
 } from 'react-native';
+import { CustomRefreshScrollView } from '../../components/CustomRefreshScrollView';
 import { useRouter } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Colors } from '../../constants/colors';
@@ -138,24 +138,17 @@ export default function RequestScreen() {
           <Text style={styles.headerTitle}>{t('request.title')}</Text>
           <Text style={styles.headerSubtitle}>{t('request.subtitle')}</Text>
         </View>
-        
         <ImageBackground 
           source={require('../../assets/images/body-bg.jpg')} 
           style={styles.contentBgWrapper} 
           imageStyle={{ opacity: 0.035, resizeMode: 'cover' }}
         >
-        <ScrollView 
+        <CustomRefreshScrollView 
           style={styles.scrollView} 
           contentContainerStyle={styles.content} 
           showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl 
-              refreshing={refreshing} 
-              onRefresh={onRefresh} 
-              tintColor={Colors.primary} 
-              colors={[Colors.primary]} 
-            />
-          }
+          refreshing={refreshing}
+          onRefresh={onRefresh}
         >
 
 
@@ -302,7 +295,7 @@ export default function RequestScreen() {
             </View>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+        </CustomRefreshScrollView>
       </ImageBackground>
       </View>
 
