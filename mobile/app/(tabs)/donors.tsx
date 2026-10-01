@@ -196,8 +196,6 @@ export default function DonorsScreen() {
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.subtitle}>{t('donors.subtitle', { total: total.toString() })}</Text>
-
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.quickFilterRow}>
           <TouchableOpacity 
             style={[styles.quickFilterChip, selectedBloodGroup === 'A_POS' && styles.quickFilterChipActive]}
