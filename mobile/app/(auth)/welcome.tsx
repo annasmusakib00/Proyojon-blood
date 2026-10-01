@@ -49,7 +49,7 @@ export default function WelcomeScreen() {
       <ImageBackground 
         source={require('../../assets/images/body-bg.jpg')}
         style={styles.bottomHalf}
-        imageStyle={{ opacity: 0.05, resizeMode: 'cover' }}
+        imageStyle={{ opacity: 0.12, resizeMode: 'cover' }}
       >
         <TouchableOpacity
           style={styles.registerButton}
@@ -138,18 +138,18 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 60,
+    height: 45,
     backgroundColor: Colors.primary,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
     zIndex: 1,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    paddingBottom: 15,
+    paddingBottom: 10,
   },
   madeByText: {
     color: 'rgba(255,255,255,0.8)',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     letterSpacing: 1,
   },
