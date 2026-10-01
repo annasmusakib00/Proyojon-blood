@@ -1,4 +1,9 @@
 export const en = {
+  welcome: {
+    tagline: 'Your one bag of blood\ncan save a life',
+    register: 'Create New Account',
+    login: 'Log In',
+  },
   login: {
     title: 'Welcome Back',
     subtitle: 'Your small effort can bring someone back to their loved ones.',

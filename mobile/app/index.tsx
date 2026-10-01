@@ -9,6 +9,6 @@ export default function Index() {
   if (isAuthenticated) {
     return <Redirect href="/(tabs)/dashboard" />;
   } else {
-    return <Redirect href="/(auth)/register" />;
+    return <Redirect href="/(auth)/welcome" />;
   }
 }
