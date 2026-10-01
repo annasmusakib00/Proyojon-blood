@@ -82,7 +82,6 @@ export async function createRequest(
   const notifications: Promise<void>[] = [];
 
   for (const donor of donors) {
-    // Channel 1: Push Notification
     if (donor.fcmToken) {
       notifications.push(
         sendPushNotification(
@@ -92,6 +91,9 @@ export async function createRequest(
           { requestId: request.id, type: 'emergency_request' }
         ).then((result) => logNotification(request.id, donor.id, 'PUSH', !!result))
       );
+    } else {
+      // Log as failed push so they still show up in the radar UI for the requester
+      notifications.push(logNotification(request.id, donor.id, 'PUSH', false));
     }
   }
 
