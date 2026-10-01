@@ -339,10 +339,6 @@ export default function DashboardScreen() {
               <View style={styles.leftPillArrow} />
             </View>
 
-            <Animated.View style={[styles.requestButtonCenterCircle, { transform: [{ scale: buttonScaleAnim }] }]}>
-              <MaterialCommunityIcons name="radar" size={38} color={Colors.primary} />
-            </Animated.View>
-            
             <View style={styles.rightPillContainer}>
               <View style={styles.rightPillArrow} />
               <LinearGradient
@@ -354,6 +350,13 @@ export default function DashboardScreen() {
                 <Text style={styles.requestButtonTextSide} numberOfLines={1} adjustsFontSizeToFit>{t('dashboard.clickHere')}</Text>
               </LinearGradient>
             </View>
+
+            {/* Render circle last so it sits on top of both arrows */}
+            <Animated.View style={[styles.requestButtonCenterCircle, { transform: [{ scale: buttonScaleAnim }] }]}>
+              <View style={styles.requestButtonInnerCircle}>
+                <MaterialCommunityIcons name="radar" size={38} color={Colors.primary} />
+              </View>
+            </Animated.View>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -514,17 +517,30 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     left: '50%',
     marginLeft: -38, // Center exactly
-    width: 76, // bigger circle
+    width: 76, 
     height: 76,
     borderRadius: 38,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 8, // circle pop up
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+    elevation: 12, // Stronger 3D shadow
+    shadowColor: Colors.primaryDark, // Colored shadow for glow
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+    borderWidth: 4,
+    borderColor: '#FFF5F5', // Light rim
+    zIndex: 10, // Ensure it's above
+  },
+  requestButtonInnerCircle: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(138, 3, 3, 0.06)', // Light red tint
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(138, 3, 3, 0.15)', // Subtle inner ring
   },
   requestButtonTextSide: {
     color: '#FFFFFF',

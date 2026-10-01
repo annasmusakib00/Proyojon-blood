@@ -94,25 +94,21 @@ export default function ProfileScreen() {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.5,
+      base64: true, // Ask for base64 encoding
     });
 
-    if (!result.canceled && result.assets[0].uri) {
-      uploadProfilePhoto(result.assets[0].uri);
+    if (!result.canceled && result.assets[0].base64) {
+      uploadProfilePhoto(result.assets[0].base64);
     }
   };
 
-  const uploadProfilePhoto = async (uri: string) => {
+  const uploadProfilePhoto = async (base64Data: string) => {
     setUploading(true);
     try {
       const IMGBB_API_KEY = '5a688b1fcb4e3c35bbaee51e9b72d2fb';
       
-      // Use FormData for more reliable upload of large images in React Native
       const formData = new FormData();
-      formData.append('image', {
-        uri: uri,
-        type: 'image/jpeg',
-        name: 'profile_photo.jpg',
-      } as any);
+      formData.append('image', base64Data);
       
       const imgbbRes = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
         method: 'POST',
