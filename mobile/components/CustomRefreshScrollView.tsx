@@ -204,30 +204,35 @@ export function CustomRefreshScrollView({
           )
         )}
         </View>
+      </Animated.View>
 
-        {/* Background refresh icon container - ATTACHED TO SLIDING VIEW, RENDERED LAST SO IT SITS ON TOP OF WHITE CONTENT */}
-        <View style={styles.refreshIndicatorContainer}>
-          <Animated.View
-            style={[
-              styles.refreshIconWrapper,
-              {
-                transform: [
-                  {
-                    scale: pullY.interpolate({
-                      inputRange: [0, REFRESH_THRESHOLD],
-                      outputRange: [0, 1],
-                      extrapolate: 'clamp',
-                    }),
-                  },
-                  { rotate: spin },
-                ],
-              },
-            ]}
-          >
-            {/* Custom Theme Icon */}
-            <Ionicons name="water" size={32} color={Colors.primary} />
-          </Animated.View>
-        </View>
+      {/* Background refresh icon container - SIBLING TO SLIDING VIEW */}
+      <Animated.View 
+        style={[
+          styles.refreshIndicatorContainer,
+          { transform: [{ translateY: pullY }] }
+        ]}
+      >
+        <Animated.View
+          style={[
+            styles.refreshIconWrapper,
+            {
+              transform: [
+                {
+                  scale: pullY.interpolate({
+                    inputRange: [0, REFRESH_THRESHOLD],
+                    outputRange: [0, 1],
+                    extrapolate: 'clamp',
+                  }),
+                },
+                { rotate: spin },
+              ],
+            },
+          ]}
+        >
+          {/* Custom Theme Icon */}
+          <Ionicons name="water" size={24} color={Colors.primary} />
+        </Animated.View>
       </Animated.View>
     </View>
   );
@@ -248,9 +253,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   refreshIconWrapper: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',

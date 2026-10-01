@@ -157,7 +157,7 @@ export default function DonorsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.primary }}>
+    <View style={{ flex: 1, backgroundColor: Colors.background }}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>{t('donors.title')}</Text>
