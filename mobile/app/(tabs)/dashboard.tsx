@@ -17,7 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
-import { Feather, Ionicons } from '@expo/vector-icons';
+import { Feather, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAuthStore } from '../../stores/authStore';
 import { useLocaleStore } from '../../stores/localeStore';
 import { t } from '../../utils/i18n';
@@ -337,7 +337,7 @@ export default function DashboardScreen() {
                   <Text style={styles.requestButtonTextSide}>দ্রুত ডোনার খুঁজুন</Text>
                 </View>
                 <View style={styles.requestButtonCenterCircle}>
-                  <Ionicons name="search" size={28} color={Colors.primary} />
+                  <MaterialCommunityIcons name="radar" size={32} color={Colors.primary} />
                 </View>
                 <View style={{ flex: 1, alignItems: 'center' }}>
                   <Text style={styles.requestButtonTextSide}>এখানে ক্লিক করে</Text>
@@ -443,30 +443,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: Colors.primary,
     borderRadius: 100, // Pill shape
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    elevation: 8,
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 2, // Thinner button
   },
   requestButtonCenterCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50, // slightly smaller circle
+    height: 50,
+    borderRadius: 25,
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    elevation: 4,
+    elevation: 8, // circle pop up
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
   },
   requestButtonTextSide: {
     color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '700',
+    fontSize: 16, // Larger text
+    fontWeight: '800',
   },
 });
