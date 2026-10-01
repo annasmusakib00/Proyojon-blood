@@ -251,8 +251,6 @@ const styles = StyleSheet.create({
     paddingTop: 54,
     paddingBottom: 16,
     backgroundColor: Colors.primary,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
     marginBottom: 12,
   },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, marginBottom: 16 },

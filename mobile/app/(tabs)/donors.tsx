@@ -376,8 +376,6 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     marginBottom: 12, 
     backgroundColor: Colors.primary,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
   },
   title: { color: '#FFF', fontSize: 22, fontWeight: '800' },
   subtitle: { color: 'rgba(255,255,255,0.8)', fontSize: 13, marginTop: 4, fontWeight: '600' },
