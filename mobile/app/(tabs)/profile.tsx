@@ -10,6 +10,7 @@ import {
   Switch,
   TextInput,
   ImageBackground,
+  Modal,
 } from 'react-native';
 import { CustomRefreshScrollView } from '../../components/CustomRefreshScrollView';
 import { useRouter } from 'expo-router';

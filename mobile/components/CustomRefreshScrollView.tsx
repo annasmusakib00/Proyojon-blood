@@ -225,7 +225,13 @@ export function CustomRefreshScrollView({
                     extrapolate: 'clamp',
                   }),
                 },
-                { rotate: spin },
+                { 
+                  rotate: refreshing ? spin : pullY.interpolate({
+                    inputRange: [0, REFRESH_THRESHOLD],
+                    outputRange: ['0deg', '360deg'],
+                    extrapolate: 'clamp',
+                  }) 
+                },
               ],
             },
           ]}
