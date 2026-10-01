@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 import { useNotificationStore } from '../stores/notificationStore';
+import { updateFcmToken } from '../services/donor';
 
 export function useNotifications() {
   const [expoPushToken, setExpoPushToken] = useState<string | null>(null);
@@ -43,14 +46,10 @@ export function useNotifications() {
 
         // Now proceeding to Expo Push Notification setup
 
-        const Device = await import('expo-device');
         if (!Device.isDevice) {
           console.warn('[Notifications] Push only works on physical devices');
           return;
         }
-
-        const Notifications = await import('expo-notifications');
-        const { updateFcmToken } = await import('../services/donor');
 
         Notifications.setNotificationHandler({
           handleNotification: async () => ({
