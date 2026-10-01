@@ -135,9 +135,9 @@ export default function DashboardScreen() {
             source={{ uri: user?.profilePhoto || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random` }} 
             style={styles.profileAvatar} 
           />
-          <View>
+          <View style={{ flex: 1 }}>
             <Text style={styles.greeting}>{t('dashboard.greeting', { name: '' }).replace(' , ', '').replace(',', '')}</Text>
-            <Text style={styles.userName}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
+            <Text style={styles.userName} numberOfLines={1}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
           </View>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
@@ -388,10 +388,10 @@ const styles = StyleSheet.create({
     paddingBottom: 20, 
     backgroundColor: Colors.primary,
   },
-  headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  profileAvatar: { width: 44, height: 44, borderRadius: 22, borderWidth: 2, borderColor: '#FFFFFF' },
-  greeting: { color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: '500' },
-  userName: { color: '#FFFFFF', fontSize: 22, fontWeight: '800' },
+  headerInfo: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1, marginRight: 16 },
+  profileAvatar: { width: 40, height: 40, borderRadius: 20, borderWidth: 2, borderColor: '#FFFFFF' },
+  greeting: { color: 'rgba(255,255,255,0.85)', fontSize: 12, fontWeight: '500' },
+  userName: { color: '#FFFFFF', fontSize: 18, fontWeight: '700' },
   bloodBadge: {
     width: 48, height: 48, borderRadius: 24, backgroundColor: '#FFFFFF',
     alignItems: 'center', justifyContent: 'center',
