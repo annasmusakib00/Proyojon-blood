@@ -34,9 +34,9 @@ export function useLocation() {
         return;
       }
 
-      // Get current position
+      // Get current position (fallback to Balanced for better indoor reliability)
       const location = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
+        accuracy: Location.Accuracy.Balanced,
       });
 
       setState({ location, loading: false, error: null });

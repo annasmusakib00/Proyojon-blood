@@ -53,7 +53,6 @@ export async function findDonorsWithinRadius(
       AND is_verified = true
       AND latitude IS NOT NULL
       AND longitude IS NOT NULL
-      AND fcm_token IS NOT NULL
       AND last_seen_at IS NOT NULL
       AND last_seen_at >= ${freshnessThreshold}
     HAVING distance_km <= ${SEARCH_RADIUS_KM}
