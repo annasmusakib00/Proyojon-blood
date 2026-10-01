@@ -26,7 +26,9 @@ export default function WelcomeScreen() {
   return (
     <View style={styles.container}>
       {/* Bottom overlay as requested */}
-      <View style={styles.bottomOverlay} />
+      <View style={styles.bottomOverlay}>
+        <Text style={styles.madeByText}>Made by AN NASMU SAKIB</Text>
+      </View>
 
       {/* Top Half - Red Theme Overlay with Image */}
       <ImageBackground 
@@ -35,6 +37,7 @@ export default function WelcomeScreen() {
         imageStyle={styles.topHalfImage}
       >
         <SafeAreaView style={styles.safeArea}>
+          <Text style={styles.title}>{t('welcome.title')}</Text>
           <Text style={styles.tagline}>{t('welcome.tagline')}</Text>
           <View style={styles.iconContainer}>
             <Ionicons name="water" size={160} color="#FFFFFF" style={styles.icon} />
@@ -43,7 +46,11 @@ export default function WelcomeScreen() {
       </ImageBackground>
 
       {/* Bottom Half - White Space with Buttons */}
-      <View style={styles.bottomHalf}>
+      <ImageBackground 
+        source={require('../../assets/images/body-bg.jpg')}
+        style={styles.bottomHalf}
+        imageStyle={{ opacity: 0.05, resizeMode: 'cover' }}
+      >
         <TouchableOpacity
           style={styles.registerButton}
           onPress={handleRegister}
@@ -59,7 +66,7 @@ export default function WelcomeScreen() {
         >
           <Text style={styles.loginButtonText}>{t('welcome.login')}</Text>
         </TouchableOpacity>
-      </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -90,18 +97,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 30,
-    paddingTop: 40,
+    paddingTop: 60,
   },
-  tagline: {
+  title: {
     color: '#FFFFFF',
-    fontSize: 28,
-    fontWeight: '800',
-    marginBottom: 40,
+    fontSize: 36,
+    fontWeight: '900',
+    marginBottom: 10,
     textAlign: 'center',
-    lineHeight: 40,
+    letterSpacing: 1,
     textShadowColor: 'rgba(0,0,0,0.3)',
     textShadowOffset: { width: 0, height: 4 },
     textShadowRadius: 6,
+  },
+  tagline: {
+    color: 'rgba(255,255,255,0.9)',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 30,
+    textAlign: 'center',
+    lineHeight: 28,
   },
   iconContainer: {
     alignItems: 'center',
@@ -128,6 +143,15 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
     zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingBottom: 15,
+  },
+  madeByText: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 1,
   },
   registerButton: {
     backgroundColor: Colors.primary,

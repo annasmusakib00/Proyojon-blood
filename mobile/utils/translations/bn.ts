@@ -1,5 +1,6 @@
 export const bn = {
   welcome: {
+    title: 'স্বাগতম',
     tagline: 'আপনার এক ব্যাগ রক্তে\nবেঁচে উঠতে পারে একটি জীবন',
     register: 'নতুন একাউন্ট খুলুন',
     login: 'লগইন করুন',

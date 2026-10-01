@@ -1,5 +1,6 @@
 export const en = {
   welcome: {
+    title: 'Welcome',
     tagline: 'Your one bag of blood\ncan save a life',
     register: 'Create New Account',
     login: 'Log In',
