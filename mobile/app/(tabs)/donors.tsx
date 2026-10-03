@@ -37,7 +37,11 @@ export default function DonorsScreen() {
   const [selectedBloodGroup, setSelectedBloodGroup] = useState<string>('');
   const [selectedDivision, setSelectedDivision] = useState<string>('');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('');
+  const [selectedUpazila, setSelectedUpazila] = useState<string>('');
   const [showFilters, setShowFilters] = useState(false);
+
+  const currentDivision = BD_DIVISIONS.find((d) => d.value === selectedDivision);
+  const currentDistrict = currentDivision?.districts.find((d) => d.value === selectedDistrict);
 
   // Pagination
   const [page, setPage] = useState(1);
@@ -58,7 +62,7 @@ export default function DonorsScreen() {
       if (pageNum === 1) setLoading(true);
       else setLoadingMore(true);
 
-      const locationFilter = selectedDistrict || selectedDivision || '';
+      const locationFilter = selectedUpazila || selectedDistrict || selectedDivision || '';
       const result = await donorService.getAllDonors({
         blood_group: selectedBloodGroup || undefined,
         location: locationFilter || undefined,
@@ -83,7 +87,7 @@ export default function DonorsScreen() {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [selectedBloodGroup, selectedDivision, selectedDistrict, searchQuery]);
+  }, [selectedBloodGroup, selectedDivision, selectedDistrict, selectedUpazila, searchQuery]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -108,10 +112,11 @@ export default function DonorsScreen() {
     setSelectedBloodGroup('');
     setSelectedDivision('');
     setSelectedDistrict('');
+    setSelectedUpazila('');
     setSearchQuery('');
   };
 
-  const activeFilterCount = [selectedBloodGroup, selectedDivision, selectedDistrict].filter(Boolean).length;
+  const activeFilterCount = [selectedBloodGroup, selectedDivision, selectedDistrict, selectedUpazila].filter(Boolean).length;
   const hasActiveFilters = activeFilterCount > 0;
 
   const currentDivision = BD_DIVISIONS.find((d) => d.value === selectedDivision);
@@ -283,6 +288,7 @@ export default function DonorsScreen() {
                 onPress={() => {
                   setSelectedDivision(selectedDivision === div.value ? '' : div.value);
                   setSelectedDistrict('');
+                  setSelectedUpazila('');
                 }}
               >
                 <Text style={[styles.filterChipText, selectedDivision === div.value && styles.filterChipTextActive]}>
@@ -299,7 +305,7 @@ export default function DonorsScreen() {
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
                 <TouchableOpacity
                   style={[styles.filterChip, !selectedDistrict && styles.filterChipActive]}
-                  onPress={() => setSelectedDistrict('')}
+                  onPress={() => { setSelectedDistrict(''); setSelectedUpazila(''); }}
                 >
                   <Text style={[styles.filterChipText, !selectedDistrict && styles.filterChipTextActive]}>সব জেলা</Text>
                 </TouchableOpacity>
@@ -307,10 +313,39 @@ export default function DonorsScreen() {
                   <TouchableOpacity
                     key={dist.value}
                     style={[styles.filterChip, selectedDistrict === dist.value && styles.filterChipActive]}
-                    onPress={() => setSelectedDistrict(selectedDistrict === dist.value ? '' : dist.value)}
+                    onPress={() => {
+                      setSelectedDistrict(selectedDistrict === dist.value ? '' : dist.value);
+                      setSelectedUpazila('');
+                    }}
                   >
                     <Text style={[styles.filterChipText, selectedDistrict === dist.value && styles.filterChipTextActive]}>
                       {dist.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </>
+          )}
+
+          {/* Upazila Filter (shown only when district selected) */}
+          {currentDistrict && (
+            <>
+              <Text style={styles.filterLabel}>উপজেলা</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+                <TouchableOpacity
+                  style={[styles.filterChip, !selectedUpazila && styles.filterChipActive]}
+                  onPress={() => setSelectedUpazila('')}
+                >
+                  <Text style={[styles.filterChipText, !selectedUpazila && styles.filterChipTextActive]}>সব উপজেলা</Text>
+                </TouchableOpacity>
+                {currentDistrict.upazilas.map((upa) => (
+                  <TouchableOpacity
+                    key={upa}
+                    style={[styles.filterChip, selectedUpazila === upa && styles.filterChipActive]}
+                    onPress={() => setSelectedUpazila(selectedUpazila === upa ? '' : upa)}
+                  >
+                    <Text style={[styles.filterChipText, selectedUpazila === upa && styles.filterChipTextActive]}>
+                      {upa}
                     </Text>
                   </TouchableOpacity>
                 ))}

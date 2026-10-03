@@ -31,9 +31,11 @@ export default function RegisterScreen() {
   const [selectedBloodGroup, setSelectedBloodGroup] = useState('');
   const [selectedDivision, setSelectedDivision] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedUpazila, setSelectedUpazila] = useState('');
   const [loading, setLoading] = useState(false);
 
   const currentDivision = BD_DIVISIONS.find((d) => d.value === selectedDivision);
+  const currentDistrict = currentDivision?.districts.find((d) => d.value === selectedDistrict);
 
   const handleNext = () => {
     if (step === 1) {
@@ -70,14 +72,14 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = async () => {
-    if (!selectedDivision || !selectedDistrict) {
-      Alert.alert('Error', 'Please select your current division and district');
+    if (!selectedDivision || !selectedDistrict || !selectedUpazila) {
+      Alert.alert('Error', 'Please select your current division, district and upazila');
       return;
     }
 
     setLoading(true);
     try {
-      const locationText = `${selectedDistrict}, ${selectedDivision}`;
+      const locationText = `${selectedUpazila}, ${selectedDistrict}, ${selectedDivision}`;
       await authService.register(name.trim(), phone, selectedBloodGroup, password, locationText);
       router.push({
         pathname: '/(auth)/verify-otp',
@@ -251,10 +253,32 @@ export default function RegisterScreen() {
                     <TouchableOpacity
                       key={dist.value}
                       style={[styles.filterChip, selectedDistrict === dist.value && styles.filterChipActive]}
-                      onPress={() => setSelectedDistrict(dist.value)}
+                      onPress={() => {
+                        setSelectedDistrict(dist.value);
+                        setSelectedUpazila('');
+                      }}
                     >
                       <Text style={[styles.filterChipText, selectedDistrict === dist.value && styles.filterChipTextActive]}>
                         {dist.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+            )}
+
+            {currentDistrict && (
+              <View style={styles.field}>
+                <Text style={styles.label}>বর্তমান উপজেলা</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+                  {currentDistrict.upazilas.map((upa) => (
+                    <TouchableOpacity
+                      key={upa}
+                      style={[styles.filterChip, selectedUpazila === upa && styles.filterChipActive]}
+                      onPress={() => setSelectedUpazila(upa)}
+                    >
+                      <Text style={[styles.filterChipText, selectedUpazila === upa && styles.filterChipTextActive]}>
+                        {upa}
                       </Text>
                     </TouchableOpacity>
                   ))}

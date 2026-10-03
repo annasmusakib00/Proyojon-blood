@@ -1,3 +1,5 @@
+import bdGeo from 'bangladesh-districts-upazilas';
+
 export const locationSynonyms: Record<string, string[]> = {
   dhaka: ['dhaka', 'daka', 'ঢাকা'],
   chattogram: ['chattogram', 'chittagong', 'ctg', 'চট্টগ্রাম', 'চট্রগ্রাম'],
@@ -35,6 +37,29 @@ export function expandSearchTerm(term: string): string[] {
   let variations = new Set<string>();
   variations.add(normalizedTerm);
   variations.add(term.trim()); // Original case
+  
+  try {
+    const upa = bdGeo.getUpazilaByBanglaName(term.trim());
+    if (upa) variations.add(upa.name);
+    
+    const dist = bdGeo.getDistrictByBanglaName(term.trim());
+    if (dist) variations.add(dist.name);
+    
+    const div = bdGeo.getDivisionByName(term.trim());
+    if (div) variations.add(div.name);
+
+    const upaSearch = bdGeo.searchUpazilas(term.trim());
+    if (upaSearch && upaSearch.length > 0) {
+      upaSearch.forEach((u: any) => variations.add(u.name));
+    }
+
+    const distSearch = bdGeo.searchDistricts(term.trim());
+    if (distSearch && distSearch.length > 0) {
+      distSearch.forEach((d: any) => variations.add(d.name));
+    }
+  } catch(e) {
+    console.error('Error matching bdGeo:', e);
+  }
   
   // Check if any of our mapped synonyms match
   for (const [key, synonyms] of Object.entries(locationSynonyms)) {

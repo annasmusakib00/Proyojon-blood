@@ -273,24 +273,32 @@ export default function DashboardScreen() {
         </View>
 
         {/* Action Buttons: History and Post */}
-        <View style={styles.actionButtonsRow}>
-          <TouchableOpacity 
-            style={styles.actionButtonCard} 
-            activeOpacity={0.7}
-            onPress={() => router.push('/(tabs)/history')}
-          >
-            <Ionicons name="time" size={28} color={Colors.primary} style={{ marginBottom: 4 }} />
-            <Text style={styles.actionButtonText}>ইতিহাস</Text>
-          </TouchableOpacity>
+        <View style={styles.statsRow}>
+          <Card style={[styles.statCard, { paddingVertical: 0, paddingHorizontal: 0, overflow: 'hidden' }]}>
+            <TouchableOpacity 
+              style={{ flex: 1, width: '100%', paddingVertical: 12, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' }} 
+              activeOpacity={0.7}
+              onPress={() => router.push('/(tabs)/history')}
+            >
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(138, 3, 3, 0.08)', alignItems: 'center', justifyContent: 'center' }}>
+                <Ionicons name="time" size={20} color={Colors.primary} />
+              </View>
+              <Text style={styles.statLabel}>ইতিহাস</Text>
+            </TouchableOpacity>
+          </Card>
 
-          <TouchableOpacity 
-            style={styles.actionButtonCard} 
-            activeOpacity={0.7}
-            onPress={() => router.push('/(tabs)/create-post')}
-          >
-            <Ionicons name="create" size={28} color={Colors.primary} style={{ marginBottom: 4 }} />
-            <Text style={styles.actionButtonText}>পোস্ট করুন</Text>
-          </TouchableOpacity>
+          <Card style={[styles.statCard, { paddingVertical: 0, paddingHorizontal: 0, overflow: 'hidden' }]}>
+            <TouchableOpacity 
+              style={{ flex: 1, width: '100%', paddingVertical: 12, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' }} 
+              activeOpacity={0.7}
+              onPress={() => router.push('/(tabs)/create-post')}
+            >
+              <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(138, 3, 3, 0.08)', alignItems: 'center', justifyContent: 'center' }}>
+                <Ionicons name="create" size={20} color={Colors.primary} />
+              </View>
+              <Text style={styles.statLabel}>পোস্ট করুন</Text>
+            </TouchableOpacity>
+          </Card>
         </View>
 
         <View style={styles.section}>
@@ -451,6 +459,21 @@ export default function DashboardScreen() {
               </View>
 
               <View style={styles.sidebarDivider} />
+
+              <TouchableOpacity style={styles.sidebarMenuItem} onPress={() => { closeSidebar(); router.push('/(tabs)/request'); }}>
+                <Ionicons name="water-outline" size={22} color={Colors.text} />
+                <Text style={styles.sidebarMenuText}>আবেদন (Request)</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sidebarMenuItem} onPress={() => { closeSidebar(); router.push('/(tabs)/donors'); }}>
+                <Ionicons name="people-outline" size={22} color={Colors.text} />
+                <Text style={styles.sidebarMenuText}>ডোনার (Donor)</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sidebarMenuItem} onPress={() => { closeSidebar(); router.push('/(tabs)/create-post'); }}>
+                <Ionicons name="create-outline" size={22} color={Colors.text} />
+                <Text style={styles.sidebarMenuText}>পোস্ট করুন</Text>
+              </TouchableOpacity>
 
               <TouchableOpacity style={styles.sidebarMenuItem} onPress={() => { closeSidebar(); router.push('/(tabs)/history'); }}>
                 <Ionicons name="document-text-outline" size={22} color={Colors.text} />
@@ -785,29 +808,36 @@ const styles = StyleSheet.create({
   },
   actionButtonsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-    marginTop: 4,
+    gap: 8,
+    marginBottom: 24,
+    marginTop: 8,
   },
   actionButtonCard: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    marginHorizontal: 4,
     borderRadius: 16,
-    padding: 16,
+    paddingVertical: 12,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
-    elevation: 3,
+    elevation: 2,
+    gap: 6,
+  },
+  actionIconWrapper: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(138, 3, 3, 0.08)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   actionButtonText: {
     color: Colors.text,
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
-    marginTop: 8,
   },
   postCard: {
     padding: 16,
