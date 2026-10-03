@@ -119,6 +119,31 @@ export default function RequestTrackingScreen() {
     );
   };
 
+  const handleCancelRequest = async () => {
+    Alert.alert(
+      'রাডার বন্ধ করুন',
+      'আপনি কি সত্যিই রাডার বন্ধ করতে চান?',
+      [
+        { text: 'না', style: 'cancel' },
+        {
+          text: 'হ্যাঁ, বন্ধ করুন',
+          style: 'destructive',
+          onPress: async () => {
+            setActionLoading(true);
+            try {
+              await requestsService.cancelRequest(id!);
+              router.replace('/(tabs)/request');
+            } catch (err: any) {
+              Alert.alert('ত্রুটি', err.response?.data?.error?.message || 'রাডার বন্ধ করা সম্ভব হয়নি।');
+            } finally {
+              setActionLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const handleSendIndividualRequest = async (donorId: string) => {
     Alert.alert(
       'অনুরোধ পাঠান',
@@ -232,6 +257,25 @@ export default function RequestTrackingScreen() {
                     })}
                   </Card>
                 )}
+
+                <TouchableOpacity 
+                  style={{
+                    backgroundColor: 'rgba(255, 59, 48, 0.08)',
+                    borderColor: 'rgba(255, 59, 48, 0.3)',
+                    borderWidth: 1,
+                    paddingVertical: 14,
+                    borderRadius: 16,
+                    marginTop: 24,
+                    marginBottom: 10,
+                    alignItems: 'center'
+                  }}
+                  onPress={handleCancelRequest}
+                  disabled={actionLoading}
+                >
+                  <Text style={{ color: '#FF3B30', fontSize: 16, fontWeight: '700' }}>
+                    {actionLoading ? 'অপেক্ষা করুন...' : 'রাডার বন্ধ করুন'}
+                  </Text>
+                </TouchableOpacity>
               </>
             )}
 

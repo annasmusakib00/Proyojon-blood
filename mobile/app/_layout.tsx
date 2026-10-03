@@ -4,6 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuthStore } from '../stores/authStore';
 import { useNotifications } from '../hooks/useNotifications';
@@ -53,7 +54,7 @@ function RootLayoutNav() {
   useNotifications();
 
   // Initialize location tracking
-  useLocation();
+  const { refreshLocation } = useLocation();
 
   // Load token on app launch
   useEffect(() => {
@@ -64,6 +65,11 @@ function RootLayoutNav() {
   useEffect(() => {
     if (isLoading) return;
 
+    if (isAuthenticated) {
+      // User just logged in or registered, refresh and send location to backend
+      refreshLocation();
+    }
+
     const inAuthGroup = segments[0] === '(auth)';
 
     if (!isAuthenticated && !inAuthGroup) {
@@ -71,7 +77,7 @@ function RootLayoutNav() {
     } else if (isAuthenticated && inAuthGroup) {
       router.replace('/(tabs)/dashboard');
     }
-  }, [isAuthenticated, isLoading, segments, router]);
+  }, [isAuthenticated, isLoading, segments, router, refreshLocation]);
 
   // DonorAlert actions
   const handleAcceptRequest = async () => {
@@ -114,7 +120,7 @@ function RootLayoutNav() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.background }}>
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={{ flex: 1, backgroundColor: Colors.background }}>
       <StatusBar style="light" />
       <Stack
         screenOptions={{
@@ -161,6 +167,6 @@ function RootLayoutNav() {
         onClose={() => setShowProxyForm(false)}
         loading={proxyLoading}
       />
-    </View>
+    </SafeAreaView>
   );
 }

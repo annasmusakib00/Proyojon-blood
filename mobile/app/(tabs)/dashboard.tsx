@@ -10,6 +10,8 @@ import {
   ScrollView,
   RefreshControl,
   ImageBackground,
+  Modal,
+  Pressable
 } from 'react-native';
 import { CustomRefreshScrollView } from '../../components/CustomRefreshScrollView';
 import * as Haptics from 'expo-haptics';
@@ -23,13 +25,15 @@ import { useAuthStore } from '../../stores/authStore';
 import { useLocaleStore } from '../../stores/localeStore';
 import { t } from '../../utils/i18n';
 import * as requestsService from '../../services/requests';
+import { getPosts, Post } from '../../services/post';
 import { LockCountdown } from '../../components/LockCountdown';
 
 export default function DashboardScreen() {
   const router = useRouter();
   const { user } = useAuthStore();
-  const { locale } = useLocaleStore();
+  const { locale, toggleLocale } = useLocaleStore();
   const [recentRequests, setRecentRequests] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const { width } = Dimensions.get('window');
@@ -47,6 +51,26 @@ export default function DashboardScreen() {
   const buttonScaleAnim = useRef(new Animated.Value(1)).current;
   const scrollViewRef = useRef<ScrollView>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const sidebarAnim = useRef(new Animated.Value(-width * 0.8)).current;
+
+  const openSidebar = () => {
+    setIsSidebarOpen(true);
+    Animated.timing(sidebarAnim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const closeSidebar = () => {
+    Animated.timing(sidebarAnim, {
+      toValue: -width * 0.8,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => setIsSidebarOpen(false));
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -107,6 +131,9 @@ export default function DashboardScreen() {
       if (profileRes.data?.success && profileRes.data.data) {
         useAuthStore.getState().setUser(profileRes.data.data);
       }
+
+      const recentPosts = await getPosts();
+      setPosts(recentPosts || []);
     } catch (err) {}
   };
 
@@ -132,10 +159,12 @@ export default function DashboardScreen() {
         imageStyle={{ opacity: 0.15, resizeMode: 'cover' }}
       >
         <View style={styles.headerInfo}>
-          <Image 
-            source={{ uri: user?.profilePhoto || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random` }} 
-            style={styles.profileAvatar} 
-          />
+          <TouchableOpacity onPress={openSidebar} activeOpacity={0.8}>
+            <Image 
+              source={{ uri: user?.profilePhoto || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random` }} 
+              style={styles.profileAvatar} 
+            />
+          </TouchableOpacity>
           <View style={{ flex: 1 }}>
             <Text style={styles.greeting}>{t('dashboard.greeting', { name: '' }).replace(' , ', '').replace(',', '')}</Text>
             <Text style={styles.userName} numberOfLines={1}>{user?.name || 'ব্যবহারকারী'} 👋</Text>
@@ -143,7 +172,7 @@ export default function DashboardScreen() {
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
           <TouchableOpacity 
-            onPress={() => router.push('/(tabs)/request')}
+            onPress={() => router.push('/(tabs)/donors')}
             style={styles.headerSearchIcon}
           >
             <Ionicons name="search" size={20} color="#FFFFFF" />
@@ -158,78 +187,15 @@ export default function DashboardScreen() {
         outerStyle={{ flex: 1 }}
         innerStyle={[styles.contentBgWrapper, { marginTop: -26 }]}
         imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
-        imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'cover' }}
+        imageBackgroundStyle={{ opacity: 0.05, resizeMode: 'cover' }}
         style={styles.contentScroll} 
         contentContainerStyle={styles.contentContainer} 
         showsVerticalScrollIndicator={false}
         refreshing={refreshing}
         onRefresh={onRefresh}
-        isFlatList={true}
-        flatListData={recentRequests}
-        flatListKeyExtractor={(item: any) => item._id}
-        flatListRenderItem={({ item }: { item: any }) => (
-          <TouchableOpacity
-            key={item.id || item._id}
-            onPress={() => router.push(`/request/${item.id || item._id}`)}
-          >
-            <Card style={styles.activityCard}>
-              <View style={styles.activityRow}>
-                <Text style={styles.activityBlood}>
-                  {item.bloodGroup?.replace('_POS', '+').replace('_NEG', '−')}
-                </Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.activityHospital}>
-                    {item.hospitalName}
-                  </Text>
-                  <Text style={styles.activityDate}>
-                    {new Date(item.createdAt).toLocaleDateString('bn-BD', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </Text>
-                </View>
-                <View
-                  style={[
-                    styles.statusBadge,
-                    {
-                      backgroundColor:
-                        item.status === 'EXPIRED'
-                          ? Colors.surfaceLight
-                          : item.status === 'COMPLETED'
-                            ? Colors.success + '22'
-                            : item.status === 'PENDING'
-                              ? Colors.warning + '22'
-                              : Colors.info + '22',
-                    },
-                  ]}
-                >
-                  <Text
-                    style={[
-                      styles.statusText,
-                      {
-                        color:
-                          item.status === 'EXPIRED'
-                            ? Colors.textMuted
-                            : item.status === 'COMPLETED'
-                              ? Colors.success
-                              : item.status === 'PENDING'
-                                ? Colors.warning
-                                : Colors.info,
-                      },
-                    ]}
-                  >
-                    {item.status}
-                  </Text>
-                </View>
-              </View>
-            </Card>
-          </TouchableOpacity>
-        )}
-        ListHeaderComponent={(
-          <>
-            <View style={styles.headerHandleBar} />
-            <View style={styles.sliderContainer}>
+      >
+        <View style={styles.headerHandleBar} />
+        <View style={styles.sliderContainer}>
           <ScrollView
             ref={scrollViewRef}
             horizontal
@@ -306,61 +272,198 @@ export default function DashboardScreen() {
           )}
         </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
-            {recentRequests.length === 0 && (
-              <Card style={styles.emptyCard}>
-                <Text style={styles.emptyText}>{t('dashboard.noActivity')}</Text>
-              </Card>
-            )}
-          </View>
-        </>
-      )}
-      ListFooterComponent={(
-
-        <View style={styles.actionContainer}>
-          <TouchableOpacity
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              router.push('/(tabs)/request');
-            }}
-            activeOpacity={0.8}
-            style={styles.newRequestButtonWrapper}
+        {/* Action Buttons: History and Post */}
+        <View style={styles.actionButtonsRow}>
+          <TouchableOpacity 
+            style={styles.actionButtonCard} 
+            activeOpacity={0.7}
+            onPress={() => router.push('/(tabs)/history')}
           >
-            <View style={styles.leftPillContainer}>
-              <LinearGradient
-                colors={[Colors.primary, Colors.primaryDark]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.leftPillBody}
-              >
-                <Text style={styles.requestButtonTextSide} numberOfLines={1} adjustsFontSizeToFit>{t('dashboard.findDonorFast')}</Text>
-              </LinearGradient>
-              <View style={styles.leftPillArrow} />
-            </View>
+            <Ionicons name="time" size={28} color={Colors.primary} style={{ marginBottom: 4 }} />
+            <Text style={styles.actionButtonText}>ইতিহাস</Text>
+          </TouchableOpacity>
 
-            <View style={styles.rightPillContainer}>
-              <View style={styles.rightPillArrow} />
-              <LinearGradient
-                colors={[Colors.primary, Colors.primaryDark]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.rightPillBody}
-              >
-                <Text style={styles.requestButtonTextSide} numberOfLines={1} adjustsFontSizeToFit>{t('dashboard.clickHere')}</Text>
-              </LinearGradient>
-            </View>
-
-            {/* Render circle last so it sits on top of both arrows */}
-            <Animated.View style={[styles.requestButtonCenterCircle, { transform: [{ scale: buttonScaleAnim }] }]}>
-              <View style={styles.requestButtonInnerCircle}>
-                <MaterialCommunityIcons name="radar" size={38} color={Colors.primary} />
-              </View>
-            </Animated.View>
+          <TouchableOpacity 
+            style={styles.actionButtonCard} 
+            activeOpacity={0.7}
+            onPress={() => router.push('/(tabs)/create-post')}
+          >
+            <Ionicons name="create" size={28} color={Colors.primary} style={{ marginBottom: 4 }} />
+            <Text style={styles.actionButtonText}>পোস্ট করুন</Text>
           </TouchableOpacity>
         </View>
-      )}
-    />
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
+          {recentRequests.length === 0 ? (
+            <Card style={styles.emptyCard}>
+              <Text style={styles.emptyText}>{t('dashboard.noActivity')}</Text>
+            </Card>
+          ) : (
+            recentRequests.map((item: any) => (
+              <TouchableOpacity
+                key={item.id || item._id}
+                onPress={() => router.push(`/request/${item.id || item._id}`)}
+              >
+                <Card style={styles.activityCard}>
+                  <View style={styles.activityRow}>
+                    <Text style={styles.activityBlood}>
+                      {item.bloodGroup?.replace('_POS', '+').replace('_NEG', '−')}
+                    </Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.activityHospital}>
+                        {item.hospitalName}
+                      </Text>
+                      <Text style={styles.activityDate}>
+                        {new Date(item.createdAt).toLocaleDateString('bn-BD', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })}
+                      </Text>
+                    </View>
+                    <View
+                      style={[
+                        styles.statusBadge,
+                        {
+                          backgroundColor:
+                            item.status === 'EXPIRED'
+                              ? Colors.surfaceLight
+                              : item.status === 'COMPLETED'
+                                ? Colors.success + '22'
+                                : item.status === 'PENDING'
+                                  ? Colors.warning + '22'
+                                  : Colors.info + '22',
+                        },
+                      ]}
+                    >
+                      <Text
+                        style={[
+                          styles.statusText,
+                          {
+                            color:
+                              item.status === 'EXPIRED'
+                                ? Colors.textMuted
+                                : item.status === 'COMPLETED'
+                                  ? Colors.success
+                                  : item.status === 'PENDING'
+                                    ? Colors.warning
+                                    : Colors.info,
+                          },
+                        ]}
+                      >
+                        {item.status}
+                      </Text>
+                    </View>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            ))
+          )}
+        </View>
+
+        {/* Community Posts Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>কমিউনিটি পোস্ট</Text>
+          {posts.length === 0 ? (
+            <Card style={styles.emptyCard}>
+              <Text style={styles.emptyText}>কোনো পোস্ট পাওয়া যায়নি</Text>
+            </Card>
+          ) : (
+            posts.map((post: any) => (
+              <Card key={post.id} style={styles.postCard}>
+                <View style={styles.postHeader}>
+                  <Image 
+                    source={{ uri: post.author.profilePhoto || `https://ui-avatars.com/api/?name=${post.author.name}&background=random` }} 
+                    style={styles.postAvatar} 
+                  />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.postAuthorName}>{post.author.name}</Text>
+                    <Text style={styles.postDate}>
+                      {new Date(post.createdAt).toLocaleDateString('bn-BD', {
+                        day: 'numeric',
+                        month: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={styles.postContent}>{post.content}</Text>
+              </Card>
+            ))
+          )}
+        </View>
+      </CustomRefreshScrollView>
+    
+      <Modal
+        visible={isSidebarOpen}
+        transparent={true}
+        animationType="none"
+        onRequestClose={closeSidebar}
+      >
+        <View style={styles.modalOverlay}>
+          <Pressable style={styles.modalBackdrop} onPress={closeSidebar} />
+          <Animated.View style={[styles.sidebarContainer, { transform: [{ translateX: sidebarAnim }] }]}>
+            <View style={styles.sidebarHeader}>
+              <View style={styles.sidebarHeaderTop}>
+                <Image source={{ uri: user?.profilePhoto || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=random` }} style={styles.sidebarAvatarLarge} />
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+                  <TouchableOpacity 
+                    onPress={toggleLocale}
+                    style={{ flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 6, backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 12 }}
+                  >
+                    <Feather name="globe" size={18} color="#FFF" />
+                    <Text style={{ color: '#FFF', fontSize: 13, fontWeight: '700' }}>
+                      {locale === 'en' ? 'EN' : 'BN'}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={closeSidebar} style={styles.closeSidebarBtn}>
+                    <Ionicons name="close" size={24} color="#FFF" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                <View style={{ flex: 1, paddingRight: 10 }}>
+                  <Text style={styles.sidebarName}>{user?.name || 'ব্যবহারকারী'}</Text>
+                  {user?.phone && <Text style={styles.sidebarPhone}>{user.phone}</Text>}
+                </View>
+                <TouchableOpacity 
+                  onPress={() => { closeSidebar(); router.push('/(tabs)/profile'); }}
+                  style={{ backgroundColor: 'rgba(255,255,255,0.25)', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 16 }}
+                >
+                  <Text style={{ color: '#FFF', fontSize: 12, fontWeight: '700' }}>Edit Profile</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <ScrollView style={styles.sidebarContent} showsVerticalScrollIndicator={false}>
+              <View style={styles.sidebarSectionRow}>
+                <View style={styles.sidebarSectionBox}>
+                  <Text style={styles.sidebarSectionTitle}>রক্তের গ্রুপ</Text>
+                  <Text style={[styles.sidebarSectionValue, { color: Colors.primary }]}>{bloodGroupDisplay}</Text>
+                </View>
+                <View style={styles.sidebarSectionBox}>
+                  <Text style={styles.sidebarSectionTitle}>রক্তদান</Text>
+                  <Text style={styles.sidebarSectionValue}>{user?.donationCount || 0} বার</Text>
+                </View>
+              </View>
+
+              <View style={styles.sidebarDivider} />
+
+              <TouchableOpacity style={styles.sidebarMenuItem} onPress={() => { closeSidebar(); router.push('/(tabs)/history'); }}>
+                <Ionicons name="document-text-outline" size={22} color={Colors.text} />
+                <Text style={styles.sidebarMenuText}>{t('tabs.history')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.sidebarMenuItem} onPress={() => { closeSidebar(); /* handle logout */ useAuthStore.getState().logout?.(); }}>
+                <Ionicons name="log-out-outline" size={22} color={Colors.error} />
+                <Text style={[styles.sidebarMenuText, { color: Colors.error }]}>{locale === 'en' ? 'Logout' : 'লগ আউট'}</Text>
+              </TouchableOpacity>
+            </ScrollView>
+          </Animated.View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -570,5 +673,172 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16, // Larger text
     fontWeight: '800',
+  },
+  modalOverlay: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  modalBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  sidebarContainer: {
+    width: '80%',
+    maxWidth: 320,
+    height: '100%',
+    backgroundColor: Colors.background,
+    borderTopRightRadius: 24,
+    borderBottomRightRadius: 24,
+    elevation: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 4, height: 0 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    overflow: 'hidden',
+  },
+  sidebarHeader: {
+    backgroundColor: Colors.primary,
+    paddingTop: 64, // Status bar padding approx
+    paddingHorizontal: 20,
+    paddingBottom: 12, // Shrunk from bottom
+    borderBottomRightRadius: 24,
+  },
+  sidebarHeaderTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12, // Reduced margin
+  },
+  sidebarAvatarLarge: {
+    width: 56, // Reduced size
+    height: 56,
+    borderRadius: 28,
+    borderWidth: 3,
+    borderColor: '#FFF',
+  },
+  closeSidebarBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sidebarName: {
+    color: '#FFF',
+    fontSize: 18, // Reduced size
+    fontWeight: '800',
+  },
+  sidebarPhone: {
+    color: 'rgba(255,255,255,0.8)',
+    fontSize: 13, // Reduced size
+    marginTop: 2,
+    fontWeight: '500',
+  },
+  sidebarContent: {
+    flex: 1,
+    padding: 20,
+  },
+  sidebarSectionRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 20,
+  },
+  sidebarSectionBox: {
+    flex: 1,
+    backgroundColor: Colors.surface,
+    padding: 16,
+    borderRadius: 16,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+  },
+  sidebarSectionTitle: {
+    color: Colors.textSecondary,
+    fontSize: 12,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  sidebarSectionValue: {
+    color: Colors.text,
+    fontSize: 18,
+    fontWeight: '800',
+  },
+  sidebarDivider: {
+    height: 1,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    marginVertical: 12,
+  },
+  sidebarMenuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    gap: 16,
+  },
+  sidebarMenuText: {
+    color: Colors.text,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  actionButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+    marginTop: 4,
+  },
+  actionButtonCard: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    marginHorizontal: 4,
+    borderRadius: 16,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  actionButtonText: {
+    color: Colors.text,
+    fontSize: 14,
+    fontWeight: '700',
+    marginTop: 8,
+  },
+  postCard: {
+    padding: 16,
+    marginBottom: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+  },
+  postHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  postAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  postAuthorName: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: Colors.text,
+  },
+  postDate: {
+    fontSize: 12,
+    color: Colors.textMuted,
+    marginTop: 2,
+  },
+  postContent: {
+    fontSize: 14,
+    color: Colors.text,
+    lineHeight: 20,
   },
 });

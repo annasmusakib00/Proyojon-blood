@@ -103,6 +103,7 @@ model User {
   requestsAccepted      BloodRequest[]     @relation("DonorRequests")
   requestsOrganized     BloodRequest[]     @relation("OrganizerRequests")
   notificationsReceived NotificationLog[]
+  posts                 Post[]
 
   @@map("users")
 }
@@ -183,4 +184,17 @@ model UserBadge {
 
   @@index([userId])
   @@map("user_badges")
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  authorId  String   @map("author_id")
+  author    User     @relation(fields: [authorId], references: [id])
+
+  @@index([authorId])
+  @@index([createdAt])
+  @@map("posts")
 }

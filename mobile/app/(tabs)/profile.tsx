@@ -162,7 +162,7 @@ export default function ProfileScreen() {
         outerStyle={{ flex: 1 }}
         innerStyle={[styles.contentBgWrapper, { marginTop: -26 }]}
         imageBackgroundSource={require('../../assets/images/body-bg.jpg')}
-        imageBackgroundStyle={{ opacity: 0.035, resizeMode: 'cover' }}
+        imageBackgroundStyle={{ opacity: 0.05, resizeMode: 'cover' }}
         style={{ flex: 1 }} 
         contentContainerStyle={styles.contentContainer}
         refreshing={refreshing}
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   sectionRow: { flexDirection: 'row', gap: 12, marginBottom: 20 },
   halfCard: { flex: 1, alignItems: 'center', paddingVertical: 12 },
   sectionTitle: { color: Colors.text, fontSize: 14, fontWeight: '700', marginBottom: 8 },
-  badgesRow: { flexDirection: 'row', justifyContent: 'center', gap: 12 },
+  badgesRow: { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', gap: 8, paddingHorizontal: 4 },
   statValue: { color: Colors.text, fontSize: 22, fontWeight: '800' },
   menuList: { marginTop: 4, paddingBottom: 20 },
   menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: Colors.border },

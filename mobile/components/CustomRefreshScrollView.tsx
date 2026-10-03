@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { ScrollView, FlatList, StyleSheet, View, Text, ImageBackground, RefreshControl } from 'react-native';
 import { Colors } from '../constants/colors';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const REFRESH_THRESHOLD = 80;
 
@@ -48,6 +49,7 @@ export function CustomRefreshScrollView({
   ListHeaderComponent,
   ListEmptyComponent,
 }: Props) {
+  const insets = useSafeAreaInsets();
   const refreshControl = (
     <RefreshControl
       refreshing={refreshing}

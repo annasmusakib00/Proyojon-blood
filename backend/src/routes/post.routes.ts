@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import * as postController from '../controllers/post.controller';
+import { authMiddleware } from '../middlewares/auth.middleware';
+
+const router = Router();
+
+router.post('/', authMiddleware, postController.createPost);
+router.get('/', authMiddleware, postController.getPosts);
+
+export default router;

@@ -51,7 +51,7 @@ export const bn = {
     requestBlood: 'ডোনার খুঁজুন',
     recentActivity: 'সাম্প্রতিক কার্যক্রম',
     noActivity: 'এখনো কোনো কার্যক্রম নেই',
-    readyMessage: 'আপনি রক্তদানের জন্য প্রস্তুত আছেন',
+    readyMessage: 'আপনি এখন রক্ত দিতে পারবেন',
     findDonorFast: 'রাডার চালু করুন',
     clickHere: 'এখানে ক্লিক করে',
     hero: 'হিরো',
