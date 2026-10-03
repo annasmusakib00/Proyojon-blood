@@ -1,4 +1,4 @@
-import bdGeo from 'bangladesh-districts-upazilas';
+const bdGeo = require('bangladesh-districts-upazilas');
 
 /**
  * Bangladesh Divisions, Districts and Upazilas for donor location filtering.

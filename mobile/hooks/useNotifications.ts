@@ -114,7 +114,7 @@ export function useNotifications() {
         }
 
         notificationListener = Notifications.addNotificationReceivedListener(
-          (notification) => {
+          (notification: any) => {
             const data = notification.request.content.data;
             if (data?.type === 'emergency_request') {
               setIncomingAlert({
@@ -129,7 +129,7 @@ export function useNotifications() {
         );
 
         responseListener = Notifications.addNotificationResponseReceivedListener(
-          (response) => {
+          (response: any) => {
             const data = response.notification.request.content.data;
             if (data?.type === 'emergency_request' && data?.requestId) {
               router.push(`/request/${data.requestId}`);

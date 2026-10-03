@@ -119,7 +119,6 @@ export default function DonorsScreen() {
   const activeFilterCount = [selectedBloodGroup, selectedDivision, selectedDistrict, selectedUpazila].filter(Boolean).length;
   const hasActiveFilters = activeFilterCount > 0;
 
-  const currentDivision = BD_DIVISIONS.find((d) => d.value === selectedDivision);
 
   const renderDonorItem = ({ item }: { item: any }) => {
     const bloodGroupDisplay = (item.bloodGroup || '')
