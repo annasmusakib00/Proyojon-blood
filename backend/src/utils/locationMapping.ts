@@ -1,4 +1,4 @@
-import bdGeo from 'bangladesh-districts-upazilas';
+const bdGeo = require('bangladesh-districts-upazilas');
 
 export const locationSynonyms: Record<string, string[]> = {
   dhaka: ['dhaka', 'daka', 'ঢাকা'],
