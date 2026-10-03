@@ -18,7 +18,7 @@ import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { Card } from '../../components/ui/Card';
 import { BLOOD_GROUPS } from '../../constants/bloodGroups';
-import { BD_DIVISIONS } from '../../constants/locations';
+import { BD_DIVISIONS, getLocaleLabel } from '../../constants/locations';
 import * as donorService from '../../services/donor';
 
 import { useLocaleStore } from '../../stores/localeStore';
@@ -218,13 +218,17 @@ export default function DonorsScreen() {
             style={[styles.quickFilterChip, selectedDivision === 'Dhaka' && styles.quickFilterChipActive]}
             onPress={() => setSelectedDivision(selectedDivision === 'Dhaka' ? '' : 'Dhaka')}
           >
-            <Text style={[styles.quickFilterText, selectedDivision === 'Dhaka' && styles.quickFilterTextActive]}>Dhaka</Text>
+            <Text style={[styles.quickFilterText, selectedDivision === 'Dhaka' && styles.quickFilterTextActive]}>
+              {getLocaleLabel(locale, BD_DIVISIONS.find(d => d.value === 'Dhaka') || {labelEn: 'Dhaka', labelBn: 'ঢাকা'})}
+            </Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.quickFilterChip, selectedDivision === 'Chattogram' && styles.quickFilterChipActive]}
             onPress={() => setSelectedDivision(selectedDivision === 'Chattogram' ? '' : 'Chattogram')}
           >
-            <Text style={[styles.quickFilterText, selectedDivision === 'Chattogram' && styles.quickFilterTextActive]}>Chattogram</Text>
+            <Text style={[styles.quickFilterText, selectedDivision === 'Chattogram' && styles.quickFilterTextActive]}>
+              {getLocaleLabel(locale, BD_DIVISIONS.find(d => d.value === 'Chattogram') || {labelEn: 'Chattogram', labelBn: 'চট্টগ্রাম'})}
+            </Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -292,7 +296,7 @@ export default function DonorsScreen() {
                 }}
               >
                 <Text style={[styles.filterChipText, selectedDivision === div.value && styles.filterChipTextActive]}>
-                  {div.label}
+                  {getLocaleLabel(locale, div)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -319,7 +323,7 @@ export default function DonorsScreen() {
                     }}
                   >
                     <Text style={[styles.filterChipText, selectedDistrict === dist.value && styles.filterChipTextActive]}>
-                      {dist.label}
+                      {getLocaleLabel(locale, dist)}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -340,12 +344,12 @@ export default function DonorsScreen() {
                 </TouchableOpacity>
                 {currentDistrict.upazilas.map((upa) => (
                   <TouchableOpacity
-                    key={upa}
-                    style={[styles.filterChip, selectedUpazila === upa && styles.filterChipActive]}
-                    onPress={() => setSelectedUpazila(selectedUpazila === upa ? '' : upa)}
+                    key={upa.value}
+                    style={[styles.filterChip, selectedUpazila === upa.value && styles.filterChipActive]}
+                    onPress={() => setSelectedUpazila(selectedUpazila === upa.value ? '' : upa.value)}
                   >
-                    <Text style={[styles.filterChipText, selectedUpazila === upa && styles.filterChipTextActive]}>
-                      {upa}
+                    <Text style={[styles.filterChipText, selectedUpazila === upa.value && styles.filterChipTextActive]}>
+                      {getLocaleLabel(locale, upa)}
                     </Text>
                   </TouchableOpacity>
                 ))}

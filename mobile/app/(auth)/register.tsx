@@ -13,14 +13,16 @@ import {
 import { useRouter } from 'expo-router';
 import { Colors } from '../../constants/colors';
 import { BLOOD_GROUPS } from '../../constants/bloodGroups';
-import { BD_DIVISIONS } from '../../constants/locations';
+import { BD_DIVISIONS, getLocaleLabel } from '../../constants/locations';
 import { Button } from '../../components/ui/Button';
 import { Feather } from '@expo/vector-icons';
 import * as authService from '../../services/auth';
 import { t } from '../../utils/i18n';
+import { useLocaleStore } from '../../stores/localeStore';
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const { locale } = useLocaleStore();
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -235,10 +237,11 @@ export default function RegisterScreen() {
                     onPress={() => {
                       setSelectedDivision(div.value);
                       setSelectedDistrict('');
+                      setSelectedUpazila('');
                     }}
                   >
                     <Text style={[styles.filterChipText, selectedDivision === div.value && styles.filterChipTextActive]}>
-                      {div.label}
+                      {getLocaleLabel(locale, div)}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -259,7 +262,7 @@ export default function RegisterScreen() {
                       }}
                     >
                       <Text style={[styles.filterChipText, selectedDistrict === dist.value && styles.filterChipTextActive]}>
-                        {dist.label}
+                        {getLocaleLabel(locale, dist)}
                       </Text>
                     </TouchableOpacity>
                   ))}
@@ -273,12 +276,12 @@ export default function RegisterScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
                   {currentDistrict.upazilas.map((upa) => (
                     <TouchableOpacity
-                      key={upa}
-                      style={[styles.filterChip, selectedUpazila === upa && styles.filterChipActive]}
-                      onPress={() => setSelectedUpazila(upa)}
+                      key={upa.value}
+                      style={[styles.filterChip, selectedUpazila === upa.value && styles.filterChipActive]}
+                      onPress={() => setSelectedUpazila(upa.value)}
                     >
-                      <Text style={[styles.filterChipText, selectedUpazila === upa && styles.filterChipTextActive]}>
-                        {upa}
+                      <Text style={[styles.filterChipText, selectedUpazila === upa.value && styles.filterChipTextActive]}>
+                        {getLocaleLabel(locale, upa)}
                       </Text>
                     </TouchableOpacity>
                   ))}

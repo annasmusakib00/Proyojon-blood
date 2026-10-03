@@ -146,15 +146,20 @@ export async function getAllDonors(filters: {
 
   if (filters.search) {
     const { expandSearchTerm } = require('../utils/locationMapping');
-    const searchTerms = expandSearchTerm(filters.search);
+    const words = filters.search.split(/[\s,]+/).filter((w: string) => w.length > 0);
     
-    // Create an OR condition for each possible variation of the search term
-    const searchConditions = searchTerms.flatMap((term: string) => [
-      { name: { contains: term } },
-      { locationText: { contains: term } },
-    ]);
-    
-    where.OR = searchConditions;
+    if (words.length > 0) {
+      const andConditions = words.map((word: string) => {
+        const searchTerms = expandSearchTerm(word);
+        const orConditions = searchTerms.flatMap((term: string) => [
+          { name: { contains: term } },
+          { locationText: { contains: term } },
+        ]);
+        return { OR: orConditions };
+      });
+      
+      where.AND = andConditions;
+    }
   }
 
   const [donors, total] = await Promise.all([

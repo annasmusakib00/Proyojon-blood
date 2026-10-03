@@ -4,14 +4,22 @@ import bdGeo from 'bangladesh-districts-upazilas';
  * Bangladesh Divisions, Districts and Upazilas for donor location filtering.
  */
 
-export interface District {
-  label: string;
+export interface Upazila {
+  labelEn: string;
+  labelBn: string;
   value: string;
-  upazilas: string[];
+}
+
+export interface District {
+  labelEn: string;
+  labelBn: string;
+  value: string;
+  upazilas: Upazila[];
 }
 
 export interface Division {
-  label: string;
+  labelEn: string;
+  labelBn: string;
   value: string;
   districts: District[];
 }
@@ -23,26 +31,28 @@ export const BD_DIVISIONS: Division[] = allDivisions.map((div: any) => {
   const districts = districtsData.map((d: any) => {
     const upazilasData = bdGeo.getUpazilasByDistrict(d.name);
     return {
-      label: d.name,
+      labelEn: d.name,
+      labelBn: d.banglaName || d.name,
       value: d.name,
-      upazilas: upazilasData.map((u: any) => u.name),
+      upazilas: upazilasData.map((u: any) => ({
+        labelEn: u.name,
+        labelBn: u.banglaName || u.name,
+        value: u.name,
+      })).sort((a: any, b: any) => a.labelEn.localeCompare(b.labelEn)),
     };
-  });
+  }).sort((a: any, b: any) => a.labelEn.localeCompare(b.labelEn));
   
   return {
-    label: div.name,
+    labelEn: div.name,
+    labelBn: div.banglaName || div.name,
     value: div.name,
     districts,
   };
 });
 
 /**
- * Flatten all districts for quick lookup / dropdown.
+ * Helper to get label based on locale
  */
-export const ALL_DISTRICTS = BD_DIVISIONS.flatMap((div) =>
-  div.districts.map((d) => ({
-    label: `${d.label}, ${div.label}`,
-    value: d.value,
-    division: div.value,
-  }))
-);
+export const getLocaleLabel = (locale: string, item: { labelEn: string; labelBn: string }) => {
+  return locale === 'en' ? item.labelEn : item.labelBn;
+};
